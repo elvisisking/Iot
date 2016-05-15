@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Johl\'s</string>
+    <string name="app_tagline">The Home of Smart Shopping</string>
+
+    <string name="login_email_hint">Email</string>
+    <string name="login_failed">Password for customer is incorrect</string>
+    <string name="login_pswd_hint">Password</string>
+    <string name="login_sign_in">Sign In</string>
+    <string name="login_success">Successfully logged in</string>
+    <string name="login_unknown_user">The Email you entered is not for a registered customer</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_sign_out">Sign Out</string>
+
+    <string name="title_about_fragment">About</string>
+    <string name="title_billing_fragment">Billing</string>
+    <string name="title_contact_fragment">Contact Us</string>
+    <string name="title_deals_fragment">Promotions</string>
+    <string name="title_home_fragment">Home</string>
+    <string name="title_login_fragment">Login</string>
+    <string name="title_orders_fragment">Orders</string>
+    <string name="title_settings_fragment">Settings</string>
+
+    <string name="deal_sale_price">Sale Price: %.2f</string>
+    <string name="deal_shop_departments">Shop by Department</string>
+    <string name="deal_original_price">Original Price: %.2f</string>
+
+    <string name="order_id">Order: %d</string>
+    <string name="order_num_additional">+ %d more products</string>
+    <string name="order_price">Total Price: %.2f</string>
+</resources>
