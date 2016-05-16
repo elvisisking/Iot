@@ -21,6 +21,8 @@ import java.util.List;
  */
 public class DataProvider {
 
+    private static final String CUSTOMER_URL = "http://localhost:8080/odata/customer_iot";
+
     /**
      * The ID of an unknown user.
      */
@@ -47,20 +49,6 @@ public class DataProvider {
     }
 
     /**
-     * @param deptId the ID of the department being requested
-     * @return the department or <code>null</code> if not found
-     */
-    public Department findDepartment( final long deptId ) {
-        for ( final Department dept : getDepartmentsFromJson() ) {
-            if ( dept.getId() == deptId ) {
-                return dept;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @param productId the ID of the product being requested
      * @return the product or <code>null</code> if not found
      */
@@ -72,6 +60,43 @@ public class DataProvider {
         }
 
         return null;
+    }
+
+    /**
+     * @param email the email of the user being requested (cannot be empty)
+     * @return the user or <code>null</code> if not found
+     */
+    public Customer getCustomer( final String email ) {
+        for ( final Customer customer : getCustomersFromJson() ) {
+            if ( customer.getEmail().equals( email ) ) {
+                return customer;
+            }
+        }
+
+        return null;
+    }
+
+    public Customer[] getCustomersFromJson() {
+        final String json = IotConstants.TestData.CUSTOMERS_JSON; // TODO replace with call to get actual customers JSON string
+
+        try {
+            final JSONObject jobj = new JSONObject( json );
+            final JSONArray jarray = jobj.getJSONArray( "customers" );
+            final Customer[] customers = new Customer[ jarray.length() ];
+
+            for ( int i = 0;
+                  i < jarray.length();
+                  ++i ) {
+                final JSONObject jcust = jarray.getJSONObject( i );
+                final Customer cust = new Customer( jcust.toString() );
+                customers[ i ] = cust;
+            }
+
+            return customers;
+        } catch ( final Exception e ) {
+            Log.e( IotConstants.LOG__TAG, e.getLocalizedMessage() );
+            return Customer.NO_CUSTOMERs;
+        }
     }
 
     /**
@@ -100,26 +125,20 @@ public class DataProvider {
         }
     }
 
-    /**
-     * @param deptIds the IDs of the departments being requested
-     * @return the store departments (never <code>null</code> but can be empty)
-     */
-    public Department[] getDepartments( final Long... deptIds ) {
-        if ( ( deptIds == null ) || ( deptIds.length == 0 ) ) {
-            return Department.NO_DEPARTMENTS;
+    public String getNotification() {
+        // TODO all of this...
+        // 1. find out department there in
+        // 2. find out if roaming or focused
+        // 3. if focused see if they ordered anything in that department in the past
+        // 4. if yes, get promotions for that department
+        // 5. Notify them of first promotion
+        final int userId = IotApp.getUserId();
+
+        if ( DataProvider.UNKNOWN_USER == userId ) {
+            return null;
         }
 
-        final List< Department > departments = new ArrayList<>();
-
-        for ( final Department dept : getDepartmentsFromJson() ) {
-            for ( final long id : deptIds ) {
-                if ( id == dept.getId() ) {
-                    departments.add( dept );
-                }
-            }
-        }
-
-        return departments.toArray( new Department[ departments.size() ] );
+        return "10% all clothing in the Boy's department";
     }
 
     /**
@@ -160,6 +179,7 @@ public class DataProvider {
                     productIds[ j ] = details[ j ].getProductId();
                 }
 
+                order.setProducts( productIds );
                 orders[ i ] = order;
             }
 
@@ -219,35 +239,9 @@ public class DataProvider {
     }
 
     /**
-     * @param productIds the IDs of the products being requested (can be <code>null</code> or empty)
-     * @return the products (never <code>null</code> but can be empty)
-     */
-    public Product[] getProducts( final int... productIds ) {
-        if ( ( productIds == null ) || ( productIds.length == 0 ) ) {
-            return Product.NO_PRODUCTS;
-        }
-
-        final List< Product > products = new ArrayList<>();
-
-        for ( final Product product : getProductsFromJson() ) {
-            for ( final int id : productIds ) {
-                if ( id == product.getId() ) {
-                    products.add( product );
-                }
-            }
-        }
-
-        return products.toArray( new Product[ 0 ] );
-    }
-
-    /**
      * @return all promotions (never <code>null</code> but can be empty)
      */
-    public Promotion[] getPromotions() {
-        return getPromotionsFromJson();
-    }
-
-    private Promotion[] getPromotionsFromJson() {
+    public Promotion[] getPromotionsFromJson() {
         final String json = IotConstants.TestData.PROMOTIONS_JSON; // TODO replace with call to get actual promotions JSON string
 
         try {
@@ -298,34 +292,6 @@ public class DataProvider {
         }
 
         return promotions.toArray( new Promotion[ promotions.size() ] );
-    }
-
-    /**
-     * @param email the email of the user being requested (cannot be empty)
-     * @return the user or <code>null</code> if not found
-     */
-    public Customer getUser( final String email ) {
-        for ( final Customer customer : IotConstants.TestData.CUSTOMERS ) {
-            if ( customer.getEmail().equals( email ) ) {
-                return customer;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param email the user's email (cannot be empty)
-     * @return the user ID or {@link DataProvider#UNKNOWN_USER}
-     */
-    public int getUserId( final String email ) {
-        for ( final Customer customer : IotConstants.TestData.CUSTOMERS ) {
-            if ( customer.getEmail().equals( email ) ) {
-                return customer.getId();
-            }
-        }
-
-        return UNKNOWN_USER;
     }
 
 }

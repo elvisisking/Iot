@@ -32,7 +32,7 @@ public class IotApp extends Application {
      * @return the image resource ID
      */
     public static int getImageId( final Object o ) {
-        final long id = System.identityHashCode( o );
+        final long id = o.hashCode();
         Integer imageId = IMAGE_MAP.get( id );
 
         if ( imageId == null ) {
@@ -55,6 +55,23 @@ public class IotApp extends Application {
      */
     public static SharedPreferences getPrefs() {
         return _context.getSharedPreferences( IotConstants.PREFS_NAME, 0 );
+    }
+
+    /**
+     * @return the ID of the logged in user or {@link DataProvider#UNKNOWN_USER} if no one is logged in
+     */
+    public static int getUserId() {
+        final SharedPreferences prefs = IotApp.getPrefs();
+        return prefs.getInt( IotConstants.CUSTOMER_ID, DataProvider.UNKNOWN_USER );
+    }
+
+    /**
+     * @param userId the ID of the logged in user or {@link DataProvider#UNKNOWN_USER} if no one is logged in
+     */
+    public static void setUserId(final int userId ) {
+        final SharedPreferences.Editor editor = getPrefs().edit();
+        editor.putInt( IotConstants.CUSTOMER_ID, userId );
+        editor.apply();
     }
 
     @Override

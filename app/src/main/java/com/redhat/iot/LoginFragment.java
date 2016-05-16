@@ -38,7 +38,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         final String email = this.txtEmail.getText().toString();
 
         // find customer
-        final Customer customer = DataProvider.get().getUser( email );
+        final Customer customer = DataProvider.get().getCustomer( email );
 
         if ( customer == null ) {
             Toast.makeText( getActivity(),

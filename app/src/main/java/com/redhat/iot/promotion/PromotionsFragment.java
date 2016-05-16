@@ -45,7 +45,7 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
 
         this.grid = ( GridView )view.findViewById( R.id.gridDeals );
 
-        final Promotion[] promotions = DataProvider.get().getPromotions();
+        final Promotion[] promotions = DataProvider.get().getPromotionsFromJson();
         this.adapter = new PromotionAdapter( this.activity, promotions );
         grid.setAdapter( adapter );
         grid.setOnItemClickListener( new AdapterView.OnItemClickListener() {

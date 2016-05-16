@@ -80,19 +80,14 @@ public interface IotConstants {
             + " ]}";
 
         Customer ELVIS = new Customer( 1, "elvis@iot.com", "elvis", null, null, null, null, null, null, null, null, 1000 );
-        String ELVIS_JSON = "{\"id\" : 1, \"email\" : \"elvis@iot.com\", \"name\" : \"elvis\"}";
+        String ELVIS_JSON = "{\"id\" : 1, \"email\" : \"elvis@iot.com\", \"name\" : \"elvis\", \"pswd\" : \"elvis\"}";
 
         Customer RINGO = new Customer( 2, "ringo@iot.com", "ringo", null, null, null, null, null, null, null, null, 1000 );
-        String RINGO_JSON = "{\"id\" : 2, \"email\" : \"ringo@iot.com\", \"name\" : \"ringo\"}";
+        String RINGO_JSON = "{\"id\" : 2, \"email\" : \"ringo@iot.com\", \"name\" : \"ringo\", \"pswd\" : \"ringo\"}";
 
         Customer SLEDGE = new Customer( 3, "sledge@iot.com", "sledge", null, null, null, null, null, null, null, null, 1000 );
-        String SLEDGE_JSON = "{\"id\" : 3, \"email\" : \"sledge@iot.com\", \"name\" : \"sledge\"}";
+        String SLEDGE_JSON = "{\"id\" : 3, \"email\" : \"sledge@iot.com\", \"name\" : \"sledge\", \"pswd\" : \"sledge\"}";
 
-        Customer[] CUSTOMERS = new Customer[]{
-            ELVIS,
-            RINGO,
-            SLEDGE
-        };
         String CUSTOMERS_JSON = "{\"customers\": [ "
             + ELVIS_JSON + ','
             + RINGO_JSON + ','
@@ -382,8 +377,16 @@ public interface IotConstants {
                                       null,
                                       null );
         OrderDetail DETAIL_1010_1 = new OrderDetail( ORDER_1010.getId(), PRODUCT_300.getId(), 1, 5.5, 1 );
+        String DETAIL_1010_1_JSON =
+            "{\"orderId\" : 1010, \"productId\" : 300, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+
         OrderDetail DETAIL_1010_2 = new OrderDetail( ORDER_1010.getId(), PRODUCT_301.getId(), 2, 10.0, 2 );
+        String DETAIL_1010_2_JSON =
+            "{\"orderId\" : 1010, \"productId\" : 301, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+
         OrderDetail DETAIL_1010_3 = new OrderDetail( ORDER_1010.getId(), PRODUCT_302.getId(), 2, 20.5, 3 );
+        String DETAIL_1010_3_JSON =
+            "{\"orderId\" : 1010, \"productId\" : 302, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
 
         String ORDER_1010_JSON = "{\"id\" : 1010, "
             + "\"customerId\" : " + ELVIS.getId() + ", "
@@ -399,11 +402,28 @@ public interface IotConstants {
                                       null,
                                       null );
         OrderDetail DETAIL_2020_1 = new OrderDetail( ORDER_2020.getId(), PRODUCT_100.getId(), 1, 5.5, 1 );
+        String DETAIL_2020_1_JSON =
+            "{\"orderId\" : 2020, \"productId\" : 100, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+
         OrderDetail DETAIL_2020_2 = new OrderDetail( ORDER_2020.getId(), PRODUCT_200.getId(), 2, 10.0, 2 );
+        String DETAIL_2020_2_JSON =
+            "{\"orderId\" : 2020, \"productId\" : 200, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+
         OrderDetail DETAIL_2020_3 = new OrderDetail( ORDER_2020.getId(), PRODUCT_602.getId(), 2, 20.5, 3 );
+        String DETAIL_2020_3_JSON =
+            "{\"orderId\" : 2020, \"productId\" : 602, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
+
         OrderDetail DETAIL_2020_4 = new OrderDetail( ORDER_2020.getId(), PRODUCT_400.getId(), 1, 5.5, 4 );
+        String DETAIL_2020_4_JSON =
+            "{\"orderId\" : 2020, \"productId\" : 400, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 4 }";
+
         OrderDetail DETAIL_2020_5 = new OrderDetail( ORDER_2020.getId(), PRODUCT_500.getId(), 2, 10.0, 5 );
+        String DETAIL_2020_5_JSON =
+            "{\"orderId\" : 2020, \"productId\" : 500, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 5 }";
+
         OrderDetail DETAIL_2020_6 = new OrderDetail( ORDER_2020.getId(), PRODUCT_600.getId(), 2, 20.5, 6 );
+        String DETAIL_2020_6_JSON =
+            "{\"orderId\" : 2020, \"productId\" : 600, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 6 }";
 
         String ORDER_2020_JSON = "{\"id\" : 2020, "
             + "\"customerId\" : " + RINGO.getId() + ", "
@@ -419,7 +439,12 @@ public interface IotConstants {
                                       null,
                                       null );
         OrderDetail DETAIL_3030_1 = new OrderDetail( ORDER_3030.getId(), PRODUCT_202.getId(), 1, 5.5, 1 );
+        String DETAIL_3030_1_JSON =
+            "{\"orderId\" : 3030, \"productId\" : 202, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+
         OrderDetail DETAIL_3030_2 = new OrderDetail( ORDER_3030.getId(), PRODUCT_102.getId(), 2, 10.0, 2 );
+        String DETAIL_3030_2_JSON =
+            "{\"orderId\" : 3030, \"productId\" : 102, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
 
         String ORDER_3030_JSON = "{\"id\" : 3030, "
             + "\"customerId\" : " + RINGO.getId() + ", "
@@ -435,8 +460,16 @@ public interface IotConstants {
                                       null,
                                       null );
         OrderDetail DETAIL_4040_1 = new OrderDetail( ORDER_4040.getId(), PRODUCT_101.getId(), 1, 5.5, 1 );
+        String DETAIL_4040_1_JSON =
+            "{\"orderId\" : 4040, \"productId\" : 101, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+
         OrderDetail DETAIL_4040_2 = new OrderDetail( ORDER_4040.getId(), PRODUCT_201.getId(), 2, 10.0, 2 );
+        String DETAIL_4040_2_JSON =
+            "{\"orderId\" : 4040, \"productId\" : 201, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+
         OrderDetail DETAIL_4040_3 = new OrderDetail( ORDER_4040.getId(), PRODUCT_402.getId(), 2, 20.5, 3 );
+        String DETAIL_4040_3_JSON =
+            "{\"orderId\" : 4040, \"productId\" : 402, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
 
         String ORDER_4040_JSON = "{\"id\" : 4040, "
             + "\"customerId\" : " + SLEDGE.getId() + ", "
@@ -452,8 +485,16 @@ public interface IotConstants {
                                       null,
                                       null );
         OrderDetail DETAIL_5050_1 = new OrderDetail( ORDER_5050.getId(), PRODUCT_301.getId(), 1, 5.5, 1 );
+        String DETAIL_5050_1_JSON =
+            "{\"orderId\" : 5050, \"productId\" : 301, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+
         OrderDetail DETAIL_5050_2 = new OrderDetail( ORDER_5050.getId(), PRODUCT_401.getId(), 2, 10.0, 2 );
+        String DETAIL_5050_2_JSON =
+            "{\"orderId\" : 5050, \"productId\" : 401, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+
         OrderDetail DETAIL_5050_3 = new OrderDetail( ORDER_5050.getId(), PRODUCT_501.getId(), 2, 20.5, 3 );
+        String DETAIL_5050_3_JSON =
+            "{\"orderId\" : 5050, \"productId\" : 501, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
 
         String ORDER_5050_JSON = "{\"id\" : 5050, "
             + "\"customerId\" : " + SLEDGE.getId() + ", "
@@ -469,7 +510,12 @@ public interface IotConstants {
                                       null,
                                       null );
         OrderDetail DETAIL_6060_1 = new OrderDetail( ORDER_6060.getId(), PRODUCT_100.getId(), 1, 5.5, 1 );
+        String DETAIL_6060_1_JSON =
+            "{\"orderId\" : 6060, \"productId\" : 100, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+
         OrderDetail DETAIL_6060_2 = new OrderDetail( ORDER_6060.getId(), PRODUCT_502.getId(), 2, 10.0, 2 );
+        String DETAIL_6060_2_JSON =
+            "{\"orderId\" : 6060, \"productId\" : 502, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
 
         String ORDER_6060_JSON = "{\"id\" : 6060, "
             + "\"customerId\" : " + SLEDGE.getId() + ", "
@@ -506,6 +552,28 @@ public interface IotConstants {
             DETAIL_6060_1,
             DETAIL_6060_2
         };
+
+        String ORDER_DETAILS_JSON = "{\"orderDetails\": [ "
+            + DETAIL_1010_1_JSON + ','
+            + DETAIL_1010_2_JSON + ','
+            + DETAIL_1010_3_JSON + ','
+            + DETAIL_2020_1_JSON + ','
+            + DETAIL_2020_2_JSON + ','
+            + DETAIL_2020_3_JSON + ','
+            + DETAIL_2020_4_JSON + ','
+            + DETAIL_2020_5_JSON + ','
+            + DETAIL_2020_6_JSON + ','
+            + DETAIL_3030_1_JSON + ','
+            + DETAIL_3030_2_JSON + ','
+            + DETAIL_4040_1_JSON + ','
+            + DETAIL_4040_2_JSON + ','
+            + DETAIL_4040_3_JSON + ','
+            + DETAIL_5050_1_JSON + ','
+            + DETAIL_5050_2_JSON + ','
+            + DETAIL_5050_3_JSON + ','
+            + DETAIL_6060_1_JSON + ','
+            + DETAIL_6060_2_JSON
+            + " ] }";
 
         Promotion PROMO_1 = new Promotion( 1, IotConstants.TestData.PRODUCT_100.getId(), 10.0 );
         String PROMO_1_JSON = "{\"id\" : 1, \"productId\" : \"100\", \"discount\" : \"10.0\"}";

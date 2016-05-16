@@ -30,4 +30,7 @@
     <string name="order_id">Order: %d</string>
     <string name="order_num_additional">+ %d more products</string>
     <string name="order_price">Total Price: %.2f</string>
+
+    <string name="settings_user">User: %s</string>
+    <string name="settings_user_not_logged_in">[no user logged in]</string>
 </resources>

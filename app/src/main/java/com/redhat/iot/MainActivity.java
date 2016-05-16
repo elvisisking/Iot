@@ -127,11 +127,7 @@ public class MainActivity extends AppCompatActivity
 
         // log user out
         if ( id == R.id.action_sign_out ) {
-            final SharedPreferences prefs = IotApp.getPrefs();
-            final SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt( IotConstants.CUSTOMER_ID, IotConstants.TestData.ELVIS.getId() );
-            editor.apply();
-
+            IotApp.setUserId( DataProvider.UNKNOWN_USER );
             return true;
         }
 
@@ -158,13 +154,10 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
 
         // make sure we have a user logged in at startup
-        final SharedPreferences prefs = IotApp.getPrefs();
-        final int custId = prefs.getInt( IotConstants.CUSTOMER_ID, DataProvider.UNKNOWN_USER );
+        final int userId = IotApp.getUserId();
 
-        if ( custId == DataProvider.UNKNOWN_USER ) {
-            final SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt( IotConstants.CUSTOMER_ID, IotConstants.TestData.ELVIS.getId() );
-            editor.apply();
+        if ( userId == DataProvider.UNKNOWN_USER ) {
+            IotApp.setUserId( IotConstants.TestData.ELVIS.getId() );
         }
 
         startNotificationThread();
@@ -212,18 +205,9 @@ public class MainActivity extends AppCompatActivity
             this.notifier = new Notifier( context );
         }
 
-        private String getMessage() {
-            // 1. find out department there in
-            // 2. find out if roaming or focused
-            // 3. if focused see if they ordered anything in that department in the past
-            // 4. if yes, get promotions for that department
-            // 5. Notify them of first promotion
-            return "notification message goes here";
-        }
-
         @Override
         public void handleMessage( final Message msg ) {
-            final String notification = getMessage();
+            final String notification = DataProvider.get().getNotification();
 
             if ( ( notification != null ) && !notification.isEmpty() ) {
                 Log.d( IotConstants.LOG__TAG, "Sending notification: " + notification );
