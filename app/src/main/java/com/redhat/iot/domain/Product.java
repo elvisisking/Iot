@@ -2,12 +2,15 @@ package com.redhat.iot.domain;
 
 import com.redhat.iot.IotApp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represents a product from the store.
  */
 public class Product {
 
-    public static final Product[] NO_PRODUCTs = new Product[ 0 ];
+    public static final Product[] NO_PRODUCTS = new Product[ 0 ];
 
     private final double buyPrice;
     private final long departmentId;
@@ -44,6 +47,26 @@ public class Product {
         this.size = size;
         this.name = name;
         this.vendor = vendor;
+    }
+
+    /**
+     * @param json a JSON representation of a product (cannot be empty)
+     * @throws JSONException if there is a problem parsing the JSON
+     */
+    public Product( final String json ) throws JSONException {
+        final JSONObject product = new JSONObject( json );
+
+        // required
+        this.id = product.getInt( "id" ); // must have an ID
+        this.departmentId = product.getInt( "departmentId" ); // must have a department ID
+
+        // optional
+        this.description = ( product.has( "description" ) ? product.getString( "description" ) : "" );
+        this.size = ( product.has( "size" ) ? product.getString( "size" ) : "" );
+        this.name = ( product.has( "name" ) ? product.getString( "name" ) : "" );
+        this.vendor = ( product.has( "vendor" ) ? product.getString( "vendor" ) : "" );
+        this.buyPrice = ( product.has( "buyPrice" ) ? product.getDouble( "buyPrice" ) : -1 );
+        this.msrp = ( product.has( "msrp" ) ? product.getDouble( "msrp" ) : -1 );
     }
 
     @Override

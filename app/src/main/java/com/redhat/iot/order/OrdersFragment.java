@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.redhat.iot.DataProvider;
 import com.redhat.iot.IotConstants;
 import com.redhat.iot.R;
 import com.redhat.iot.domain.Order;
@@ -37,7 +38,7 @@ public class OrdersFragment extends ListFragment
         final int customerId = settings.getInt( IotConstants.CUSTOMER_ID, -1 );
 
         // obtain customer orders and create adapter
-        final Order[] orders = OrderProvider.get().getOrders( customerId );
+        final Order[] orders = DataProvider.get().getOrders( customerId );
         this.adapter = new OrderAdapter( this.activity, orders );
         setListAdapter( this.adapter );
 

@@ -23,7 +23,7 @@ public class Notifier {
     }
 
     /**
-     * @param title the title of the notification (cannot be empty)
+     * @param title   the title of the notification (cannot be empty)
      * @param content the notification message (cannot be empty)
      */
     public void sendNotification( final String title,

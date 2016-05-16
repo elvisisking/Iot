@@ -9,13 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.redhat.iot.DataProvider;
 import com.redhat.iot.IotConstants;
 import com.redhat.iot.R;
-import com.redhat.iot.domain.Product;
 import com.redhat.iot.domain.Order;
-import com.redhat.iot.product.ProductProvider;
+import com.redhat.iot.domain.Product;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -70,16 +69,15 @@ public class OrderAdapter extends BaseAdapter {
             final TextView textView = ( TextView )orderView.findViewById( R.id.orderDate );
 
             // format date
-            final SimpleDateFormat fmt = new SimpleDateFormat( "MMM dd, yyyy" );
             final Calendar calendar = order.getOrderDate();
-            fmt.setCalendar( calendar );
-            final String formatted = fmt.format( calendar.getTime() );
+            IotConstants.DATE_FORMATTER.setCalendar( calendar );
+            final String formatted = IotConstants.DATE_FORMATTER.format( calendar.getTime() );
             textView.setText( formatted );
         }
 
         // find first product
         final int productId = order.getProducts()[ 0 ];
-        final Product firstProduct = ProductProvider.get().findProduct( productId );
+        final Product firstProduct = DataProvider.get().findProduct( productId );
 
         if ( firstProduct == null ) {
             Log.e( IotConstants.LOG__TAG,

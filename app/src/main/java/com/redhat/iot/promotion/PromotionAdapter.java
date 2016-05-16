@@ -9,11 +9,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.redhat.iot.DataProvider;
 import com.redhat.iot.IotConstants;
 import com.redhat.iot.R;
 import com.redhat.iot.domain.Product;
 import com.redhat.iot.domain.Promotion;
-import com.redhat.iot.product.ProductProvider;
 
 /**
  * An adapter for displaying collections of {@link Promotion}s.
@@ -58,7 +58,7 @@ public class PromotionAdapter extends BaseAdapter {
         }
 
         final Promotion promotion = this.promotions[ position ];
-        final Product product = ProductProvider.get().findProduct( promotion.getProductId() );
+        final Product product = DataProvider.get().findProduct( promotion.getProductId() );
 
         if ( product == null ) {
             Log.e( IotConstants.LOG__TAG,

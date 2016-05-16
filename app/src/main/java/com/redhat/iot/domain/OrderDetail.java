@@ -1,12 +1,15 @@
 package com.redhat.iot.domain;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represents a line item from the order.
  */
 public class OrderDetail {
 
     private final int orderId;
-    private final String productId;
+    private final int productId;
     private final int quantity;
     private final double priceEach;
     private final int orderLineNumber;
@@ -19,7 +22,7 @@ public class OrderDetail {
      * @param orderLineNumber the line number on the order where this product was purchased
      */
     public OrderDetail( final int orderId,
-                        final String productId,
+                        final int productId,
                         final int quantity,
                         final double priceEach,
                         final int orderLineNumber ) {
@@ -28,6 +31,23 @@ public class OrderDetail {
         this.quantity = quantity;
         this.priceEach = priceEach;
         this.orderLineNumber = orderLineNumber;
+    }
+
+    /**
+     * @param json a JSON representation of a order line item (cannot be empty)
+     * @throws JSONException if there is a problem parsing the JSON
+     */
+    public OrderDetail( final String json ) throws JSONException {
+        final JSONObject orderDetail = new JSONObject( json );
+
+        // required
+        this.orderId = orderDetail.getInt( "orderId" ); // must have an order ID
+        this.productId = orderDetail.getInt( "productId" ); // must have a product ID
+        this.priceEach = orderDetail.getDouble( "priceEach" ); // must have a item price
+
+        // optional
+        this.quantity = ( orderDetail.has( "quantity" ) ? orderDetail.getInt( "quantity" ) : 1 );
+        this.orderLineNumber = ( orderDetail.has( "orderLineNumber" ) ? orderDetail.getInt( "orderLineNumber" ) : -1 );
     }
 
     @Override
@@ -58,7 +78,7 @@ public class OrderDetail {
             return false;
         }
 
-        return ( this.productId != null ) ? productId.equals( that.productId ) : ( that.productId == null );
+        return ( this.productId == that.productId );
 
     }
 
@@ -84,9 +104,9 @@ public class OrderDetail {
     }
 
     /**
-     * @return the ID of the product ordered (never empty)
+     * @return the ID of the product ordered
      */
-    public String getProductId() {
+    public int getProductId() {
         return this.productId;
     }
 
@@ -102,7 +122,7 @@ public class OrderDetail {
         int result;
         long temp;
         result = this.orderId;
-        result = 31 * result + ( ( this.productId != null ) ? productId.hashCode() : 0 );
+        result = 31 * result + this.productId;
         result = 31 * result + this.quantity;
         temp = Double.doubleToLongBits( this.priceEach );
         result = 31 * result + ( int )( temp ^ ( temp >>> 32 ) );

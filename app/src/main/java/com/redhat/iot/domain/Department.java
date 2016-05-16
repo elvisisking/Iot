@@ -2,6 +2,9 @@ package com.redhat.iot.domain;
 
 import com.redhat.iot.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represents a store department.
  */
@@ -10,7 +13,7 @@ public class Department {
     /**
      * An empty collection of departments.
      */
-    public static final Department[] NO_DEPARTMENTS = new Department[0];
+    public static final Department[] NO_DEPARTMENTS = new Department[ 0 ];
 
     private final String description;
     private final long id;
@@ -27,6 +30,21 @@ public class Department {
         this.id = id;
         this.name = name;
         this.description = description;
+    }
+
+    /**
+     * @param json a JSON representation of a department (cannot be empty)
+     * @throws JSONException if there is a problem parsing the JSON
+     */
+    public Department( final String json ) throws JSONException {
+        final JSONObject dept = new JSONObject( json );
+
+        // required
+        this.id = dept.getLong( "id" ); // must have an ID
+        this.name = dept.getString( "name" ); // must have a name
+
+        // optional
+        this.description = ( dept.has( "description" ) ? dept.getString( "description" ) : "" );
     }
 
     /**

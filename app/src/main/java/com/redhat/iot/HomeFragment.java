@@ -13,7 +13,6 @@ import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.redhat.iot.domain.Department;
-import com.redhat.iot.product.DepartmentProvider;
 
 /**
  * The home screen.
@@ -38,7 +37,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         // create department buttons
         final Typeface cursive = Typeface.create( "cursive", Typeface.BOLD );
-        final Department[] departments = DepartmentProvider.get().getDepartments();
+        final Department[] departments = DataProvider.get().getDepartmentsFromJson();
         final TableLayout table = ( TableLayout )view.findViewById( R.id.homeDeptTable );
         TableRow row = null;
         int i = 0;

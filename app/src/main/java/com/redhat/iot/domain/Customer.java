@@ -1,5 +1,8 @@
 package com.redhat.iot.domain;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Represents a customer of the online store.
  */
@@ -49,28 +52,67 @@ public class Customer {
         this.creditLimit = creditLimit;
     }
 
+    /**
+     * @param json a JSON representation of a customer (cannot be empty)
+     * @throws JSONException if there is a problem parsing the JSON
+     */
+    public Customer( final String json ) throws JSONException {
+        final JSONObject cust = new JSONObject( json );
+
+        // required
+        this.id = cust.getInt( "id" ); // must have an ID
+        this.name = cust.getString( "name" ); // must have a name
+
+        // optional
+        this.addressLine1 = ( cust.has( "addressLine1" ) ? cust.getString( "addressLine1" ) : "" );
+        this.addressLine2 = ( cust.has( "addressLine2" ) ? cust.getString( "addressLine2" ) : "" );
+        this.city = ( cust.has( "city" ) ? cust.getString( "city" ) : "" );
+        this.country = ( cust.has( "country" ) ? cust.getString( "country" ) : "" );
+        this.creditLimit = ( cust.has( "creditLimit" ) ? cust.getInt( "creditLimit" ) : -1 );
+        this.email = ( cust.has( "email" ) ? cust.getString( "email" ) : "" );
+        this.phone = ( cust.has( "phone" ) ? cust.getString( "phone" ) : "" );
+        this.postalCode = ( cust.has( "postalCode" ) ? cust.getString( "postalCode" ) : "" );
+        this.pswd = ( cust.has( "pswd" ) ? cust.getString( "pswd" ) : "" );
+        this.state = ( cust.has( "state" ) ? cust.getString( "state" ) : "" );
+    }
+
+    /**
+     * @return the address line 1 (can be empty)
+     */
     public String getAddressLine1() {
         return this.addressLine1;
     }
 
+    /**
+     * @return the address line 2 (can be empty)
+     */
     public String getAddressLine2() {
         return this.addressLine2;
     }
 
+    /**
+     * @return the address city (can be empty)
+     */
     public String getCity() {
         return this.city;
     }
 
+    /**
+     * @return the address country (can be empty)
+     */
     public String getCountry() {
         return this.country;
     }
 
+    /**
+     * @return the credit limit or -1 if not set
+     */
     public int getCreditLimit() {
         return this.creditLimit;
     }
 
     /**
-     * @return the user email (never empty)
+     * @return the user email (can be empty)
      */
     public String getEmail() {
         return this.email;
@@ -84,7 +126,7 @@ public class Customer {
     }
 
     /**
-     * @return the customer name
+     * @return the customer name (never empty)
      */
     public String getName() {
         return this.name;
@@ -98,16 +140,22 @@ public class Customer {
     }
 
     /**
-     * @return the customer phone number
+     * @return the customer phone number (can be empty)
      */
     public String getPhone() {
         return this.phone;
     }
 
+    /**
+     * @return the address postal code (can be empty)
+     */
     public String getPostalCode() {
         return this.postalCode;
     }
 
+    /**
+     * @return the address state (can be empty)
+     */
     public String getState() {
         return this.state;
     }

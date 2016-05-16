@@ -1,8 +1,8 @@
-package com.redhat.iot.auth;
+package com.redhat.iot;
 
+import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -12,9 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.redhat.iot.IotApp;
-import com.redhat.iot.IotConstants;
-import com.redhat.iot.R;
 import com.redhat.iot.domain.Customer;
 
 /**
@@ -41,7 +38,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         final String email = this.txtEmail.getText().toString();
 
         // find customer
-        final Customer customer = CustomerProvider.get().getUser( email );
+        final Customer customer = DataProvider.get().getUser( email );
 
         if ( customer == null ) {
             Toast.makeText( getActivity(),

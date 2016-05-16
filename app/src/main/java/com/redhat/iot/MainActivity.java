@@ -7,21 +7,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.redhat.iot.auth.CustomerProvider;
-import com.redhat.iot.auth.LoginFragment;
-import com.redhat.iot.billing.BillingFragment;
-import com.redhat.iot.promotion.PromotionsFragment;
 import com.redhat.iot.order.OrdersFragment;
+import com.redhat.iot.promotion.PromotionsFragment;
 
 public class MainActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
@@ -162,9 +159,9 @@ public class MainActivity extends AppCompatActivity
 
         // make sure we have a user logged in at startup
         final SharedPreferences prefs = IotApp.getPrefs();
-        final int custId = prefs.getInt( IotConstants.CUSTOMER_ID, CustomerProvider.UNKNOWN_USER );
+        final int custId = prefs.getInt( IotConstants.CUSTOMER_ID, DataProvider.UNKNOWN_USER );
 
-        if ( custId == CustomerProvider.UNKNOWN_USER ) {
+        if ( custId == DataProvider.UNKNOWN_USER ) {
             final SharedPreferences.Editor editor = prefs.edit();
             editor.putInt( IotConstants.CUSTOMER_ID, IotConstants.TestData.ELVIS.getId() );
             editor.apply();
@@ -216,7 +213,12 @@ public class MainActivity extends AppCompatActivity
         }
 
         private String getMessage() {
-            return "blah blah blah";
+            // 1. find out department there in
+            // 2. find out if roaming or focused
+            // 3. if focused see if they ordered anything in that department in the past
+            // 4. if yes, get promotions for that department
+            // 5. Notify them of first promotion
+            return "notification message goes here";
         }
 
         @Override

@@ -2,7 +2,6 @@ package com.redhat.iot.promotion;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +13,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+import com.redhat.iot.DataProvider;
 import com.redhat.iot.R;
 import com.redhat.iot.domain.Department;
 import com.redhat.iot.domain.Promotion;
-import com.redhat.iot.product.DepartmentProvider;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,7 +45,7 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
 
         this.grid = ( GridView )view.findViewById( R.id.gridDeals );
 
-        final Promotion[] promotions = PromotionProvider.get().getPromotions();
+        final Promotion[] promotions = DataProvider.get().getPromotions();
         this.adapter = new PromotionAdapter( this.activity, promotions );
         grid.setAdapter( adapter );
         grid.setOnItemClickListener( new AdapterView.OnItemClickListener() {
@@ -61,7 +60,7 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
         } );
 
         // create department checkboxes
-        final Department[] departments = DepartmentProvider.get().getDepartments();
+        final Department[] departments = DataProvider.get().getDepartmentsFromJson();
         final TableLayout table = ( TableLayout )view.findViewById( R.id.promoDepartments );
         TableRow row = null;
         int i = 0;
@@ -107,8 +106,7 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
 
         this.adapter.notifyDataSetInvalidated();
         this.adapter = new PromotionAdapter( this.activity,
-                                             PromotionProvider.get()
-                                                 .getPromotions( selected.toArray( new Long[ selected.size() ] ) ) );
+                                             DataProvider.get().getPromotions( selected.toArray( new Long[ selected.size() ] ) ) );
         this.grid.setAdapter( this.adapter );
         this.adapter.notifyDataSetChanged();
     }
