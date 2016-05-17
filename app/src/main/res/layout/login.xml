@@ -32,7 +32,8 @@
             android:hint="@string/login_email_hint"
             android:inputType="textEmailAddress"
             android:padding="10dp"
-            android:textColorHint="#cccccc"/>
+            android:textColorHint="#cccccc"
+            android:visibility="invisible"/>
 
         <EditText
             android:id="@+id/loginPswd"
@@ -44,7 +45,8 @@
             android:hint="@string/login_pswd_hint"
             android:inputType="textPassword"
             android:padding="10dp"
-            android:textColorHint="#cccccc"/>
+            android:textColorHint="#cccccc"
+            android:visibility="invisible"/>
 
         <Button
             android:id="@+id/loginSignIn"
