@@ -1,7 +1,6 @@
 package com.redhat.iot;
 
-import android.content.Context;
-import android.content.res.AssetManager;
+import android.util.Base64;
 import android.util.Log;
 
 import com.redhat.iot.domain.Customer;
@@ -17,6 +16,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +54,45 @@ public class DataProvider {
         // nothing to do
     }
 
+    private String executeHttpGet( final String urlAsString,
+                                   final String user,
+                                   final String pswd ) throws Exception {
+        final URL url = new URL( urlAsString );
+        final String userCredentials = ( user + ':' + pswd );
+        final String encoding = new String( Base64.encode( userCredentials.getBytes(), Base64.DEFAULT ) ).replaceAll( "\\s+", "" );
+
+        final HttpURLConnection urlConnection = ( HttpURLConnection )url.openConnection();
+        urlConnection.setRequestProperty( "Authorization", "Basic " + encoding );
+        urlConnection.setRequestMethod( "GET" );
+        urlConnection.setDoOutput( true );
+
+        try {
+            final int code = urlConnection.getResponseCode();
+            InputStream is = null;
+
+            if ( code == HttpURLConnection.HTTP_OK ) {
+                Log.d( IotConstants.LOG_TAG, ("HTTP GET SUCCESS for URL: " + urlAsString) );
+                is = urlConnection.getInputStream();
+            } else {
+                Log.e( IotConstants.LOG_TAG, ("HTTP GET FAILED for URL: " + urlAsString) );
+                is = urlConnection.getErrorStream();
+            }
+
+            final BufferedReader reader = new BufferedReader( new InputStreamReader( is ) );
+            final StringBuilder builder = new StringBuilder();
+            String line;
+
+            while ( ( line = reader.readLine() ) != null ) {
+                builder.append( line ).append( "\n" );
+            }
+
+            reader.close();
+            return builder.toString();
+        } finally {
+            urlConnection.disconnect();
+        }
+    }
+
     /**
      * @param productId the ID of the product being requested
      * @return the product or <code>null</code> if not found
@@ -83,7 +123,6 @@ public class DataProvider {
 
     public Customer[] getCustomersFromJsonFile() {
         try {
-            final AssetManager am = IotApp.getContext().getAssets();
             final InputStream is = IotApp.getContext().getResources().openRawResource( R.raw.customer );
             final BufferedReader streamReader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
             final StringBuilder builder = new StringBuilder();
