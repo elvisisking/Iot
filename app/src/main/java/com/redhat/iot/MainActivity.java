@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void stopNotificationThread() {
-        if ( this.notifierTimer != null && this.notifierTimer.) {
+        if ( this.notifierTimer != null ) {
             Log.d( IotConstants.LOG_TAG, "stopping notification timer" );
             this.notifierTimer.cancel();
         }
