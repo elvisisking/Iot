@@ -16,9 +16,41 @@ import java.util.GregorianCalendar;
 public interface IotConstants {
 
     /**
-     * The name of the <code>int</code> preference that contains the customer ID.
+     * Constants related to preferences.
      */
-    String CUSTOMER_ID = "customer_id";
+    interface Prefs {
+
+        /**
+         * The name of the <code>int</code> preference that contains the customer ID.
+         */
+        String CUSTOMER_ID = "customer_id";
+
+        /**
+         * The default enable notifications preference value. Value is {@value}.
+         */
+        boolean DEFAULT_ENABLE_NOTIFICATIONS = true;
+
+        /**
+         * The default interval length in milliseconds preference value. Value is {@value}.
+         */
+        int DEFAULT_NOTIFICATION_INTERVAL = 60000;
+
+        /**
+         * The name of the <code>boolean</code> preference that indicates if notifications are enabled.
+         */
+        String ENABLE_NOTIFICATIONS = "enabled_notifications";
+
+        /**
+         * The name of the time interval in milliseconds the app checks to see if a notification is available to send to the user.
+         */
+        String NOTIFICATION_INTERVAL = "notification_interval";
+
+        /**
+         * The name of the preference store.
+         */
+        String PREFS_NAME = "IoTPrefs";
+
+    }
 
     /**
      * The date format used in the app.
@@ -36,24 +68,9 @@ public interface IotConstants {
     SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( DATE_FORMAT );
 
     /**
-     * The name of the <code>boolean</code> preference that indicates if notifications are enabled.
-     */
-    String ENABLE_NOTIFICATIONS = "enabled_notifications";
-
-    /**
      * Tag to use when logging messages.
      */
     String LOG_TAG = "IoT_App";
-
-    /**
-     * The time interval in which that app will check to see if a notification is available to send to the user.
-     */
-    int NOTIFICATION_INTERVAL = 60000;
-
-    /**
-     * The name of the preference store.
-     */
-    String PREFS_NAME = "IoTPrefs";
 
     interface TestData {
 
@@ -84,14 +101,14 @@ public interface IotConstants {
             + DEPT_6_JSON
             + " ]}";
 
-        Customer ELVIS = new Customer( 1, "elvis@iot.com", "elvis", null, null, null, null, null, null, null, null, 1000 );
-        String ELVIS_JSON = "{\"id\" : 1, \"email\" : \"elvis@iot.com\", \"name\" : \"elvis\", \"pswd\" : \"elvis\"}";
+        Customer ELVIS = new Customer( 10000, "elvis@iot.com", "elvis", null, null, null, null, null, null, null, null, 1000 );
+        String ELVIS_JSON = "{\"id\" : 10000, \"email\" : \"elvis@iot.com\", \"name\" : \"elvis\", \"pswd\" : \"elvis\"}";
 
-        Customer RINGO = new Customer( 2, "ringo@iot.com", "ringo", null, null, null, null, null, null, null, null, 1000 );
-        String RINGO_JSON = "{\"id\" : 2, \"email\" : \"ringo@iot.com\", \"name\" : \"ringo\", \"pswd\" : \"ringo\"}";
+        Customer RINGO = new Customer( 10001, "ringo@iot.com", "ringo", null, null, null, null, null, null, null, null, 1000 );
+        String RINGO_JSON = "{\"id\" : 10001, \"email\" : \"ringo@iot.com\", \"name\" : \"ringo\", \"pswd\" : \"ringo\"}";
 
-        Customer SLEDGE = new Customer( 3, "sledge@iot.com", "sledge", null, null, null, null, null, null, null, null, 1000 );
-        String SLEDGE_JSON = "{\"id\" : 3, \"email\" : \"sledge@iot.com\", \"name\" : \"sledge\", \"pswd\" : \"sledge\"}";
+        Customer SLEDGE = new Customer( 10002, "sledge@iot.com", "sledge", null, null, null, null, null, null, null, null, 1000 );
+        String SLEDGE_JSON = "{\"id\" : 10002, \"email\" : \"sledge@iot.com\", \"name\" : \"sledge\", \"pswd\" : \"sledge\"}";
 
         String CUSTOMERS_JSON = "{\"customers\": [ "
             + ELVIS_JSON + ','

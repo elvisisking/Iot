@@ -1,5 +1,6 @@
 package com.redhat.iot;
 
+import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
@@ -71,10 +72,10 @@ public class DataProvider {
             InputStream is = null;
 
             if ( code == HttpURLConnection.HTTP_OK ) {
-                Log.d( IotConstants.LOG_TAG, ("HTTP GET SUCCESS for URL: " + urlAsString) );
+                Log.d( IotConstants.LOG_TAG, ( "HTTP GET SUCCESS for URL: " + urlAsString ) );
                 is = urlConnection.getInputStream();
             } else {
-                Log.e( IotConstants.LOG_TAG, ("HTTP GET FAILED for URL: " + urlAsString) );
+                Log.e( IotConstants.LOG_TAG, ( "HTTP GET FAILED for URL: " + urlAsString ) );
                 is = urlConnection.getErrorStream();
             }
 
@@ -122,17 +123,30 @@ public class DataProvider {
     }
 
     public Customer[] getCustomersFromJsonFile() {
-        try {
-            final InputStream is = IotApp.getContext().getResources().openRawResource( R.raw.customer );
-            final BufferedReader streamReader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
-            final StringBuilder builder = new StringBuilder();
+        final boolean useRealData = false;
 
-            String inputStr;
-            while ( ( inputStr = streamReader.readLine() ) != null ) {
-                builder.append( inputStr );
+        try {
+            String jcustomers = null;
+
+            if ( !useRealData ) {
+                final InputStream is = IotApp.getContext().getResources().openRawResource( R.raw.customer );
+                final BufferedReader streamReader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
+                final StringBuilder builder = new StringBuilder();
+
+                String inputStr;
+                while ( ( inputStr = streamReader.readLine() ) != null ) {
+                    builder.append( inputStr );
+                }
+
+                jcustomers = builder.toString();
+            } else {
+                final String url = null; // TODO fill in Ted
+                final String user = null; // TODO fill in Ted
+                final String pswd = null; // TODO fill in Ted
+                jcustomers = new GetData( url, user, pswd ).execute().get();
             }
 
-            final JSONObject jobj = new JSONObject( builder.toString() );
+            final JSONObject jobj = new JSONObject( jcustomers );
             final JSONObject d = jobj.getJSONObject( "d" );
             final JSONArray jarray = d.getJSONArray( "results" );
             final Customer[] customers = new Customer[ jarray.length() ];
@@ -368,6 +382,33 @@ public class DataProvider {
         }
 
         return promotions.toArray( new Promotion[ promotions.size() ] );
+    }
+
+    private class GetData extends AsyncTask< Void, Void, String > {
+
+        private final String url;
+        private final String user;
+        private final String pswd;
+
+        public GetData( final String url,
+                        final String user,
+                        final String pswd ) {
+            this.url = url;
+            this.user = user;
+            this.pswd = pswd;
+        }
+
+        @Override
+        protected String doInBackground( final Void... params ) {
+            try {
+                return executeHttpGet( this.url, this.user, this.pswd );
+            } catch ( final Exception e ) {
+                Log.e( IotConstants.LOG_TAG,
+                       "Error in GetData AsyncTask. URL:  " + params[ 0 ] );
+                return null;
+            }
+        }
+
     }
 
 }

@@ -54,7 +54,7 @@ public class IotApp extends Application {
      * @return the app preferences (never <code>null</code>)
      */
     public static SharedPreferences getPrefs() {
-        return _context.getSharedPreferences( IotConstants.PREFS_NAME, 0 );
+        return _context.getSharedPreferences( IotConstants.Prefs.PREFS_NAME, 0 );
     }
 
     /**
@@ -62,7 +62,7 @@ public class IotApp extends Application {
      */
     public static int getUserId() {
         final SharedPreferences prefs = IotApp.getPrefs();
-        return prefs.getInt( IotConstants.CUSTOMER_ID, DataProvider.UNKNOWN_USER );
+        return prefs.getInt( IotConstants.Prefs.CUSTOMER_ID, DataProvider.UNKNOWN_USER );
     }
 
     /**
@@ -70,7 +70,7 @@ public class IotApp extends Application {
      */
     public static void setUserId(final int userId ) {
         final SharedPreferences.Editor editor = getPrefs().edit();
-        editor.putInt( IotConstants.CUSTOMER_ID, userId );
+        editor.putInt( IotConstants.Prefs.CUSTOMER_ID, userId );
         editor.apply();
     }
 
