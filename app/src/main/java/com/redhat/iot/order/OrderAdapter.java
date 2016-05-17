@@ -80,7 +80,7 @@ public class OrderAdapter extends BaseAdapter {
         final Product firstProduct = DataProvider.get().findProduct( productId );
 
         if ( firstProduct == null ) {
-            Log.e( IotConstants.LOG__TAG,
+            Log.e( IotConstants.LOG_TAG,
                    "Product " + productId + " was not found for order " + order.getId() );
         } else {
             {// item 1 image

@@ -6,10 +6,21 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_margin="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="50dp"
         android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/loginUserId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_top_bg"
+            android:digits="0123456789"
+            android:hint="@string/login_user_id_hint"
+            android:inputType="number"
+            android:padding="10dp"
+            android:textColorHint="#cccccc"/>
 
         <EditText
             android:id="@+id/loginEmail"
@@ -17,7 +28,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_top_bg"
             android:drawableLeft="@drawable/email"
+            android:enabled="false"
             android:hint="@string/login_email_hint"
+            android:inputType="textEmailAddress"
             android:padding="10dp"
             android:textColorHint="#cccccc"/>
 
@@ -27,6 +40,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/edittext_bottom_bg"
             android:drawableLeft="@drawable/password"
+            android:enabled="false"
             android:hint="@string/login_pswd_hint"
             android:inputType="textPassword"
             android:padding="10dp"
@@ -39,8 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:background="@drawable/button_default_bg"
-            android:padding="10dp"
             android:enabled="false"
+            android:padding="10dp"
             android:text="@string/login_sign_in"/>
     </LinearLayout>
 </FrameLayout>

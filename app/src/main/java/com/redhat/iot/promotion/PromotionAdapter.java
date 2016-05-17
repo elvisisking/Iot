@@ -61,7 +61,7 @@ public class PromotionAdapter extends BaseAdapter {
         final Product product = DataProvider.get().findProduct( promotion.getProductId() );
 
         if ( product == null ) {
-            Log.e( IotConstants.LOG__TAG,
+            Log.e( IotConstants.LOG_TAG,
                    "Product " + promotion.getProductId() + " was not found for promotion " + promotion.getId() );
             return dealView;
         }

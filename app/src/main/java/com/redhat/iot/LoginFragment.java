@@ -20,8 +20,7 @@ import com.redhat.iot.domain.Customer;
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private Button btnSignIn;
-    private TextView txtEmail;
-    private TextView txtPswd;
+    private TextView txtUserId;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -35,47 +34,27 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick( final View btn ) {
-        final String email = this.txtEmail.getText().toString();
+        final String idTxt = this.txtUserId.getText().toString();
+        final int userId = Integer.parseInt( idTxt );
 
         // find customer
-        final Customer customer = DataProvider.get().getCustomer( email );
+        final Customer customer = DataProvider.get().getCustomer( userId );
 
         if ( customer == null ) {
             Toast.makeText( getActivity(),
                             getActivity().getString( R.string.login_unknown_user ),
                             Toast.LENGTH_SHORT ).show();
         } else {
-            // check password
-            final String pswd = customer.getPswd();
-            final String text = this.txtPswd.getText().toString();
-            boolean success = false;
+            // save customer ID to prefs
+            final SharedPreferences prefs = IotApp.getPrefs();
+            final SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt( IotConstants.CUSTOMER_ID, userId );
+            editor.apply();
 
-            if ( ( pswd == null ) || pswd.isEmpty() ) {
-                if ( ( text == null ) || text.isEmpty() ) {
-                    success = true;
-                }
-            } else if ( pswd.equals( text ) ) {
-                success = true;
-            }
+            Toast.makeText( getActivity(),
+                            getActivity().getString( R.string.login_success ),
+                            Toast.LENGTH_SHORT ).show();
 
-            if ( success ) {
-                // save customer ID to prefs
-                final int userId = customer.getId();
-                final SharedPreferences prefs = IotApp.getPrefs();
-                final SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt( IotConstants.CUSTOMER_ID, userId );
-                editor.apply();
-
-                Toast.makeText( getActivity(),
-                                getActivity().getString( R.string.login_success ),
-                                Toast.LENGTH_SHORT ).show();
-
-            } else {
-                // incorrect password
-                Toast.makeText( getActivity(),
-                                getActivity().getString( R.string.login_failed ),
-                                Toast.LENGTH_SHORT ).show();
-            }
         }
     }
 
@@ -90,12 +69,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             this.btnSignIn.setOnClickListener( this );
         }
 
-        {//key listener for the email textfield
-            this.txtEmail = ( TextView )view.findViewById( R.id.loginEmail );
-            this.txtEmail.addTextChangedListener( new TextWatcher() {
+        {//key listener for the user ID textfield
+            this.txtUserId = ( TextView )view.findViewById( R.id.loginUserId );
+            this.txtUserId.addTextChangedListener( new TextWatcher() {
 
                 public void afterTextChanged( final Editable s ) {
-                    final boolean enable = ( LoginFragment.this.txtEmail.getText().length() != 0 );
+                    final boolean enable = ( LoginFragment.this.txtUserId.getText().length() != 0 );
                     enableSignIn( enable );
                 }
 
@@ -113,10 +92,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     // nothing to do
                 }
             } );
-        }
-
-        {// password textfield
-            this.txtPswd = ( TextView )view.findViewById( R.id.loginPswd );
         }
 
         return view;

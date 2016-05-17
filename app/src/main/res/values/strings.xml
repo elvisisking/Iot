@@ -7,7 +7,8 @@
     <string name="login_pswd_hint">Password</string>
     <string name="login_sign_in">Sign In</string>
     <string name="login_success">Successfully logged in</string>
-    <string name="login_unknown_user">The Email you entered is not for a registered customer</string>
+    <string name="login_unknown_user">The ID you entered does not match a registered customer</string>
+    <string name="login_user_id_hint">User ID</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

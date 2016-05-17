@@ -2,6 +2,7 @@ package com.redhat.iot;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,15 @@ import com.redhat.iot.domain.Department;
  * The home screen.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener {
+//
+//    private static final int[] COLORS = new int[]{
+//        Color.parseColor( "#E6EE7C" ),
+//        Color.parseColor( "#ADEE7C" ),
+//        Color.parseColor( "#E7A146" ),
+//        Color.parseColor( "#EE7CAD" ),
+//        Color.parseColor( "#7CE6EE" ),
+//        Color.parseColor( "#BD7CEE" ),
+//        Color.parseColor( "#7CADEE" ) };
 
     public HomeFragment() {
         // Required empty public constructor
@@ -59,6 +69,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                                                                 1.0f );
                 btn.setLayoutParams( params );
                 btn.setBackgroundResource( R.drawable.rounded_corner );
+//                btn.setBackgroundColor(COLORS[i]);
                 btn.setText( dept.getName() );
                 btn.setTextSize( 30 );
                 btn.setTypeface( cursive );

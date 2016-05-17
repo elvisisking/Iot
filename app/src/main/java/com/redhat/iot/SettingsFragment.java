@@ -29,7 +29,7 @@ public class SettingsFragment extends Fragment {
         final int userId = IotApp.getUserId();
 
         if ( userId != DataProvider.UNKNOWN_USER ) {
-            for ( final Customer user : DataProvider.get().getCustomersFromJson() ) {
+            for ( final Customer user : DataProvider.get().getCustomersFromJsonFile() ) {
                 if ( user.getId() == userId ) {
                     name = user.getName();
                     break;

@@ -26,6 +26,11 @@ public interface IotConstants {
     String DATE_FORMAT = "MMM dd, yyyy";
 
     /**
+     * The first customer ID in the actual demo data.
+     */
+    int FIRST_CUST_ID = 10000;
+
+    /**
      * The shared date formatter.
      */
     SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( DATE_FORMAT );
@@ -38,7 +43,7 @@ public interface IotConstants {
     /**
      * Tag to use when logging messages.
      */
-    String LOG__TAG = "IoT_App";
+    String LOG_TAG = "IoT_App";
 
     /**
      * The time interval in which that app will check to see if a notification is available to send to the user.

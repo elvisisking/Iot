@@ -3,7 +3,6 @@ package com.redhat.iot;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -136,28 +135,28 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        Log.d( IotConstants.LOG__TAG, "onPause" );
+        Log.d( IotConstants.LOG_TAG, "onPause" );
         stopNotificationThread();
         super.onPause();
     }
 
     @Override
     protected void onRestart() {
-        Log.d( IotConstants.LOG__TAG, "onRestart" );
+        Log.d( IotConstants.LOG_TAG, "onRestart" );
         super.onRestart();
         startNotificationThread();
     }
 
     @Override
     protected void onStart() {
-        Log.d( IotConstants.LOG__TAG, "onStart" );
+        Log.d( IotConstants.LOG_TAG, "onStart" );
         super.onStart();
 
         // make sure we have a user logged in at startup
         final int userId = IotApp.getUserId();
 
         if ( userId == DataProvider.UNKNOWN_USER ) {
-            IotApp.setUserId( IotConstants.TestData.ELVIS.getId() );
+            IotApp.setUserId( IotConstants.FIRST_CUST_ID );
         }
 
         startNotificationThread();
@@ -165,13 +164,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
-        Log.d( IotConstants.LOG__TAG, "onStop" );
+        Log.d( IotConstants.LOG_TAG, "onStop" );
         stopNotificationThread();
         super.onStop();
     }
 
     private void startNotificationThread() {
-        Log.d( IotConstants.LOG__TAG, "starting notification thread" );
+        Log.d( IotConstants.LOG_TAG, "starting notification thread" );
         stopNotificationThread();
         this.notifierThread = new NotificationThread( this );
         this.notifierThread.start();
@@ -179,13 +178,13 @@ public class MainActivity extends AppCompatActivity
 
     private void stopNotificationThread() {
         if ( this.notifierThread != null ) {
-            Log.d( IotConstants.LOG__TAG, "stopping notification thread" );
+            Log.d( IotConstants.LOG_TAG, "stopping notification thread" );
             this.notifierThread.quit();
 
             try {
                 this.notifierThread.join();
             } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG__TAG, "Error stopping notification thread: " + e.getLocalizedMessage() );
+                Log.e( IotConstants.LOG_TAG, "Error stopping notification thread: " + e.getLocalizedMessage() );
             }
 
             this.notifierThread = null;
@@ -210,7 +209,7 @@ public class MainActivity extends AppCompatActivity
             final String notification = DataProvider.get().getNotification();
 
             if ( ( notification != null ) && !notification.isEmpty() ) {
-                Log.d( IotConstants.LOG__TAG, "Sending notification: " + notification );
+                Log.d( IotConstants.LOG_TAG, "Sending notification: " + notification );
                 sendNotification( notification );
             }
         }
@@ -245,7 +244,7 @@ public class MainActivity extends AppCompatActivity
                         wait( IotConstants.NOTIFICATION_INTERVAL );
                         this.handler.sendEmptyMessage( 0 );
                     } catch ( final Exception e ) {
-                        Log.e( IotConstants.LOG__TAG, e.getLocalizedMessage() );
+                        Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
                     }
                 }
             }

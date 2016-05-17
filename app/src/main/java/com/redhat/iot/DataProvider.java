@@ -1,5 +1,7 @@
 package com.redhat.iot;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.redhat.iot.domain.Customer;
@@ -12,6 +14,9 @@ import com.redhat.iot.domain.Promotion;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,17 +68,49 @@ public class DataProvider {
     }
 
     /**
-     * @param email the email of the user being requested (cannot be empty)
+     * @param userId the ID of the user being requested
      * @return the user or <code>null</code> if not found
      */
-    public Customer getCustomer( final String email ) {
-        for ( final Customer customer : getCustomersFromJson() ) {
-            if ( customer.getEmail().equals( email ) ) {
+    public Customer getCustomer( final int userId ) {
+        for ( final Customer customer : getCustomersFromJsonFile() ) {
+            if ( customer.getId() == userId ) {
                 return customer;
             }
         }
 
         return null;
+    }
+
+    public Customer[] getCustomersFromJsonFile() {
+        try {
+            final AssetManager am = IotApp.getContext().getAssets();
+            final InputStream is = IotApp.getContext().getResources().openRawResource( R.raw.customer );
+            final BufferedReader streamReader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
+            final StringBuilder builder = new StringBuilder();
+
+            String inputStr;
+            while ( ( inputStr = streamReader.readLine() ) != null ) {
+                builder.append( inputStr );
+            }
+
+            final JSONObject jobj = new JSONObject( builder.toString() );
+            final JSONObject d = jobj.getJSONObject( "d" );
+            final JSONArray jarray = d.getJSONArray( "results" );
+            final Customer[] customers = new Customer[ jarray.length() ];
+
+            for ( int i = 0;
+                  i < jarray.length();
+                  ++i ) {
+                final JSONObject jcust = jarray.getJSONObject( i );
+                final Customer cust = new Customer( jcust.toString() );
+                customers[ i ] = cust;
+            }
+
+            return customers;
+        } catch ( final Exception e ) {
+            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+            return Customer.NO_CUSTOMERs;
+        }
     }
 
     public Customer[] getCustomersFromJson() {
@@ -94,7 +131,7 @@ public class DataProvider {
 
             return customers;
         } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG__TAG, e.getLocalizedMessage() );
+            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
             return Customer.NO_CUSTOMERs;
         }
     }
@@ -120,7 +157,7 @@ public class DataProvider {
 
             return departments;
         } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG__TAG, e.getLocalizedMessage() );
+            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
             return Department.NO_DEPARTMENTS;
         }
     }
@@ -185,7 +222,7 @@ public class DataProvider {
 
             return orders;
         } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG__TAG, e.getLocalizedMessage() );
+            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
             return Order.NO_ORDERS;
         }
     }
@@ -233,7 +270,7 @@ public class DataProvider {
 
             return products;
         } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG__TAG, e.getLocalizedMessage() );
+            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
             return Product.NO_PRODUCTS;
         }
     }
@@ -259,7 +296,7 @@ public class DataProvider {
 
             return promotions;
         } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG__TAG, e.getLocalizedMessage() );
+            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
             return Promotion.NO_PROMOTIONS;
         }
     }
@@ -281,7 +318,7 @@ public class DataProvider {
             final Product product = DataProvider.get().findProduct( productId );
 
             if ( product == null ) {
-                Log.e( IotConstants.LOG__TAG,
+                Log.e( IotConstants.LOG_TAG,
                        "Product " + productId + " was not found for promotion " + promotion.getId() );
                 continue;
             }
