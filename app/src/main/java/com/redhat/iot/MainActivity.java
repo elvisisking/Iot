@@ -3,6 +3,7 @@ package com.redhat.iot;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,10 +20,24 @@ import android.view.MenuItem;
 import com.redhat.iot.order.OrdersFragment;
 import com.redhat.iot.promotion.PromotionsFragment;
 
-public class MainActivity extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.Timer;
+import java.util.TimerTask;
 
-    private NotificationThread notifierThread;
+public class MainActivity extends AppCompatActivity
+    implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private Timer notifierTimer;
+
+    @Override
+    public void onBackPressed() {
+        final DrawerLayout drawer = ( DrawerLayout )findViewById( R.id.drawer_layout );
+
+        if ( drawer.isDrawerOpen( GravityCompat.START ) ) {
+            drawer.closeDrawer( GravityCompat.START );
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onCreate( final Bundle savedInstanceState ) {
@@ -47,17 +62,9 @@ public class MainActivity extends AppCompatActivity
             .replace( R.id.content_frame, new HomeFragment() )
             .commit();
         navigationView.setCheckedItem( R.id.nav_home );
-    }
 
-    @Override
-    public void onBackPressed() {
-        final DrawerLayout drawer = ( DrawerLayout )findViewById( R.id.drawer_layout );
-
-        if ( drawer.isDrawerOpen( GravityCompat.START ) ) {
-            drawer.closeDrawer( GravityCompat.START );
-        } else {
-            super.onBackPressed();
-        }
+        // register to receive preference changes
+        IotApp.getPrefs().registerOnSharedPreferenceChangeListener( this );
     }
 
     @Override
@@ -148,6 +155,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onSharedPreferenceChanged( final SharedPreferences sharedPreferences,
+                                           final String key ) {
+        if ( IotConstants.Prefs.ENABLE_NOTIFICATIONS.equals( key ) ) {
+            Log.d( IotConstants.LOG_TAG, ( "Enable notifications preference changed" ) );
+            final boolean enable = IotApp.getPrefs().getBoolean( IotConstants.Prefs.ENABLE_NOTIFICATIONS,
+                                                                 IotConstants.Prefs.DEFAULT_ENABLE_NOTIFICATIONS );
+
+            if ( enable ) {
+                startNotificationThread();
+            } else {
+                stopNotificationThread();
+            }
+        } else if ( IotConstants.Prefs.NOTIFICATION_INTERVAL.equals( key ) ) {
+            Log.d( IotConstants.LOG_TAG, ( "Notifications interval preference changed" ) );
+            final int ms = IotApp.getPrefs().getInt( IotConstants.Prefs.NOTIFICATION_INTERVAL,
+                                                     IotConstants.Prefs.DEFAULT_NOTIFICATION_INTERVAL );
+            stopNotificationThread();
+            startNotificationThread();
+        }
+    }
+
+    @Override
     protected void onStart() {
         Log.d( IotConstants.LOG_TAG, "onStart" );
         super.onStart();
@@ -170,24 +199,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startNotificationThread() {
-        Log.d( IotConstants.LOG_TAG, "starting notification thread" );
         stopNotificationThread();
-        this.notifierThread = new NotificationThread( this );
-        this.notifierThread.start();
+        Log.d( IotConstants.LOG_TAG, "starting notification timer" );
+        final int interval = IotApp.getPrefs().getInt( IotConstants.Prefs.NOTIFICATION_INTERVAL,
+                                                       IotConstants.Prefs.DEFAULT_NOTIFICATION_INTERVAL );
+        this.notifierTimer = new Timer( true );
+        this.notifierTimer.schedule( new NotificationTask( IotApp.getContext() ), 0, interval );
     }
 
     private void stopNotificationThread() {
-        if ( this.notifierThread != null ) {
-            Log.d( IotConstants.LOG_TAG, "stopping notification thread" );
-            this.notifierThread.quit();
-
-            try {
-                this.notifierThread.join();
-            } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG_TAG, "Error stopping notification thread: " + e.getLocalizedMessage() );
-            }
-
-            this.notifierThread = null;
+        if ( this.notifierTimer != null && this.notifierTimer.) {
+            Log.d( IotConstants.LOG_TAG, "stopping notification timer" );
+            this.notifierTimer.cancel();
         }
     }
 
@@ -221,33 +244,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * A thread to check for notifications.
+     * A task to check for notifications.
      */
-    class NotificationThread extends Thread {
+    class NotificationTask extends TimerTask {
 
         private final NotificationHandler handler;
-        private volatile boolean running = true;
 
-        public NotificationThread( final Context context ) {
+        public NotificationTask( final Context context ) {
             this.handler = new NotificationHandler( context );
-        }
-
-        void quit() {
-            this.running = false;
         }
 
         @Override
         public void run() {
-            while ( this.running ) {
-                synchronized ( this ) {
-                    try {
-                        wait( IotConstants.NOTIFICATION_INTERVAL );
-                        this.handler.sendEmptyMessage( 0 );
-                    } catch ( final Exception e ) {
-                        Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
-                    }
-                }
-            }
+            this.handler.sendEmptyMessage( 0 );
         }
 
     }

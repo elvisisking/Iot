@@ -34,8 +34,8 @@ public class OrdersFragment extends ListFragment
         super.onActivityCreated( savedInstanceState );
 
         // look up customer ID
-        final SharedPreferences settings = this.activity.getSharedPreferences( IotConstants.PREFS_NAME, 0 );
-        final int customerId = settings.getInt( IotConstants.CUSTOMER_ID, -1 );
+        final SharedPreferences settings = this.activity.getSharedPreferences( IotConstants.Prefs.PREFS_NAME, 0 );
+        final int customerId = settings.getInt( IotConstants.Prefs.CUSTOMER_ID, -1 );
 
         // obtain customer orders and create adapter
         final Order[] orders = DataProvider.get().getOrders( customerId );

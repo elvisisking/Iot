@@ -48,7 +48,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             // save customer ID to prefs
             final SharedPreferences prefs = IotApp.getPrefs();
             final SharedPreferences.Editor editor = prefs.edit();
-            editor.putInt( IotConstants.CUSTOMER_ID, userId );
+            editor.putInt( IotConstants.Prefs.CUSTOMER_ID, userId );
             editor.apply();
 
             Toast.makeText( getActivity(),
