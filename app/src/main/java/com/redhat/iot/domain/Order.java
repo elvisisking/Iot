@@ -55,8 +55,8 @@ public class Order {
         final JSONObject order = new JSONObject( json );
 
         // required
-        this.id = order.getInt( "id" ); // must have an ID
-        this.customerId = order.getInt( "customerId" ); // must have a customer ID
+        this.id = order.getInt( "orderNumber" ); // must have an ID
+        this.customerId = order.getInt( "customerNumber" ); // must have a customer ID
 
         // optional
         this.comments = ( order.has( "comments" ) ? order.getString( "comments" ) : "" );

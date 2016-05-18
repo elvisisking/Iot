@@ -46,12 +46,12 @@ public class OrderDetail {
         final JSONObject orderDetail = new JSONObject( json );
 
         // required
-        this.orderId = orderDetail.getInt( "orderId" ); // must have an order ID
-        this.productId = orderDetail.getInt( "productId" ); // must have a product ID
+        this.orderId = orderDetail.getInt( "orderNumber" ); // must have an order ID
+        this.productId = orderDetail.getInt( "productCode" ); // must have a product ID
         this.priceEach = orderDetail.getDouble( "priceEach" ); // must have a item price
 
         // optional
-        this.quantity = ( orderDetail.has( "quantity" ) ? orderDetail.getInt( "quantity" ) : 1 );
+        this.quantity = ( orderDetail.has( "quantityOrdered" ) ? orderDetail.getInt( "quantityOrdered" ) : 1 );
         this.orderLineNumber = ( orderDetail.has( "orderLineNumber" ) ? orderDetail.getInt( "orderLineNumber" ) : -1 );
     }
 

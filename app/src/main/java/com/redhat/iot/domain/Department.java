@@ -40,11 +40,13 @@ public class Department {
         final JSONObject dept = new JSONObject( json );
 
         // required
-        this.id = dept.getLong( "id" ); // must have an ID
-        this.name = dept.getString( "name" ); // must have a name
+        this.id = dept.getLong( "departmentCode" ); // must have an ID
+        this.name = dept.getString( "departmentName" ); // must have a name
 
         // optional
-        this.description = ( dept.has( "description" ) ? dept.getString( "description" ) : "" );
+        this.description = ( dept.has( "departmentDescription" ) ? dept.getString( "departmentDescription" ) : "" );
+
+        // TODO need dimension
     }
 
     /**

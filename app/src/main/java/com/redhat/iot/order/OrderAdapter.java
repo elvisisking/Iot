@@ -51,7 +51,7 @@ public class OrderAdapter extends BaseAdapter {
                          final View convertView,
                          final ViewGroup parent ) {
         final Order order = this.orders[ position ];
-        ViewHolder holder = null;
+        ViewHolder holder;
         View orderView;
 
         if ( convertView == null ) {

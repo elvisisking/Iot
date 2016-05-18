@@ -31,7 +31,7 @@ public class Promotion {
 
         // required
         this.id = cust.getInt( "id" ); // must have an ID
-        this.productId = cust.getInt( "productId" ); // must have a product ID
+        this.productId = cust.getInt( "productCode" ); // must have a product ID
         this.discount = cust.getDouble( "discount" ); // must have a discount
     }
 

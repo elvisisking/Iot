@@ -182,7 +182,8 @@ public class DataProvider {
             }
 
             final JSONObject jobj = new JSONObject( json );
-            final JSONArray jarray = jobj.getJSONArray( "departments" );
+            final JSONObject d = jobj.getJSONObject( "d" );
+            final JSONArray jarray = d.getJSONArray( "results" );
             final Department[] departments = new Department[ jarray.length() ];
 
             for ( int i = 0;
@@ -231,7 +232,8 @@ public class DataProvider {
             }
 
             final JSONObject jobj = new JSONObject( json );
-            final JSONArray jarray = jobj.getJSONArray( "orderDetails" );
+            final JSONObject d = jobj.getJSONObject( "d" );
+            final JSONArray jarray = d.getJSONArray( "results" );
             final List< OrderDetail > details = new ArrayList<>();
 
             for ( int i = 0;
@@ -263,7 +265,8 @@ public class DataProvider {
             }
 
             final JSONObject jobj = new JSONObject( json );
-            final JSONArray jarray = jobj.getJSONArray( "orders" );
+            final JSONObject d = jobj.getJSONObject( "d" );
+            final JSONArray jarray = d.getJSONArray( "results" );
             final Order[] orders = new Order[ jarray.length() ];
 
             for ( int i = 0;
@@ -327,7 +330,8 @@ public class DataProvider {
             }
 
             final JSONObject jobj = new JSONObject( json );
-            final JSONArray jarray = jobj.getJSONArray( "products" );
+            final JSONObject d = jobj.getJSONObject( "d" );
+            final JSONArray jarray = d.getJSONArray( "results" );
             final Product[] products = new Product[ jarray.length() ];
 
             for ( int i = 0;
@@ -359,7 +363,8 @@ public class DataProvider {
             }
 
             final JSONObject jobj = new JSONObject( json );
-            final JSONArray jarray = jobj.getJSONArray( "promotions" );
+            final JSONObject d = jobj.getJSONObject( "d" );
+            final JSONArray jarray = d.getJSONArray( "results" );
             final Promotion[] promotions = new Promotion[ jarray.length() ];
 
             for ( int i = 0;

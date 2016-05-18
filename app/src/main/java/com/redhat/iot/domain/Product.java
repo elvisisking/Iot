@@ -57,16 +57,18 @@ public class Product {
         final JSONObject product = new JSONObject( json );
 
         // required
-        this.id = product.getInt( "id" ); // must have an ID
-        this.departmentId = product.getInt( "departmentId" ); // must have a department ID
+        this.id = product.getInt( "productCode" ); // must have an ID
+        this.departmentId = product.getInt( "departmentCode" ); // must have a department ID
 
         // optional
-        this.description = ( product.has( "description" ) ? product.getString( "description" ) : "" );
-        this.size = ( product.has( "size" ) ? product.getString( "size" ) : "" );
-        this.name = ( product.has( "name" ) ? product.getString( "name" ) : "" );
-        this.vendor = ( product.has( "vendor" ) ? product.getString( "vendor" ) : "" );
+        this.description = ( product.has( "productDescription" ) ? product.getString( "productDescription" ) : "" );
+        this.size = ( product.has( "productSize" ) ? product.getString( "productSize" ) : "" );
+        this.name = ( product.has( "productName" ) ? product.getString( "productName" ) : "" );
+        this.vendor = ( product.has( "productVendor" ) ? product.getString( "productVendor" ) : "" );
         this.buyPrice = ( product.has( "buyPrice" ) ? product.getDouble( "buyPrice" ) : -1 );
-        this.msrp = ( product.has( "msrp" ) ? product.getDouble( "msrp" ) : -1 );
+        this.msrp = ( product.has( "MSRP" ) ? product.getDouble( "MSRP" ) : -1 );
+
+        // TODO need quantityInStock
     }
 
     @Override

@@ -48,13 +48,24 @@ public class PromotionAdapter extends BaseAdapter {
     public View getView( final int position,
                          final View convertView,
                          final ViewGroup parent ) {
+
         View dealView;
+        ViewHolder holder;
 
         if ( convertView == null ) {
             final LayoutInflater inflater = ( LayoutInflater )this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
             dealView = inflater.inflate( R.layout.promotion, null );
+
+            holder = new ViewHolder();
+            holder.ivItem = ( ImageView )dealView.findViewById( R.id.dealImage );
+            holder.tvSalePrice = ( TextView )dealView.findViewById( R.id.dealSalePrice );
+            holder.tvOriginalPrice = ( TextView )dealView.findViewById( R.id.dealOriginalPrice );
+            holder.tvDescription = ( TextView )dealView.findViewById( R.id.dealDescription );
+
+            dealView.setTag( holder );
         } else {
             dealView = convertView;
+            holder = ( ViewHolder )dealView.getTag();
         }
 
         final Promotion promotion = this.promotions[ position ];
@@ -66,29 +77,30 @@ public class PromotionAdapter extends BaseAdapter {
             return dealView;
         }
 
-        {// promotion image
-            final ImageView imageView = ( ImageView )dealView.findViewById( R.id.dealImage );
-            imageView.setImageResource( product.getImageId() );
-        }
+        // set promotion image
+        holder.ivItem.setImageResource( product.getImageId() );
 
-        {// promotion sale price
-            final TextView textView = ( TextView )dealView.findViewById( R.id.dealSalePrice );
-            final double discount = ( product.getMsrp() * ( promotion.getDiscount() / 100 ) );
-            final double salePrice = ( product.getMsrp() - discount );
-            textView.setText( this.context.getString( R.string.deal_sale_price, salePrice ) );
-        }
+        // set promotion sale price
+        final double discount = ( product.getMsrp() * ( promotion.getDiscount() / 100 ) );
+        final double salePrice = ( product.getMsrp() - discount );
+        holder.tvSalePrice.setText( this.context.getString( R.string.deal_sale_price, salePrice ) );
 
-        {// promotion original price
-            final TextView textView = ( TextView )dealView.findViewById( R.id.dealOriginalPrice );
-            textView.setText( this.context.getString( R.string.deal_original_price, product.getMsrp() ) );
-        }
+        // set promotion original price
+        holder.tvSalePrice.setText( this.context.getString( R.string.deal_original_price, product.getMsrp() ) );
 
-        {// promotion description
-            final TextView textView = ( TextView )dealView.findViewById( R.id.dealDescription );
-            textView.setText( product.getDescription() );
-        }
+        // set promotion description
+        holder.tvDescription.setText( product.getDescription() );
 
         return dealView;
+    }
+
+    static class ViewHolder {
+
+        ImageView ivItem;
+        TextView tvSalePrice;
+        TextView tvOriginalPrice;
+        TextView tvDescription;
+
     }
 
 }
