@@ -8,6 +8,11 @@ import org.json.JSONObject;
  */
 public class OrderDetail {
 
+    /**
+     * An empty collection of {@link OrderDetail}s.
+     */
+    public static final OrderDetail[] NO_DETAILS = new OrderDetail[ 0 ];
+
     private final int orderId;
     private final int productId;
     private final int quantity;

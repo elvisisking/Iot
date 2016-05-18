@@ -51,29 +51,35 @@ public class OrderAdapter extends BaseAdapter {
                          final View convertView,
                          final ViewGroup parent ) {
         final Order order = this.orders[ position ];
+        ViewHolder holder = null;
         View orderView;
 
         if ( convertView == null ) {
             final LayoutInflater inflater = ( LayoutInflater )this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
             orderView = inflater.inflate( R.layout.order, null );
+
+            holder = new ViewHolder();
+            holder.tvId = ( TextView )orderView.findViewById( R.id.orderId );
+            holder.tvDate = ( TextView )orderView.findViewById( R.id.orderDate );
+            holder.ivOrder = ( ImageView )orderView.findViewById( R.id.orderImage );
+            holder.tvDescription = ( TextView )orderView.findViewById( R.id.orderFirstItem );
+            holder.tvNumItems = ( TextView )orderView.findViewById( R.id.orderNumItems );
+            holder.tvPrice = ( TextView )orderView.findViewById( R.id.orderPrice );
+
+            orderView.setTag( holder );
         } else {
             orderView = convertView;
+            holder = ( ViewHolder )orderView.getTag();
         }
 
-        {// order ID
-            final TextView textView = ( TextView )orderView.findViewById( R.id.orderId );
-            textView.setText( this.context.getString( R.string.order_id, order.getId() ) );
-        }
+        // set order ID
+        holder.tvId.setText( this.context.getString( R.string.order_id, order.getId() ) );
 
-        {// order date
-            final TextView textView = ( TextView )orderView.findViewById( R.id.orderDate );
-
-            // format date
-            final Calendar calendar = order.getOrderDate();
-            IotConstants.DATE_FORMATTER.setCalendar( calendar );
-            final String formatted = IotConstants.DATE_FORMATTER.format( calendar.getTime() );
-            textView.setText( formatted );
-        }
+        // set order date
+        final Calendar calendar = order.getOrderDate();
+        IotConstants.DATE_FORMATTER.setCalendar( calendar );
+        final String formatted = IotConstants.DATE_FORMATTER.format( calendar.getTime() );
+        holder.tvDate.setText( formatted );
 
         // find first product
         final int productId = order.getProducts()[ 0 ];
@@ -83,33 +89,36 @@ public class OrderAdapter extends BaseAdapter {
             Log.e( IotConstants.LOG_TAG,
                    "Product " + productId + " was not found for order " + order.getId() );
         } else {
-            {// item 1 image
-                final ImageView imageView = ( ImageView )orderView.findViewById( R.id.orderImage );
-                imageView.setImageResource( firstProduct.getImageId() );
-            }
+            // set order image based on first item
+            holder.ivOrder.setImageResource( firstProduct.getImageId() );
 
-            {// item 1 description
-                final TextView textView = ( TextView )orderView.findViewById( R.id.orderFirstItem );
-                textView.setText( firstProduct.getDescription() );
-            }
+            // set order description based on first item
+            holder.tvDescription.setText( firstProduct.getDescription() );
         }
 
-        {// additional items
-            final TextView textView = ( TextView )orderView.findViewById( R.id.orderNumItems );
-
-            if ( order.getProducts().length > 1 ) {
-                textView.setText( this.context.getString( R.string.order_num_additional, ( order.getProducts().length - 1 ) ) );
-            } else {
-                textView.setText( "" );
-            }
+        // set number of items in order
+        if ( order.getProducts().length > 1 ) {
+            holder.tvNumItems.setText( this.context.getString( R.string.order_num_additional,
+                                                               ( order.getProducts().length - 1 ) ) );
+        } else {
+            holder.tvNumItems.setText( "" );
         }
 
-        {// order price
-            final TextView textView = ( TextView )orderView.findViewById( R.id.orderPrice );
-            textView.setText( this.context.getString( R.string.order_price, order.getPrice() ) );
-        }
+        // set order price
+        holder.tvPrice.setText( this.context.getString( R.string.order_price, order.getPrice() ) );
 
         return orderView;
+    }
+
+    static class ViewHolder {
+
+        TextView tvId;
+        TextView tvDate;
+        ImageView ivOrder;
+        TextView tvDescription;
+        TextView tvNumItems;
+        TextView tvPrice;
+
     }
 
 }

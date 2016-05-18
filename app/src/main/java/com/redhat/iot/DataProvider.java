@@ -28,7 +28,14 @@ import java.util.List;
  */
 public class DataProvider {
 
-    private static final String CUSTOMER_URL = "http://localhost:8080/odata/customer_iot";
+    private static final boolean USE_REAL_DATA = true;
+
+    private static final String CUSTOMERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Customer?$format=json";
+    private static final String DEPARTMENTS_URL = "http://10.0.2.2:8081/odata/customer_iot/FUSE.Department?$format=json";
+    private static final String ORDER_DETAILS_URL = "http://10.0.2.2:8081/odata/customer_iot/OrderDetail?$format=json";
+    private static final String ORDERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Order?$format=json";
+    private static final String PRODUCTS_URL = "http://10.0.2.2:8081/odata/customer_iot/Product?$format=json";
+    private static final String PROMOTIONS_URL = "http://10.0.2.2:8081/odata/customer_iot/Promotion?$format=json";
 
     /**
      * The ID of an unknown user.
@@ -65,11 +72,11 @@ public class DataProvider {
         final HttpURLConnection urlConnection = ( HttpURLConnection )url.openConnection();
         urlConnection.setRequestProperty( "Authorization", "Basic " + encoding );
         urlConnection.setRequestMethod( "GET" );
-        urlConnection.setDoOutput( true );
+        urlConnection.setRequestProperty( "ACCEPT-LANGUAGE", "en-US,en;0.5" );
 
         try {
             final int code = urlConnection.getResponseCode();
-            InputStream is = null;
+            InputStream is;
 
             if ( code == HttpURLConnection.HTTP_OK ) {
                 Log.d( IotConstants.LOG_TAG, ( "HTTP GET SUCCESS for URL: " + urlAsString ) );
@@ -113,7 +120,7 @@ public class DataProvider {
      * @return the user or <code>null</code> if not found
      */
     public Customer getCustomer( final int userId ) {
-        for ( final Customer customer : getCustomersFromJsonFile() ) {
+        for ( final Customer customer : getCustomersFromJson() ) {
             if ( customer.getId() == userId ) {
                 return customer;
             }
@@ -122,56 +129,28 @@ public class DataProvider {
         return null;
     }
 
-    public Customer[] getCustomersFromJsonFile() {
-        final boolean useRealData = false;
-
+    public Customer[] getCustomersFromJson() {
         try {
-            String jcustomers = null;
+            String json;
 
-            if ( !useRealData ) {
+            if ( USE_REAL_DATA ) {
+                json = new GetData( CUSTOMERS_URL ).execute().get();
+            } else {
                 final InputStream is = IotApp.getContext().getResources().openRawResource( R.raw.customer );
                 final BufferedReader streamReader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
                 final StringBuilder builder = new StringBuilder();
-
                 String inputStr;
+
                 while ( ( inputStr = streamReader.readLine() ) != null ) {
                     builder.append( inputStr );
                 }
 
-                jcustomers = builder.toString();
-            } else {
-                final String url = null; // TODO fill in Ted
-                final String user = null; // TODO fill in Ted
-                final String pswd = null; // TODO fill in Ted
-                jcustomers = new GetData( url, user, pswd ).execute().get();
+                json = builder.toString();
             }
 
-            final JSONObject jobj = new JSONObject( jcustomers );
+            final JSONObject jobj = new JSONObject( json );
             final JSONObject d = jobj.getJSONObject( "d" );
             final JSONArray jarray = d.getJSONArray( "results" );
-            final Customer[] customers = new Customer[ jarray.length() ];
-
-            for ( int i = 0;
-                  i < jarray.length();
-                  ++i ) {
-                final JSONObject jcust = jarray.getJSONObject( i );
-                final Customer cust = new Customer( jcust.toString() );
-                customers[ i ] = cust;
-            }
-
-            return customers;
-        } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
-            return Customer.NO_CUSTOMERs;
-        }
-    }
-
-    public Customer[] getCustomersFromJson() {
-        final String json = IotConstants.TestData.CUSTOMERS_JSON; // TODO replace with call to get actual customers JSON string
-
-        try {
-            final JSONObject jobj = new JSONObject( json );
-            final JSONArray jarray = jobj.getJSONArray( "customers" );
             final Customer[] customers = new Customer[ jarray.length() ];
 
             for ( int i = 0;
@@ -193,9 +172,15 @@ public class DataProvider {
      * @return all store departments (never <code>null</code>)
      */
     public Department[] getDepartmentsFromJson() {
-        final String json = IotConstants.TestData.DEPARTMENTS_JSON; // TODO replace with call to get actual departments JSON string
-
         try {
+            String json;
+
+            if ( USE_REAL_DATA ) {
+                json = new GetData( DEPARTMENTS_URL ).execute().get();
+            } else {
+                json = IotConstants.TestData.DEPARTMENTS_JSON;
+            }
+
             final JSONObject jobj = new JSONObject( json );
             final JSONArray jarray = jobj.getJSONArray( "departments" );
             final Department[] departments = new Department[ jarray.length() ];
@@ -236,21 +221,47 @@ public class DataProvider {
      * @return the order details (never <code>null</code>)
      */
     public OrderDetail[] getOrderDetails( final int orderId ) {
-        final List< OrderDetail > details = new ArrayList<>();
+        try {
+            String json;
 
-        for ( final OrderDetail detail : IotConstants.TestData.ORDER_DETAILS ) {
-            if ( orderId == detail.getOrderId() ) {
-                details.add( detail );
+            if ( USE_REAL_DATA ) {
+                json = new GetData( ORDER_DETAILS_URL ).execute().get();
+            } else {
+                json = IotConstants.TestData.ORDER_DETAILS_JSON;
             }
-        }
 
-        return details.toArray( new OrderDetail[ details.size() ] );
+            final JSONObject jobj = new JSONObject( json );
+            final JSONArray jarray = jobj.getJSONArray( "orderDetails" );
+            final List< OrderDetail > details = new ArrayList<>();
+
+            for ( int i = 0;
+                  i < jarray.length();
+                  ++i ) {
+                final JSONObject jdetail = jarray.getJSONObject( i );
+                final OrderDetail detail = new OrderDetail( jdetail.toString() );
+
+                if ( orderId == detail.getOrderId() ) {
+                    details.add( detail );
+                }
+            }
+
+            return details.toArray( new OrderDetail[ details.size() ] );
+        } catch ( final Exception e ) {
+            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+            return OrderDetail.NO_DETAILS;
+        }
     }
 
     private Order[] getOrdersFromJson() {
-        final String json = IotConstants.TestData.ORDERS_JSON; // TODO replace with call to get actual Orders JSON string
-
         try {
+            String json;
+
+            if ( USE_REAL_DATA ) {
+                json = new GetData( ORDERS_URL ).execute().get();
+            } else {
+                json = IotConstants.TestData.ORDERS_JSON;
+            }
+
             final JSONObject jobj = new JSONObject( json );
             final JSONArray jarray = jobj.getJSONArray( "orders" );
             final Order[] orders = new Order[ jarray.length() ];
@@ -306,9 +317,15 @@ public class DataProvider {
     }
 
     private Product[] getProductsFromJson() {
-        final String json = IotConstants.TestData.PRODUCTS_JSON;
-
         try {
+            String json;
+
+            if ( USE_REAL_DATA ) {
+                json = new GetData( PRODUCTS_URL ).execute().get();
+            } else {
+                json = IotConstants.TestData.PRODUCTS_JSON;
+            }
+
             final JSONObject jobj = new JSONObject( json );
             final JSONArray jarray = jobj.getJSONArray( "products" );
             final Product[] products = new Product[ jarray.length() ];
@@ -332,9 +349,15 @@ public class DataProvider {
      * @return all promotions (never <code>null</code> but can be empty)
      */
     public Promotion[] getPromotionsFromJson() {
-        final String json = IotConstants.TestData.PROMOTIONS_JSON; // TODO replace with call to get actual promotions JSON string
-
         try {
+            String json;
+
+            if ( USE_REAL_DATA ) {
+                json = new GetData( PROMOTIONS_URL ).execute().get();
+            } else {
+                json = IotConstants.TestData.PROMOTIONS_JSON;
+            }
+
             final JSONObject jobj = new JSONObject( json );
             final JSONArray jarray = jobj.getJSONArray( "promotions" );
             final Promotion[] promotions = new Promotion[ jarray.length() ];
@@ -386,22 +409,19 @@ public class DataProvider {
 
     private class GetData extends AsyncTask< Void, Void, String > {
 
-        private final String url;
-        private final String user;
-        private final String pswd;
+        private static final String USER = "teiidUser";
+        private static final String PSWD = "TbJ01221991$";
 
-        public GetData( final String url,
-                        final String user,
-                        final String pswd ) {
+        private final String url;
+
+        public GetData( final String url ) {
             this.url = url;
-            this.user = user;
-            this.pswd = pswd;
         }
 
         @Override
         protected String doInBackground( final Void... params ) {
             try {
-                return executeHttpGet( this.url, this.user, this.pswd );
+                return executeHttpGet( this.url, USER, PSWD );
             } catch ( final Exception e ) {
                 Log.e( IotConstants.LOG_TAG,
                        "Error in GetData AsyncTask. URL:  " + params[ 0 ] );
