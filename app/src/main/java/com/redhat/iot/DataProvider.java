@@ -180,7 +180,7 @@ public class DataProvider {
 //            if ( USE_REAL_DATA ) {
 //                json = new GetData( DEPARTMENTS_URL ).execute().get();
 //            } else {
-                json = IotConstants.TestData.DEPARTMENTS_JSON;
+            json = IotConstants.TestData.DEPARTMENTS_JSON;
 //            }
 
             final JSONObject jobj = new JSONObject( json );
@@ -313,15 +313,19 @@ public class DataProvider {
                 final JSONObject jorder = jarray.getJSONObject( i );
                 final Order order = new Order( jorder.toString() );
                 final OrderDetail[] details = getOrderDetails( order.getId() );
-                final int[] productIds = new int[ details.length ];
 
-                for ( int j = 0;
-                      j < details.length;
-                      ++j ) {
-                    productIds[ j ] = details[ j ].getProductId();
+                if ( details.length != 0 ) {
+                    final int[] productIds = new int[ details.length ];
+
+                    for ( int j = 0;
+                          j < details.length;
+                          ++j ) {
+                        productIds[ j ] = details[ j ].getProductId();
+                    }
+
+                    order.setProducts( productIds );
                 }
 
-                order.setProducts( productIds );
                 orders[ i ] = order;
             }
 
