@@ -78,19 +78,19 @@ public class Order {
         }
 
         if ( order.has( "orderDate" ) ) {
-            this.orderDate = parseDate( order.getLong( "orderDate" ) );
+            this.orderDate = parseDate( order.getString( "orderDate" ) );
         } else {
             this.orderDate = null;
         }
 
         if ( order.has( "requiredDate" ) ) {
-            this.requiredDate = parseDate( order.getLong( "requiredDate" ) );
+            this.requiredDate = parseDate( order.getString( "requiredDate" ) );
         } else {
             this.requiredDate = null;
         }
 
         if ( order.has( "shippedDate" ) ) {
-            this.shippedDate = parseDate( order.getLong( "shippedDate" ) );
+            this.shippedDate = parseDate( order.getString( "shippedDate" ) );
         } else {
             this.shippedDate = null;
         }
@@ -159,7 +159,10 @@ public class Order {
         return this.status;
     }
 
-    private Calendar parseDate( final long orderDate ) throws ParseException {
+    private Calendar parseDate( final String dateString ) throws ParseException {
+        // need to strip off Date( from beginning and ) from end
+        final String temp = dateString.substring( 5, dateString.length() - 1 );
+        final long orderDate = Long.parseLong( temp );
         final Calendar cal = Calendar.getInstance();
         cal.setTime( new Date( orderDate ) );
         return cal;
