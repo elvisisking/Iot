@@ -74,35 +74,41 @@ public interface IotConstants {
 
     interface TestData {
 
-        Department DEPT_1 = new Department( 1, "Boy's", "Boy's clothing and apparel" );
+        int DEPT_1_ID = 1000;
+        Department DEPT_1 = new Department( DEPT_1_ID, "Womans", "Womans clothing and assessories." );
         String DEPT_1_JSON =
-            "{ \"departmentCode\" : \"1\", \"departmentName\" : \"Boy's\", \"departmentDescription\" : \"Boy's clothing and " +
-                "apparel\" }";
+            "{ \"departmentCode\" : \"1000\", \"departmentName\" : \"Womans\", \"departmentDescription\" : \"Womans clothing and " +
+                "assessories.\" }";
 
-        Department DEPT_2 = new Department( 2, "Formal", "Formal wear and apparel" );
+        int DEPT_2_ID = 1001;
+        Department DEPT_2 = new Department( DEPT_2_ID, "Boys", "Boys clothing and assessories." );
         String DEPT_2_JSON =
-            "{ \"departmentCode\" : \"2\", \"departmentName\" : \"Formal\", \"departmentDescription\" : \"Formal wear and " +
-                "apparel\" }";
+            "{ \"departmentCode\" : \"1001\", \"departmentName\" : \"Boys\", \"departmentDescription\" : \"Boys clothing and " +
+                "assessories.\" }";
 
-        Department DEPT_3 = new Department( 3, "Girl's", "Girl's clothing and apparel" );
+        int DEPT_3_ID = 1002;
+        Department DEPT_3 = new Department( DEPT_3_ID, "Girls", "Girls clothing and assessories." );
         String DEPT_3_JSON =
-            "{ \"departmentCode\" : \"3\", \"departmentName\" : \"Girl's\", \"departmentDescription\" : \"Girl's clothing and " +
-                "apparel\" }";
+            "{ \"departmentCode\" : \"1002\", \"departmentName\" : \"Girls\", \"departmentDescription\" : \"Girls clothing and " +
+                "assessories.\" }";
 
-        Department DEPT_4 = new Department( 4, "Men's", "Men's clothing and apparel" );
+        int DEPT_4_ID = 1003;
+        Department DEPT_4 = new Department( DEPT_4_ID, "Mens", "Mens clothing and assessories." );
         String DEPT_4_JSON =
-            "{ \"departmentCode\" : \"4\", \"departmentName\" : \"Men's\", \"departmentDescription\" : \"Men's clothing and " +
-                "apparel\" }";
+            "{ \"departmentCode\" : \"1003\", \"departmentName\" : \"Mens\", \"departmentDescription\" : \"Mens clothing and " +
+                "assessories.\" }";
 
-        Department DEPT_5 = new Department( 5, "Sports", "Sports clothing and apparel" );
+        int DEPT_5_ID = 1004;
+        Department DEPT_5 = new Department( DEPT_5_ID, "Formal", "Formal wear for men and women." );
         String DEPT_5_JSON =
-            "{ \"departmentCode\" : \"5\", \"departmentName\" : \"Sports\", \"departmentDescription\" : \"Sports clothing and " +
-                "apparel\" }";
+            "{ \"departmentCode\" : \"1004\", \"departmentName\" : \"Formal\", \"departmentDescription\" : \"Formal wear for men " +
+                "and women.\" }";
 
-        Department DEPT_6 = new Department( 6, "Women's", "Women clothing and apparel" );
+        int DEPT_6_ID = 1005;
+        Department DEPT_6 = new Department( DEPT_6_ID, "Sport", "Sports wear for men and women." );
         String DEPT_6_JSON =
-            "{ \"departmentCode\" : \"6\", \"departmentName\" : \"Women's\", \"departmentDescription\" : \"Women's clothing and " +
-                "apparel\" }";
+            "{ \"departmentCode\" : \"1005\", \"departmentName\" : \"Sport\", \"departmentDescription\" : \"Sports wear for men " +
+                "and women.\" }";
 
         String DEPARTMENTS_JSON = "{ d: { \"results\": [ "
             + DEPT_1_JSON + ','
@@ -113,13 +119,17 @@ public interface IotConstants {
             + DEPT_6_JSON
             + " ] } }";
 
-        Customer ELVIS = new Customer( 10000, "elvis@iot.com", "elvis", null, null, null, null, null, null, null, null, 1000 );
+        int ELVIS_ID = 10000;
+        Customer ELVIS = new Customer( ELVIS_ID, "elvis@iot.com", "elvis", null, null, null, null, null, null, null, null, 1000 );
         String ELVIS_JSON = "{\"id\" : 10000, \"email\" : \"elvis@iot.com\", \"name\" : \"elvis\", \"pswd\" : \"elvis\"}";
 
-        Customer RINGO = new Customer( 10001, "ringo@iot.com", "ringo", null, null, null, null, null, null, null, null, 1000 );
+        int RINGO_ID = 10001;
+        Customer RINGO = new Customer( RINGO_ID, "ringo@iot.com", "ringo", null, null, null, null, null, null, null, null, 1000 );
         String RINGO_JSON = "{\"id\" : 10001, \"email\" : \"ringo@iot.com\", \"name\" : \"ringo\", \"pswd\" : \"ringo\"}";
 
-        Customer SLEDGE = new Customer( 10002, "sledge@iot.com", "sledge", null, null, null, null, null, null, null, null, 1000 );
+        int SLEDGE_ID = 10002;
+        Customer SLEDGE =
+            new Customer( SLEDGE_ID, "sledge@iot.com", "sledge", null, null, null, null, null, null, null, null, 1000 );
         String SLEDGE_JSON = "{\"id\" : 10002, \"email\" : \"sledge@iot.com\", \"name\" : \"sledge\", \"pswd\" : \"sledge\"}";
 
         String CUSTOMERS_JSON = "{ d: { \"results\": [ "
@@ -129,7 +139,7 @@ public interface IotConstants {
             + " ] } }";
 
         Product PRODUCT_100 = new Product( 100,
-                                           IotConstants.TestData.DEPT_1.getId(),
+                                           DEPT_1_ID,
                                            "Boy's socks, Ages 1-3",
                                            1.99,
                                            1.00,
@@ -137,13 +147,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_100_JSON = "{\"productCode\" : 100, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_1.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_1_ID + ", "
             + "\"productDescription\" : \"Boy's socks, Ages 1-3\", "
             + "\"MSRP\" : 1.99, "
             + "\"buyPrice\" : 1.00 }";
 
         Product PRODUCT_101 = new Product( 101,
-                                           IotConstants.TestData.DEPT_1.getId(),
+                                           DEPT_1_ID,
                                            "Boy's shirt, Size 12",
                                            10.50,
                                            1.00,
@@ -151,13 +161,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_101_JSON = "{\"productCode\" : 101, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_1.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_1_ID + ", "
             + "\"productDescription\" : \"Boy's shirt, Size 12\", "
             + "\"MSRP\" : 10.50, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_102 = new Product( 102,
-                                           IotConstants.TestData.DEPT_1.getId(),
+                                           DEPT_1_ID,
                                            "Boy's shoes, Size 11",
                                            11.00,
                                            1.00,
@@ -165,13 +175,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_102_JSON = "{\"productCode\" : 102, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_1.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_1_ID + ", "
             + "\"productDescription\" : \"Boy's shoes, Size 11\", "
             + "\"MSRP\" : 11.00, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_200 = new Product( 200,
-                                           IotConstants.TestData.DEPT_2.getId(),
+                                           DEPT_2_ID,
                                            "Cuff links, Gold",
                                            5.99,
                                            1.00,
@@ -179,13 +189,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_200_JSON = "{\"productCode\" : 200, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_2.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_2_ID + ", "
             + "\"productDescription\" : \"Cuff links, Gold\", "
             + "\"MSRP\" : 5.99, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_201 = new Product( 201,
-                                           IotConstants.TestData.DEPT_2.getId(),
+                                           DEPT_2_ID,
                                            "Tuxedo pants, Size 32W 32L",
                                            50.50,
                                            1.00,
@@ -193,13 +203,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_201_JSON = "{\"productCode\" : 201, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_2.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_2_ID + ", "
             + "\"productDescription\" : \"Tuxedo pants, Size 32W 32L\", "
             + "\"MSRP\" : 50.50, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_202 = new Product( 202,
-                                           IotConstants.TestData.DEPT_2.getId(),
+                                           DEPT_2_ID,
                                            "Tuxedo shirt, Size 15",
                                            55.00,
                                            1.00,
@@ -207,13 +217,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_202_JSON = "{\"productCode\" : 202, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_2.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_2_ID + ", "
             + "\"productDescription\" : \"Tuxedo shirt, Size 15\", "
             + "\"MSRP\" : 55.00, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_300 = new Product( 300,
-                                           IotConstants.TestData.DEPT_3.getId(),
+                                           DEPT_3_ID,
                                            "Girl's socks, Ages 5-10",
                                            3.99,
                                            1.00,
@@ -221,13 +231,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_300_JSON = "{\"productCode\" : 300, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_3.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_3_ID + ", "
             + "\"productDescription\" : \"Girl's socks, Ages 5-10\", "
             + "\"MSRP\" : 3.99, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_301 = new Product( 301,
-                                           IotConstants.TestData.DEPT_3.getId(),
+                                           DEPT_3_ID,
                                            "Girl's dress, White, Full length",
                                            30.50,
                                            1.00,
@@ -235,13 +245,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_301_JSON = "{\"productCode\" : " + 301 + ", "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_3.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_3_ID + ", "
             + "\"productDescription\" : \"Girl's dress, White, Full length\", "
             + "\"MSRP\" : 30.50, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_302 = new Product( 302,
-                                           IotConstants.TestData.DEPT_3.getId(),
+                                           DEPT_3_ID,
                                            "Girl's outfit, Shirt and Slacks",
                                            33.00,
                                            1.00,
@@ -249,13 +259,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_302_JSON = "{\"productCode\" : 302, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_3.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_3_ID + ", "
             + "\"productDescription\" : \"Girl's outfit, Shirt and Slacks\", "
             + "\"MSRP\" : 33.00, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_400 = new Product( 400,
-                                           IotConstants.TestData.DEPT_4.getId(),
+                                           DEPT_4_ID,
                                            "Men's tie, Black, Thin",
                                            4.99,
                                            1.00,
@@ -263,13 +273,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_400_JSON = "{\"productCode\" : 400, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_4.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_4_ID + ", "
             + "\"productDescription\" : \"Men's tie, Black, Thin\", "
             + "\"MSRP\" : 4.99, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_401 = new Product( 401,
-                                           IotConstants.TestData.DEPT_4.getId(),
+                                           DEPT_4_ID,
                                            "Men's dress pants, Size 34W 33L",
                                            40.50,
                                            1.00,
@@ -277,13 +287,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_401_JSON = "{\"productCode\" : 401, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_4.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_4_ID + ", "
             + "\"productDescription\" : \"Men's dress pants, Size 34W 33L\", "
             + "\"MSRP\" : 40.50, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_402 = new Product( 402,
-                                           IotConstants.TestData.DEPT_4.getId(),
+                                           DEPT_4_ID,
                                            "Men's sport coat, Winter, Wool",
                                            44.00,
                                            1.00,
@@ -291,13 +301,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_402_JSON = "{\"productCode\" : 402, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_4.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_4_ID + ", "
             + "\"productDescription\" : \"Men's sport coat, Winter, Wool3\", "
             + "\"MSRP\" : 44.00, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_500 = new Product( 500,
-                                           IotConstants.TestData.DEPT_5.getId(),
+                                           DEPT_5_ID,
                                            "Swim suit, Women's, 2 piece",
                                            5.99,
                                            1.00,
@@ -305,13 +315,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_500_JSON = "{\"productCode\" : 500, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_5.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_5_ID + ", "
             + "\"productDescription\" : \"Swim suit, Women's, 2 piece\", "
             + "\"MSRP\" : 5.99, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_501 = new Product( 501,
-                                           IotConstants.TestData.DEPT_5.getId(),
+                                           DEPT_5_ID,
                                            "Jogging pants, Cleveland Cavaliers",
                                            50.50,
                                            1.00,
@@ -319,13 +329,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_501_JSON = "{\"productCode\" : 501, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_5.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_5_ID + ", "
             + "\"productDescription\" : \"Jogging pants, Cleveland Cavaliers\", "
             + "\"MSRP\" : 50.50, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_502 = new Product( 502,
-                                           IotConstants.TestData.DEPT_5.getId(),
+                                           DEPT_5_ID,
                                            "St Louis Blues Jersey, Wayne Gretsky",
                                            55.00,
                                            1.00,
@@ -333,13 +343,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_502_JSON = "{\"productCode\" : 502, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_5.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_5_ID + ", "
             + "\"productDescription\" : \"St Louis Blues Jersey, Wayne Gretsky\", "
             + "\"MSRP\" : 55.00, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_600 = new Product( 600,
-                                           IotConstants.TestData.DEPT_6.getId(),
+                                           DEPT_6_ID,
                                            "Woman's scarf, Multi-colored",
                                            6.99,
                                            1.00,
@@ -347,13 +357,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_600_JSON = "{\"productCode\" : 600, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_6.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_6_ID + ", "
             + "\"productDescription\" : \"Woman's scarf, Multi-colored\", "
             + "\"MSRP\" : 6.99, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_601 = new Product( 601,
-                                           IotConstants.TestData.DEPT_6.getId(),
+                                           DEPT_6_ID,
                                            "Woman's summer dress, Peach",
                                            60.50,
                                            1.00,
@@ -361,13 +371,13 @@ public interface IotConstants {
                                            null,
                                            null );
         String PRODUCT_601_JSON = "{\"productCode\" : 601, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_6.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_6_ID + ", "
             + "\"productDescription\" : \"Woman's summer dress, Peach\", "
             + "\"MSRP\" : 60.50, "
             + "\"buyPrice\" : 1.00}";
 
         Product PRODUCT_602 = new Product( 602,
-                                           IotConstants.TestData.DEPT_6.getId(),
+                                           DEPT_6_ID,
                                            "Woman's cowboy boots",
                                            66.00,
                                            1.00,
@@ -376,7 +386,7 @@ public interface IotConstants {
                                            null );
 
         String PRODUCT_602_JSON = "{\"productCode\" : 602, "
-            + "\"departmentCode\" : " + IotConstants.TestData.DEPT_6.getId() + ", "
+            + "\"departmentCode\" : " + DEPT_6_ID + ", "
             + "\"productDescription\" : \"Woman's cowboy boots\", "
             + "\"MSRP\" : 66.00, "
             + "\"buyPrice\" : 1.00}";
@@ -402,183 +412,210 @@ public interface IotConstants {
             + PRODUCT_602_JSON
             + " ] } }";
 
-        Order ORDER_1010 = new Order( 1010,
-                                      ELVIS.getId(),
+        int ORDER_1010_ID = 1010;
+        Order ORDER_1010 = new Order( ORDER_1010_ID,
+                                      ELVIS_ID,
                                       new GregorianCalendar( 2013, 3, 31 ),
                                       12.34,
                                       null,
                                       null,
                                       null,
                                       null );
-        OrderDetail DETAIL_1010_1 = new OrderDetail( ORDER_1010.getId(), PRODUCT_300.getId(), 1, 5.5, 1 );
+        OrderDetail DETAIL_1010_1 = new OrderDetail( ORDER_1010_ID, PRODUCT_300.getId(), 1, 5.5, 1 );
         String DETAIL_1010_1_JSON =
             "{\"orderNumber\" : 1010, \"productCode\" : 300, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
                 "1 }";
 
-        OrderDetail DETAIL_1010_2 = new OrderDetail( ORDER_1010.getId(), PRODUCT_301.getId(), 2, 10.0, 2 );
+        OrderDetail DETAIL_1010_2 = new OrderDetail( ORDER_1010_ID, PRODUCT_301.getId(), 2, 10.0, 2 );
         String DETAIL_1010_2_JSON =
             "{\"orderNumber\" : 1010, \"productCode\" : 301, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
                 " 2 }";
 
-        OrderDetail DETAIL_1010_3 = new OrderDetail( ORDER_1010.getId(), PRODUCT_302.getId(), 2, 20.5, 3 );
+        OrderDetail DETAIL_1010_3 = new OrderDetail( ORDER_1010_ID, PRODUCT_302.getId(), 2, 20.5, 3 );
         String DETAIL_1010_3_JSON =
             "{\"orderNumber\" : 1010, \"productCode\" : 302, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
                 " 3 }";
 
         String ORDER_1010_JSON = "{\"orderNumber\" : 1010, "
-            + "\"customerNumber\" : " + ELVIS.getId() + ", "
+            + "\"customerNumber\" : " + ELVIS_ID + ", "
             + "\"orderDate\" : \"/Date(1463360426000)/\", "
+            + "\"productIds\" : [ 300,301,302 ], "
             + "\"price\" : 12.34}";
 
-        Order ORDER_2020 = new Order( 2020,
-                                      RINGO.getId(),
+        int ORDER_2020_ID = 2020;
+        Order ORDER_2020 = new Order( ORDER_2020_ID,
+                                      RINGO_ID,
                                       new GregorianCalendar( 2014, 1, 20 ),
                                       23.45,
                                       null,
                                       null,
                                       null,
                                       null );
-        OrderDetail DETAIL_2020_1 = new OrderDetail( ORDER_2020.getId(), PRODUCT_100.getId(), 1, 5.5, 1 );
+        OrderDetail DETAIL_2020_1 = new OrderDetail( ORDER_2020_ID, PRODUCT_100.getId(), 1, 5.5, 1 );
         String DETAIL_2020_1_JSON =
             "{\"orderNumber\" : 2020, \"productCode\" : 100, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
                 "1 }";
 
-        OrderDetail DETAIL_2020_2 = new OrderDetail( ORDER_2020.getId(), PRODUCT_200.getId(), 2, 10.0, 2 );
+        OrderDetail DETAIL_2020_2 = new OrderDetail( ORDER_2020_ID, PRODUCT_200.getId(), 2, 10.0, 2 );
         String DETAIL_2020_2_JSON =
             "{\"orderNumber\" : 2020, \"productCode\" : 200, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
                 " 2 }";
 
-        OrderDetail DETAIL_2020_3 = new OrderDetail( ORDER_2020.getId(), PRODUCT_602.getId(), 2, 20.5, 3 );
+        OrderDetail DETAIL_2020_3 = new OrderDetail( ORDER_2020_ID, PRODUCT_602.getId(), 2, 20.5, 3 );
         String DETAIL_2020_3_JSON =
             "{\"orderNumber\" : 2020, \"productCode\" : 602, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
                 " 3 }";
 
-        OrderDetail DETAIL_2020_4 = new OrderDetail( ORDER_2020.getId(), PRODUCT_400.getId(), 1, 5.5, 4 );
+        OrderDetail DETAIL_2020_4 = new OrderDetail( ORDER_2020_ID, PRODUCT_400.getId(), 1, 5.5, 4 );
         String DETAIL_2020_4_JSON =
             "{\"orderNumber\" : 2020, \"productCode\" : 400, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
                 "4 }";
 
-        OrderDetail DETAIL_2020_5 = new OrderDetail( ORDER_2020.getId(), PRODUCT_500.getId(), 2, 10.0, 5 );
+        OrderDetail DETAIL_2020_5 = new OrderDetail( ORDER_2020_ID, PRODUCT_500.getId(), 2, 10.0, 5 );
         String DETAIL_2020_5_JSON =
             "{\"orderNumber\" : 2020, \"productCode\" : 500, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
                 " 5 }";
 
-        OrderDetail DETAIL_2020_6 = new OrderDetail( ORDER_2020.getId(), PRODUCT_600.getId(), 2, 20.5, 6 );
+        OrderDetail DETAIL_2020_6 = new OrderDetail( ORDER_2020_ID, PRODUCT_600.getId(), 2, 20.5, 6 );
         String DETAIL_2020_6_JSON =
             "{\"orderNumber\" : 2020, \"productCode\" : 600, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
                 " 6 }";
 
         String ORDER_2020_JSON = "{\"orderNumber\" : 2020, "
-            + "\"customerNumber\" : " + RINGO.getId() + ", "
+            + "\"customerNumber\" : " + RINGO_ID + ", "
             + "\"orderDate\" : \"/Date(1463360451000)/\", "
+            + "\"productIds\" : [ 100,200,602,400,500,600 ], "
             + "\"price\" : 23.45}";
 
-        Order ORDER_3030 = new Order( 3030,
-                                      RINGO.getId(),
+        int ORDER_3030_ID = 3030;
+        Order ORDER_3030 = new Order( ORDER_3030_ID,
+                                      RINGO_ID,
                                       new GregorianCalendar( 2013, 2, 10 ),
                                       26.67,
                                       null,
                                       null,
                                       null,
                                       null );
-        OrderDetail DETAIL_3030_1 = new OrderDetail( ORDER_3030.getId(), PRODUCT_202.getId(), 1, 5.5, 1 );
+        OrderDetail DETAIL_3030_1 = new OrderDetail( ORDER_3030_ID, PRODUCT_202.getId(), 1, 5.5, 1 );
         String DETAIL_3030_1_JSON =
             "{\"orderNumber\" : 3030, \"productCode\" : 202, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
                 "1 }";
 
-        OrderDetail DETAIL_3030_2 = new OrderDetail( ORDER_3030.getId(), PRODUCT_102.getId(), 2, 10.0, 2 );
+        OrderDetail DETAIL_3030_2 = new OrderDetail( ORDER_3030_ID, PRODUCT_102.getId(), 2, 10.0, 2 );
         String DETAIL_3030_2_JSON =
             "{\"orderNumber\" : 3030, \"productCode\" : 102, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
                 " 2 }";
 
         String ORDER_3030_JSON = "{\"orderNumber\" : 3030, "
-            + "\"customerNumber\" : " + RINGO.getId() + ", "
+            + "\"customerNumber\" : " + RINGO_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\", "
+            + "\"productIds\" : [ 202,102 ], "
             + "\"price\" : 26.67}";
 
-        Order ORDER_4040 = new Order( 4040,
-                                      SLEDGE.getId(),
+        int ORDER_4040_ID = 4040;
+        Order ORDER_4040 = new Order( ORDER_4040_ID,
+                                      SLEDGE_ID,
                                       new GregorianCalendar( 2013, 3, 22 ),
                                       34.56,
                                       null,
                                       null,
                                       null,
                                       null );
-        OrderDetail DETAIL_4040_1 = new OrderDetail( ORDER_4040.getId(), PRODUCT_101.getId(), 1, 5.5, 1 );
+        OrderDetail DETAIL_4040_1 = new OrderDetail( ORDER_4040_ID, PRODUCT_101.getId(), 1, 5.5, 1 );
         String DETAIL_4040_1_JSON =
             "{\"orderNumber\" : 4040, \"productCode\" : 101, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
                 "1 }";
 
-        OrderDetail DETAIL_4040_2 = new OrderDetail( ORDER_4040.getId(), PRODUCT_201.getId(), 2, 10.0, 2 );
+        OrderDetail DETAIL_4040_2 = new OrderDetail( ORDER_4040_ID, PRODUCT_201.getId(), 2, 10.0, 2 );
         String DETAIL_4040_2_JSON =
             "{\"orderNumber\" : 4040, \"productCode\" : 201, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
                 " 2 }";
 
-        OrderDetail DETAIL_4040_3 = new OrderDetail( ORDER_4040.getId(), PRODUCT_402.getId(), 2, 20.5, 3 );
+        OrderDetail DETAIL_4040_3 = new OrderDetail( ORDER_4040_ID, PRODUCT_402.getId(), 2, 20.5, 3 );
         String DETAIL_4040_3_JSON =
             "{\"orderNumber\" : 4040, \"productCode\" : 402, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
                 " 3 }";
 
         String ORDER_4040_JSON = "{\"orderNumber\" : 4040, "
-            + "\"customerNumber\" : " + SLEDGE.getId() + ", "
+            + "\"customerNumber\" : " + SLEDGE_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\", "
+            + "\"productIds\" : [ 101,201,402 ], "
             + "\"price\" : 34.56}";
 
-        Order ORDER_5050 = new Order( 5050,
-                                      SLEDGE.getId(),
+        int ORDER_5050_ID = 5050;
+        Order ORDER_5050 = new Order( ORDER_5050_ID,
+                                      SLEDGE_ID,
                                       new GregorianCalendar( 2013, 4, 15 ),
                                       35.67,
                                       null,
                                       null,
                                       null,
                                       null );
-        OrderDetail DETAIL_5050_1 = new OrderDetail( ORDER_5050.getId(), PRODUCT_301.getId(), 1, 5.5, 1 );
+        OrderDetail DETAIL_5050_1 = new OrderDetail( ORDER_5050_ID, PRODUCT_301.getId(), 1, 5.5, 1 );
         String DETAIL_5050_1_JSON =
             "{\"orderNumber\" : 5050, \"productCode\" : 301, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
                 "1 }";
 
-        OrderDetail DETAIL_5050_2 = new OrderDetail( ORDER_5050.getId(), PRODUCT_401.getId(), 2, 10.0, 2 );
+        OrderDetail DETAIL_5050_2 = new OrderDetail( ORDER_5050_ID, PRODUCT_401.getId(), 2, 10.0, 2 );
         String DETAIL_5050_2_JSON =
             "{\"orderNumber\" : 5050, \"productCode\" : 401, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
                 " 2 }";
 
-        OrderDetail DETAIL_5050_3 = new OrderDetail( ORDER_5050.getId(), PRODUCT_501.getId(), 2, 20.5, 3 );
+        OrderDetail DETAIL_5050_3 = new OrderDetail( ORDER_5050_ID, PRODUCT_501.getId(), 2, 20.5, 3 );
         String DETAIL_5050_3_JSON =
             "{\"orderNumber\" : 5050, \"productCode\" : 501, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
                 " 3 }";
 
         String ORDER_5050_JSON = "{\"orderNumber\" : 5050, "
-            + "\"customerNumber\" : " + SLEDGE.getId() + ", "
+            + "\"customerNumber\" : " + SLEDGE_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\", "
+            + "\"productIds\" : [ 301,401,501 ], "
             + "\"price\" : 35.67}";
 
-        Order ORDER_6060 = new Order( 6060,
-                                      SLEDGE.getId(),
+        int ORDER_6060_ID = 6060;
+        Order ORDER_6060 = new Order( ORDER_6060_ID,
+                                      SLEDGE_ID,
                                       new GregorianCalendar( 2013, 11, 25 ),
                                       36.78,
                                       null,
                                       null,
                                       null,
                                       null );
-        OrderDetail DETAIL_6060_1 = new OrderDetail( ORDER_6060.getId(), PRODUCT_100.getId(), 1, 5.5, 1 );
+        OrderDetail DETAIL_6060_1 = new OrderDetail( ORDER_6060_ID, PRODUCT_100.getId(), 1, 5.5, 1 );
         String DETAIL_6060_1_JSON =
             "{\"orderNumber\" : 6060, \"productCode\" : 100, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
                 "1 }";
 
-        OrderDetail DETAIL_6060_2 = new OrderDetail( ORDER_6060.getId(), PRODUCT_502.getId(), 2, 10.0, 2 );
+        OrderDetail DETAIL_6060_2 = new OrderDetail( ORDER_6060_ID, PRODUCT_502.getId(), 2, 10.0, 2 );
         String DETAIL_6060_2_JSON =
             "{\"orderNumber\" : 6060, \"productCode\" : 502, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
                 " 2 }";
 
         String ORDER_6060_JSON = "{\"orderNumber\" : 6060, "
-            + "\"customerNumber\" : " + SLEDGE.getId() + ", "
+            + "\"customerNumber\" : " + SLEDGE_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\", "
+            + "\"productIds\" : [ 100,502 ], "
             + "\"price\" : 36.78}";
 
         String ORDERS_JSON = "{ d: { \"results\": [ "
             + ORDER_1010_JSON + ','
             + ORDER_2020_JSON + ','
             + ORDER_3030_JSON + ','
+            + ORDER_4040_JSON + ','
+            + ORDER_5050_JSON + ','
+            + ORDER_6060_JSON
+            + " ] } }";
+
+        String ELVIS_ORDERS_JSON = "{ d: { \"results\": [ "
+            + ORDER_1010_JSON
+            + " ] } }";
+
+        String RINGO_ORDERS_JSON = "{ d: { \"results\": [ "
+            + ORDER_2020_JSON + ','
+            + ORDER_3030_JSON
+            + " ] } }";
+
+        String SLEDGE_ORDERS_JSON = "{ d: { \"results\": [ "
             + ORDER_4040_JSON + ','
             + ORDER_5050_JSON + ','
             + ORDER_6060_JSON
@@ -606,24 +643,39 @@ public interface IotConstants {
             DETAIL_6060_2
         };
 
-        String ORDER_DETAILS_JSON = "{ d: { \"results\": [ "
+        String ORDER_1010_DETAILS_JSON = "{ d: { \"results\": [ "
             + DETAIL_1010_1_JSON + ','
             + DETAIL_1010_2_JSON + ','
-            + DETAIL_1010_3_JSON + ','
+            + DETAIL_1010_3_JSON
+            + " ] } }";
+
+        String ORDER_2020_DETAILS_JSON = "{ d: { \"results\": [ "
             + DETAIL_2020_1_JSON + ','
             + DETAIL_2020_2_JSON + ','
             + DETAIL_2020_3_JSON + ','
             + DETAIL_2020_4_JSON + ','
             + DETAIL_2020_5_JSON + ','
-            + DETAIL_2020_6_JSON + ','
+            + DETAIL_2020_6_JSON
+            + " ] } }";
+
+        String ORDER_3030_DETAILS_JSON = "{ d: { \"results\": [ "
             + DETAIL_3030_1_JSON + ','
-            + DETAIL_3030_2_JSON + ','
+            + DETAIL_3030_2_JSON
+            + " ] } }";
+
+        String ORDER_4040_DETAILS_JSON = "{ d: { \"results\": [ "
             + DETAIL_4040_1_JSON + ','
             + DETAIL_4040_2_JSON + ','
-            + DETAIL_4040_3_JSON + ','
+            + DETAIL_4040_3_JSON
+            + " ] } }";
+
+        String ORDER_5050_DETAILS_JSON = "{ d: { \"results\": [ "
             + DETAIL_5050_1_JSON + ','
             + DETAIL_5050_2_JSON + ','
-            + DETAIL_5050_3_JSON + ','
+            + DETAIL_5050_3_JSON
+            + " ] } }";
+
+        String ORDER_6060__DETAILS_JSON = "{ d: { \"results\": [ "
             + DETAIL_6060_1_JSON + ','
             + DETAIL_6060_2_JSON
             + " ] } }";

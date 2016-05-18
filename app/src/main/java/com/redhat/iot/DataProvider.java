@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class DataProvider {
 
-    private static final boolean USE_REAL_DATA = true;
+    private static final boolean USE_REAL_DATA = false;
 
     private static final String CUSTOMERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Customer?$format=json";
     private static final String DEPARTMENTS_URL = "http://10.0.2.2:8081/odata/customer_iot/FUSE.Department?$format=json";
@@ -177,11 +177,11 @@ public class DataProvider {
         try {
             String json;
 
-            if ( USE_REAL_DATA ) {
-                json = new GetData( DEPARTMENTS_URL ).execute().get();
-            } else {
+//            if ( USE_REAL_DATA ) {
+//                json = new GetData( DEPARTMENTS_URL ).execute().get();
+//            } else {
                 json = IotConstants.TestData.DEPARTMENTS_JSON;
-            }
+//            }
 
             final JSONObject jobj = new JSONObject( json );
             final JSONObject d = jobj.getJSONObject( "d" );
@@ -231,7 +231,28 @@ public class DataProvider {
                 final String url = String.format( ORDER_DETAILS_URL, orderId );
                 json = new GetData( url ).execute().get();
             } else {
-                json = IotConstants.TestData.ORDER_DETAILS_JSON;
+                switch ( orderId ) {
+                    case IotConstants.TestData.ORDER_1010_ID:
+                        json = IotConstants.TestData.ORDER_1010_JSON;
+                        break;
+                    case IotConstants.TestData.ORDER_2020_ID:
+                        json = IotConstants.TestData.ORDER_2020_JSON;
+                        break;
+                    case IotConstants.TestData.ORDER_3030_ID:
+                        json = IotConstants.TestData.ORDER_3030_JSON;
+                        break;
+                    case IotConstants.TestData.ORDER_4040_ID:
+                        json = IotConstants.TestData.ORDER_4040_JSON;
+                        break;
+                    case IotConstants.TestData.ORDER_5050_ID:
+                        json = IotConstants.TestData.ORDER_5050_JSON;
+                        break;
+                    case IotConstants.TestData.ORDER_6060_ID:
+                        json = IotConstants.TestData.ORDER_6060_JSON;
+                        break;
+                    default:
+                        return OrderDetail.NO_DETAILS;
+                }
             }
 
             final JSONObject jobj = new JSONObject( json );
@@ -266,7 +287,19 @@ public class DataProvider {
                 final String url = String.format( ORDERS_URL, customerId );
                 json = new GetData( url ).execute().get();
             } else {
-                json = IotConstants.TestData.ORDERS_JSON;
+                switch ( customerId ) {
+                    case IotConstants.TestData.ELVIS_ID:
+                        json = IotConstants.TestData.ELVIS_ORDERS_JSON;
+                        break;
+                    case IotConstants.TestData.RINGO_ID:
+                        json = IotConstants.TestData.RINGO_ORDERS_JSON;
+                        break;
+                    case IotConstants.TestData.SLEDGE_ID:
+                        json = IotConstants.TestData.SLEDGE_ORDERS_JSON;
+                        break;
+                    default:
+                        return Order.NO_ORDERS;
+                }
             }
 
             final JSONObject jobj = new JSONObject( json );
