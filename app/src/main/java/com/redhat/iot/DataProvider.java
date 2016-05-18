@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class DataProvider {
 
-    private static final boolean USE_REAL_DATA = false;
+    private static final boolean USE_REAL_DATA = true;
 
     private static final String CUSTOMERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Customer?$format=json";
     private static final String DEPARTMENTS_URL = "http://10.0.2.2:8081/odata/customer_iot/FUSE.Department?$format=json";
