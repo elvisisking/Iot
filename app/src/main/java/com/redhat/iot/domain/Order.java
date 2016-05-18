@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Represents an order.
@@ -60,7 +61,7 @@ public class Order {
 
         // optional
         this.comments = ( order.has( "comments" ) ? order.getString( "comments" ) : "" );
-        this.price = ( order.has( "price" ) ? order.getDouble( "price" ) : null );
+        this.price = ( order.has( "price" ) ? order.getDouble( "price" ) : -1 );
         this.status = ( order.has( "status" ) ? order.getString( "status" ) : "" );
 
         if ( order.has( "productIds" ) ) {
@@ -77,19 +78,19 @@ public class Order {
         }
 
         if ( order.has( "orderDate" ) ) {
-            this.orderDate = parseDate( order.getString( "orderDate" ) );
+            this.orderDate = parseDate( order.getLong( "orderDate" ) );
         } else {
             this.orderDate = null;
         }
 
         if ( order.has( "requiredDate" ) ) {
-            this.requiredDate = parseDate( order.getString( "requiredDate" ) );
+            this.requiredDate = parseDate( order.getLong( "requiredDate" ) );
         } else {
             this.requiredDate = null;
         }
 
         if ( order.has( "shippedDate" ) ) {
-            this.shippedDate = parseDate( order.getString( "shippedDate" ) );
+            this.shippedDate = parseDate( order.getLong( "shippedDate" ) );
         } else {
             this.shippedDate = null;
         }
@@ -158,9 +159,9 @@ public class Order {
         return this.status;
     }
 
-    private Calendar parseDate( final String dateString ) throws ParseException {
+    private Calendar parseDate( final long orderDate ) throws ParseException {
         final Calendar cal = Calendar.getInstance();
-        cal.setTime( IotConstants.DATE_FORMATTER.parse( dateString ) );
+        cal.setTime( new Date( orderDate ) );
         return cal;
     }
 

@@ -104,14 +104,14 @@ public interface IotConstants {
             "{ \"departmentCode\" : \"6\", \"departmentName\" : \"Women's\", \"departmentDescription\" : \"Women's clothing and " +
                 "apparel\" }";
 
-        String DEPARTMENTS_JSON = "{\"departments\":[ "
+        String DEPARTMENTS_JSON = "{ d: { \"results\": [ "
             + DEPT_1_JSON + ','
             + DEPT_2_JSON + ','
             + DEPT_3_JSON + ','
             + DEPT_4_JSON + ','
             + DEPT_5_JSON + ','
             + DEPT_6_JSON
-            + " ]}";
+            + " ] } }";
 
         Customer ELVIS = new Customer( 10000, "elvis@iot.com", "elvis", null, null, null, null, null, null, null, null, 1000 );
         String ELVIS_JSON = "{\"id\" : 10000, \"email\" : \"elvis@iot.com\", \"name\" : \"elvis\", \"pswd\" : \"elvis\"}";
@@ -122,11 +122,11 @@ public interface IotConstants {
         Customer SLEDGE = new Customer( 10002, "sledge@iot.com", "sledge", null, null, null, null, null, null, null, null, 1000 );
         String SLEDGE_JSON = "{\"id\" : 10002, \"email\" : \"sledge@iot.com\", \"name\" : \"sledge\", \"pswd\" : \"sledge\"}";
 
-        String CUSTOMERS_JSON = "{\"customers\": [ "
+        String CUSTOMERS_JSON = "{ d: { \"results\": [ "
             + ELVIS_JSON + ','
             + RINGO_JSON + ','
             + SLEDGE_JSON
-            + " ] }";
+            + " ] } }";
 
         Product PRODUCT_100 = new Product( 100,
                                            IotConstants.TestData.DEPT_1.getId(),
@@ -381,7 +381,7 @@ public interface IotConstants {
             + "\"MSRP\" : 66.00, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCTS_JSON = "{\"products\": [ "
+        String PRODUCTS_JSON = "{ d: { \"results\": [ "
             + PRODUCT_100_JSON + ','
             + PRODUCT_101_JSON + ','
             + PRODUCT_102_JSON + ','
@@ -400,7 +400,7 @@ public interface IotConstants {
             + PRODUCT_600_JSON + ','
             + PRODUCT_601_JSON + ','
             + PRODUCT_602_JSON
-            + " ] }";
+            + " ] } }";
 
         Order ORDER_1010 = new Order( 1010,
                                       ELVIS.getId(),
@@ -412,19 +412,22 @@ public interface IotConstants {
                                       null );
         OrderDetail DETAIL_1010_1 = new OrderDetail( ORDER_1010.getId(), PRODUCT_300.getId(), 1, 5.5, 1 );
         String DETAIL_1010_1_JSON =
-            "{\"orderId\" : 1010, \"productId\" : 300, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+            "{\"orderNumber\" : 1010, \"productCode\" : 300, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
+                "1 }";
 
         OrderDetail DETAIL_1010_2 = new OrderDetail( ORDER_1010.getId(), PRODUCT_301.getId(), 2, 10.0, 2 );
         String DETAIL_1010_2_JSON =
-            "{\"orderId\" : 1010, \"productId\" : 301, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+            "{\"orderNumber\" : 1010, \"productCode\" : 301, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
+                " 2 }";
 
         OrderDetail DETAIL_1010_3 = new OrderDetail( ORDER_1010.getId(), PRODUCT_302.getId(), 2, 20.5, 3 );
         String DETAIL_1010_3_JSON =
-            "{\"orderId\" : 1010, \"productId\" : 302, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
+            "{\"orderNumber\" : 1010, \"productCode\" : 302, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
+                " 3 }";
 
-        String ORDER_1010_JSON = "{\"id\" : 1010, "
-            + "\"customerId\" : " + ELVIS.getId() + ", "
-            + "\"orderDate\" : \"Mar 31, 2013\", "
+        String ORDER_1010_JSON = "{\"orderNumber\" : 1010, "
+            + "\"customerNumber\" : " + ELVIS.getId() + ", "
+            + "\"orderDate\" : 1419033600000, "
             + "\"price\" : 12.34}";
 
         Order ORDER_2020 = new Order( 2020,
@@ -437,31 +440,37 @@ public interface IotConstants {
                                       null );
         OrderDetail DETAIL_2020_1 = new OrderDetail( ORDER_2020.getId(), PRODUCT_100.getId(), 1, 5.5, 1 );
         String DETAIL_2020_1_JSON =
-            "{\"orderId\" : 2020, \"productId\" : 100, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+            "{\"orderNumber\" : 2020, \"productCode\" : 100, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
+                "1 }";
 
         OrderDetail DETAIL_2020_2 = new OrderDetail( ORDER_2020.getId(), PRODUCT_200.getId(), 2, 10.0, 2 );
         String DETAIL_2020_2_JSON =
-            "{\"orderId\" : 2020, \"productId\" : 200, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+            "{\"orderNumber\" : 2020, \"productCode\" : 200, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
+                " 2 }";
 
         OrderDetail DETAIL_2020_3 = new OrderDetail( ORDER_2020.getId(), PRODUCT_602.getId(), 2, 20.5, 3 );
         String DETAIL_2020_3_JSON =
-            "{\"orderId\" : 2020, \"productId\" : 602, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
+            "{\"orderNumber\" : 2020, \"productCode\" : 602, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
+                " 3 }";
 
         OrderDetail DETAIL_2020_4 = new OrderDetail( ORDER_2020.getId(), PRODUCT_400.getId(), 1, 5.5, 4 );
         String DETAIL_2020_4_JSON =
-            "{\"orderId\" : 2020, \"productId\" : 400, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 4 }";
+            "{\"orderNumber\" : 2020, \"productCode\" : 400, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
+                "4 }";
 
         OrderDetail DETAIL_2020_5 = new OrderDetail( ORDER_2020.getId(), PRODUCT_500.getId(), 2, 10.0, 5 );
         String DETAIL_2020_5_JSON =
-            "{\"orderId\" : 2020, \"productId\" : 500, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 5 }";
+            "{\"orderNumber\" : 2020, \"productCode\" : 500, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
+                " 5 }";
 
         OrderDetail DETAIL_2020_6 = new OrderDetail( ORDER_2020.getId(), PRODUCT_600.getId(), 2, 20.5, 6 );
         String DETAIL_2020_6_JSON =
-            "{\"orderId\" : 2020, \"productId\" : 600, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 6 }";
+            "{\"orderNumber\" : 2020, \"productCode\" : 600, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
+                " 6 }";
 
-        String ORDER_2020_JSON = "{\"id\" : 2020, "
-            + "\"customerId\" : " + RINGO.getId() + ", "
-            + "\"orderDate\" : \"Jan 01, 2014\", "
+        String ORDER_2020_JSON = "{\"orderNumber\" : 2020, "
+            + "\"customerNumber\" : " + RINGO.getId() + ", "
+            + "\"orderDate\" : 1419033600000, "
             + "\"price\" : 23.45}";
 
         Order ORDER_3030 = new Order( 3030,
@@ -474,15 +483,17 @@ public interface IotConstants {
                                       null );
         OrderDetail DETAIL_3030_1 = new OrderDetail( ORDER_3030.getId(), PRODUCT_202.getId(), 1, 5.5, 1 );
         String DETAIL_3030_1_JSON =
-            "{\"orderId\" : 3030, \"productId\" : 202, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+            "{\"orderNumber\" : 3030, \"productCode\" : 202, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
+                "1 }";
 
         OrderDetail DETAIL_3030_2 = new OrderDetail( ORDER_3030.getId(), PRODUCT_102.getId(), 2, 10.0, 2 );
         String DETAIL_3030_2_JSON =
-            "{\"orderId\" : 3030, \"productId\" : 102, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+            "{\"orderNumber\" : 3030, \"productCode\" : 102, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
+                " 2 }";
 
-        String ORDER_3030_JSON = "{\"id\" : 3030, "
-            + "\"customerId\" : " + RINGO.getId() + ", "
-            + "\"orderDate\" : \"Feb 10, 2013\", "
+        String ORDER_3030_JSON = "{\"orderNumber\" : 3030, "
+            + "\"customerNumber\" : " + RINGO.getId() + ", "
+            + "\"orderDate\" : 1419033600000, "
             + "\"price\" : 26.67}";
 
         Order ORDER_4040 = new Order( 4040,
@@ -495,19 +506,22 @@ public interface IotConstants {
                                       null );
         OrderDetail DETAIL_4040_1 = new OrderDetail( ORDER_4040.getId(), PRODUCT_101.getId(), 1, 5.5, 1 );
         String DETAIL_4040_1_JSON =
-            "{\"orderId\" : 4040, \"productId\" : 101, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+            "{\"orderNumber\" : 4040, \"productCode\" : 101, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
+                "1 }";
 
         OrderDetail DETAIL_4040_2 = new OrderDetail( ORDER_4040.getId(), PRODUCT_201.getId(), 2, 10.0, 2 );
         String DETAIL_4040_2_JSON =
-            "{\"orderId\" : 4040, \"productId\" : 201, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+            "{\"orderNumber\" : 4040, \"productCode\" : 201, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
+                " 2 }";
 
         OrderDetail DETAIL_4040_3 = new OrderDetail( ORDER_4040.getId(), PRODUCT_402.getId(), 2, 20.5, 3 );
         String DETAIL_4040_3_JSON =
-            "{\"orderId\" : 4040, \"productId\" : 402, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
+            "{\"orderNumber\" : 4040, \"productCode\" : 402, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
+                " 3 }";
 
-        String ORDER_4040_JSON = "{\"id\" : 4040, "
-            + "\"customerId\" : " + SLEDGE.getId() + ", "
-            + "\"orderDate\" : \"Mar 22, 2013\", "
+        String ORDER_4040_JSON = "{\"orderNumber\" : 4040, "
+            + "\"customerNumber\" : " + SLEDGE.getId() + ", "
+            + "\"orderDate\" : 1419033600000, "
             + "\"price\" : 34.56}";
 
         Order ORDER_5050 = new Order( 5050,
@@ -520,19 +534,22 @@ public interface IotConstants {
                                       null );
         OrderDetail DETAIL_5050_1 = new OrderDetail( ORDER_5050.getId(), PRODUCT_301.getId(), 1, 5.5, 1 );
         String DETAIL_5050_1_JSON =
-            "{\"orderId\" : 5050, \"productId\" : 301, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+            "{\"orderNumber\" : 5050, \"productCode\" : 301, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
+                "1 }";
 
         OrderDetail DETAIL_5050_2 = new OrderDetail( ORDER_5050.getId(), PRODUCT_401.getId(), 2, 10.0, 2 );
         String DETAIL_5050_2_JSON =
-            "{\"orderId\" : 5050, \"productId\" : 401, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+            "{\"orderNumber\" : 5050, \"productCode\" : 401, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
+                " 2 }";
 
         OrderDetail DETAIL_5050_3 = new OrderDetail( ORDER_5050.getId(), PRODUCT_501.getId(), 2, 20.5, 3 );
         String DETAIL_5050_3_JSON =
-            "{\"orderId\" : 5050, \"productId\" : 501, \"quantity\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" : 3 }";
+            "{\"orderNumber\" : 5050, \"productCode\" : 501, \"quantityOrdered\" : 2, \"priceEach\" : 20.5, \"orderLineNumber\" :" +
+                " 3 }";
 
-        String ORDER_5050_JSON = "{\"id\" : 5050, "
-            + "\"customerId\" : " + SLEDGE.getId() + ", "
-            + "\"orderDate\" : \"Apr 15, 2013\", "
+        String ORDER_5050_JSON = "{\"orderNumber\" : 5050, "
+            + "\"customerNumber\" : " + SLEDGE.getId() + ", "
+            + "\"orderDate\" : 1419033600000, "
             + "\"price\" : 35.67}";
 
         Order ORDER_6060 = new Order( 6060,
@@ -545,25 +562,27 @@ public interface IotConstants {
                                       null );
         OrderDetail DETAIL_6060_1 = new OrderDetail( ORDER_6060.getId(), PRODUCT_100.getId(), 1, 5.5, 1 );
         String DETAIL_6060_1_JSON =
-            "{\"orderId\" : 6060, \"productId\" : 100, \"quantity\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : 1 }";
+            "{\"orderNumber\" : 6060, \"productCode\" : 100, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
+                "1 }";
 
         OrderDetail DETAIL_6060_2 = new OrderDetail( ORDER_6060.getId(), PRODUCT_502.getId(), 2, 10.0, 2 );
         String DETAIL_6060_2_JSON =
-            "{\"orderId\" : 6060, \"productId\" : 502, \"quantity\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" : 2 }";
+            "{\"orderNumber\" : 6060, \"productCode\" : 502, \"quantityOrdered\" : 2, \"priceEach\" : 10.0, \"orderLineNumber\" :" +
+                " 2 }";
 
-        String ORDER_6060_JSON = "{\"id\" : 6060, "
-            + "\"customerId\" : " + SLEDGE.getId() + ", "
-            + "\"orderDate\" : \"Nov 25, 2013\", "
+        String ORDER_6060_JSON = "{\"orderNumber\" : 6060, "
+            + "\"customerNumber\" : " + SLEDGE.getId() + ", "
+            + "\"orderDate\" : 1419033600000, "
             + "\"price\" : 36.78}";
 
-        String ORDERS_JSON = "{\"orders\": [ "
+        String ORDERS_JSON = "{ d: { \"results\": [ "
             + ORDER_1010_JSON + ','
             + ORDER_2020_JSON + ','
             + ORDER_3030_JSON + ','
             + ORDER_4040_JSON + ','
             + ORDER_5050_JSON + ','
             + ORDER_6060_JSON
-            + " ] }";
+            + " ] } }";
 
         OrderDetail[] ORDER_DETAILS = new OrderDetail[]{
             DETAIL_1010_1,
@@ -587,7 +606,7 @@ public interface IotConstants {
             DETAIL_6060_2
         };
 
-        String ORDER_DETAILS_JSON = "{\"orderDetails\": [ "
+        String ORDER_DETAILS_JSON = "{ d: { \"results\": [ "
             + DETAIL_1010_1_JSON + ','
             + DETAIL_1010_2_JSON + ','
             + DETAIL_1010_3_JSON + ','
@@ -607,45 +626,45 @@ public interface IotConstants {
             + DETAIL_5050_3_JSON + ','
             + DETAIL_6060_1_JSON + ','
             + DETAIL_6060_2_JSON
-            + " ] }";
+            + " ] } }";
 
         Promotion PROMO_1 = new Promotion( 1, IotConstants.TestData.PRODUCT_100.getId(), 10.0 );
-        String PROMO_1_JSON = "{\"id\" : 1, \"productId\" : \"100\", \"discount\" : \"10.0\"}";
+        String PROMO_1_JSON = "{\"id\" : 1, \"productCode\" : \"100\", \"discount\" : \"10.0\"}";
 
         Promotion PROMO_2 = new Promotion( 2, IotConstants.TestData.PRODUCT_101.getId(), 20.0 );
-        String PROMO_2_JSON = "{\"id\" : 2, \"productId\" : \"101\", \"discount\" : \"20.0\"}";
+        String PROMO_2_JSON = "{\"id\" : 2, \"productCode\" : \"101\", \"discount\" : \"20.0\"}";
 
         Promotion PROMO_3 = new Promotion( 3, IotConstants.TestData.PRODUCT_200.getId(), 30.0 );
-        String PROMO_3_JSON = "{\"id\" : 3, \"productId\" : \"200\", \"discount\" : \"30.0\"}";
+        String PROMO_3_JSON = "{\"id\" : 3, \"productCode\" : \"200\", \"discount\" : \"30.0\"}";
 
         Promotion PROMO_4 = new Promotion( 4, IotConstants.TestData.PRODUCT_201.getId(), 40.0 );
-        String PROMO_4_JSON = "{\"id\" : 4, \"productId\" : \"201\", \"discount\" : \"40.0\"}";
+        String PROMO_4_JSON = "{\"id\" : 4, \"productCode\" : \"201\", \"discount\" : \"40.0\"}";
 
         Promotion PROMO_5 = new Promotion( 5, IotConstants.TestData.PRODUCT_300.getId(), 50.0 );
-        String PROMO_5_JSON = "{\"id\" : 5, \"productId\" : \"300\", \"discount\" : \"50.0\"}";
+        String PROMO_5_JSON = "{\"id\" : 5, \"productCode\" : \"300\", \"discount\" : \"50.0\"}";
 
         Promotion PROMO_6 = new Promotion( 6, IotConstants.TestData.PRODUCT_301.getId(), 10.0 );
-        String PROMO_6_JSON = "{\"id\" : 6, \"productId\" : \"301\", \"discount\" : \"10.0\"}";
+        String PROMO_6_JSON = "{\"id\" : 6, \"productCode\" : \"301\", \"discount\" : \"10.0\"}";
 
         Promotion PROMO_7 = new Promotion( 7, IotConstants.TestData.PRODUCT_400.getId(), 20.0 );
-        String PROMO_7_JSON = "{\"id\" : 7, \"productId\" : \"400\", \"discount\" : \"20.0\"}";
+        String PROMO_7_JSON = "{\"id\" : 7, \"productCode\" : \"400\", \"discount\" : \"20.0\"}";
 
         Promotion PROMO_8 = new Promotion( 8, IotConstants.TestData.PRODUCT_401.getId(), 30.0 );
-        String PROMO_8_JSON = "{\"id\" : 8, \"productId\" : \"401\", \"discount\" : \"30.0\"}";
+        String PROMO_8_JSON = "{\"id\" : 8, \"productCode\" : \"401\", \"discount\" : \"30.0\"}";
 
         Promotion PROMO_9 = new Promotion( 9, IotConstants.TestData.PRODUCT_500.getId(), 40.0 );
-        String PROMO_9_JSON = "{\"id\" : 9, \"productId\" : \"500\", \"discount\" : \"40.0\"}";
+        String PROMO_9_JSON = "{\"id\" : 9, \"productCode\" : \"500\", \"discount\" : \"40.0\"}";
 
         Promotion PROMO_10 = new Promotion( 10, IotConstants.TestData.PRODUCT_501.getId(), 50.0 );
-        String PROMO_10_JSON = "{\"id\" : 10, \"productId\" : \"501\", \"discount\" : \"50.0\"}";
+        String PROMO_10_JSON = "{\"id\" : 10, \"productCode\" : \"501\", \"discount\" : \"50.0\"}";
 
         Promotion PROMO_11 = new Promotion( 11, IotConstants.TestData.PRODUCT_600.getId(), 10.0 );
-        String PROMO_11_JSON = "{\"id\" : 11, \"productId\" : \"600\", \"discount\" : \"10.0\"}";
+        String PROMO_11_JSON = "{\"id\" : 11, \"productCode\" : \"600\", \"discount\" : \"10.0\"}";
 
         Promotion PROMO_12 = new Promotion( 12, IotConstants.TestData.PRODUCT_601.getId(), 20.0 );
-        String PROMO_12_JSON = "{\"id\" : 12, \"productId\" : \"601\", \"discount\" : \"20.0\"}";
+        String PROMO_12_JSON = "{\"id\" : 12, \"productCode\" : \"601\", \"discount\" : \"20.0\"}";
 
-        String PROMOTIONS_JSON = "{\"promotions\": [ "
+        String PROMOTIONS_JSON = "{ d: { \"results\": [ "
             + PROMO_1_JSON + ','
             + PROMO_2_JSON + ','
             + PROMO_3_JSON + ','
@@ -658,7 +677,7 @@ public interface IotConstants {
             + PROMO_10_JSON + ','
             + PROMO_11_JSON + ','
             + PROMO_12_JSON
-            + " ] }";
+            + " ] } }";
 
     }
 
