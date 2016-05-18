@@ -1,4 +1,8 @@
 <resources>
+    <string name="iv_companyImage">Image of Johl\'s</string>
+    <string name="iv_dealImage">Image of the product on sale</string>
+    <string name="iv_orderImage">Image of Johl\'s</string>
+
     <string name="app_name">Johl\'s</string>
     <string name="app_tagline">The Home of Smart Shopping</string>
 
@@ -29,6 +33,7 @@
     <string name="deal_original_price">Original Price: %.2f</string>
 
     <string name="order_id">Order: %d</string>
+    <string name="order_no_orders">No orders found</string>
     <string name="order_num_additional">+ %d more products</string>
     <string name="order_price">Total Price: %.2f</string>
 

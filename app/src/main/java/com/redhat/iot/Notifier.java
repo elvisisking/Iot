@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * A class that builds and sends notifications to the customer running the app.
  */
-public class Notifier {
+class Notifier {
 
-    private AtomicInteger id = new AtomicInteger();
+    private final AtomicInteger id = new AtomicInteger();
     private final Context context;
 
     /**

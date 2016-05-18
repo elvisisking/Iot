@@ -21,7 +21,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provider for domain objects.
@@ -57,11 +59,18 @@ public class DataProvider {
         return _shared;
     }
 
+    private long userIdCacheTime;
+    private Map< Integer, String > idNameMap = new HashMap<>();
+
     /**
      * Don't allow construction outside of this class.
      */
     private DataProvider() {
         // nothing to do
+    }
+
+    private boolean emptyCache( final long cachedTime ) {
+        return ( ( System.currentTimeMillis() - cachedTime ) > 300000 ); // 5 minutes
     }
 
     private String executeHttpGet( final String urlAsString,
@@ -122,7 +131,7 @@ public class DataProvider {
      * @return the user or <code>null</code> if not found
      */
     public Customer getCustomer( final int userId ) {
-        for ( final Customer customer : getCustomersFromJson() ) {
+        for ( final Customer customer : getCustomers() ) {
             if ( customer.getId() == userId ) {
                 return customer;
             }
@@ -131,7 +140,19 @@ public class DataProvider {
         return null;
     }
 
-    public Customer[] getCustomersFromJson() {
+    /**
+     * @param userId the ID of the customer whose name is being requested
+     * @return the name or <code>null</code> if not found
+     */
+    public String getCustomerName( final int userId ) {
+        if ( this.idNameMap.isEmpty() || emptyCache( this.userIdCacheTime ) ) {
+            getCustomers(); // load map
+        }
+
+        return this.idNameMap.get( userId );
+    }
+
+    private Customer[] getCustomers() {
         try {
             String json;
 
@@ -161,8 +182,12 @@ public class DataProvider {
                 final JSONObject jcust = jarray.getJSONObject( i );
                 final Customer cust = new Customer( jcust.toString() );
                 customers[ i ] = cust;
+
+                // cache ID/Name
+                this.idNameMap.put( cust.getId(), cust.getName() );
             }
 
+            this.userIdCacheTime = System.currentTimeMillis();
             return customers;
         } catch ( final Exception e ) {
             Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
@@ -176,6 +201,8 @@ public class DataProvider {
     public Department[] getDepartmentsFromJson() {
         try {
             String json;
+
+            // TODO fix this
 
 //            if ( USE_REAL_DATA ) {
 //                json = new GetData( DEPARTMENTS_URL ).execute().get();
@@ -233,22 +260,22 @@ public class DataProvider {
             } else {
                 switch ( orderId ) {
                     case IotConstants.TestData.ORDER_1010_ID:
-                        json = IotConstants.TestData.ORDER_1010_JSON;
+                        json = IotConstants.TestData.ORDER_1010_DETAILS_JSON;
                         break;
                     case IotConstants.TestData.ORDER_2020_ID:
-                        json = IotConstants.TestData.ORDER_2020_JSON;
+                        json = IotConstants.TestData.ORDER_2020_DETAILS_JSON;
                         break;
                     case IotConstants.TestData.ORDER_3030_ID:
-                        json = IotConstants.TestData.ORDER_3030_JSON;
+                        json = IotConstants.TestData.ORDER_3030_DETAILS_JSON;
                         break;
                     case IotConstants.TestData.ORDER_4040_ID:
-                        json = IotConstants.TestData.ORDER_4040_JSON;
+                        json = IotConstants.TestData.ORDER_4040_DETAILS_JSON;
                         break;
                     case IotConstants.TestData.ORDER_5050_ID:
-                        json = IotConstants.TestData.ORDER_5050_JSON;
+                        json = IotConstants.TestData.ORDER_5050_DETAILS_JSON;
                         break;
                     case IotConstants.TestData.ORDER_6060_ID:
-                        json = IotConstants.TestData.ORDER_6060_JSON;
+                        json = IotConstants.TestData.ORDER_6060__DETAILS_JSON;
                         break;
                     default:
                         return OrderDetail.NO_DETAILS;

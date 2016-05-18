@@ -169,8 +169,6 @@ public class MainActivity extends AppCompatActivity
             }
         } else if ( IotConstants.Prefs.NOTIFICATION_INTERVAL.equals( key ) ) {
             Log.d( IotConstants.LOG_TAG, ( "Notifications interval preference changed" ) );
-            final int ms = IotApp.getPrefs().getInt( IotConstants.Prefs.NOTIFICATION_INTERVAL,
-                                                     IotConstants.Prefs.DEFAULT_NOTIFICATION_INTERVAL );
             stopNotificationThread();
             startNotificationThread();
         }
@@ -219,8 +217,8 @@ public class MainActivity extends AppCompatActivity
      */
     static class NotificationHandler extends Handler {
 
-        private Context context;
-        private Notifier notifier;
+        private final Context context;
+        private final Notifier notifier;
 
         public NotificationHandler( final Context context ) {
             this.context = context;

@@ -46,12 +46,7 @@ public class SettingsFragment extends Fragment
             final int userId = IotApp.getUserId();
 
             if ( userId != DataProvider.UNKNOWN_USER ) {
-                for ( final Customer user : DataProvider.get().getCustomersFromJson() ) {
-                    if ( user.getId() == userId ) {
-                        name = user.getName();
-                        break;
-                    }
-                }
+                name = DataProvider.get().getCustomerName( userId );
             }
 
             if ( name == null ) {
@@ -74,7 +69,7 @@ public class SettingsFragment extends Fragment
             // set selection to value of preference
             final int interval = ( IotApp.getPrefs()
                 .getInt( IotConstants.Prefs.NOTIFICATION_INTERVAL, IotConstants.Prefs.DEFAULT_NOTIFICATION_INTERVAL ) / 60000 );
-            int index = 0;
+            int index;
 
             switch ( interval ) {
                 case 2:
@@ -108,7 +103,7 @@ public class SettingsFragment extends Fragment
                                 final View view,
                                 final int position,
                                 final long id ) {
-        int minutes = -1;
+        int minutes;
 
         switch ( position ) {
             case 0:

@@ -1,7 +1,5 @@
 package com.redhat.iot.domain;
 
-import com.redhat.iot.R;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

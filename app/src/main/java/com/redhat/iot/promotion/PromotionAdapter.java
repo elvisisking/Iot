@@ -18,7 +18,7 @@ import com.redhat.iot.domain.Promotion;
 /**
  * An adapter for displaying collections of {@link Promotion}s.
  */
-public class PromotionAdapter extends BaseAdapter {
+class PromotionAdapter extends BaseAdapter {
 
     private final Context context;
     private final Promotion[] promotions;
@@ -86,7 +86,7 @@ public class PromotionAdapter extends BaseAdapter {
         holder.tvSalePrice.setText( this.context.getString( R.string.deal_sale_price, salePrice ) );
 
         // set promotion original price
-        holder.tvSalePrice.setText( this.context.getString( R.string.deal_original_price, product.getMsrp() ) );
+        holder.tvOriginalPrice.setText( this.context.getString( R.string.deal_original_price, product.getMsrp() ) );
 
         // set promotion description
         holder.tvDescription.setText( product.getDescription() );

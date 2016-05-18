@@ -21,12 +21,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private Button btnSignIn;
     private TextView txtUserId;
+    private TextView txtUserName;
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
-    void enableSignIn( final boolean enable ) {
+    private void userIdChanged() {
+        final String idString = this.txtUserId.getText().toString();
+        boolean enable = !idString.isEmpty();
+
+        if ( enable ) {
+            final int userId = Integer.parseInt( idString );
+            final String name = DataProvider.get().getCustomerName( userId );
+            this.txtUserName.setText( ( name == null ) ? "" : name );
+            enable = ( name != null );
+        }
+
         if ( this.btnSignIn.isEnabled() != enable ) {
             this.btnSignIn.setEnabled( enable );
         }
@@ -69,15 +80,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             this.btnSignIn.setOnClickListener( this );
         }
 
+        // get reference to user name text view
+        this.txtUserName = ( TextView )view.findViewById( R.id.loginUserName );
+
         {//key listener for the user ID textfield
             this.txtUserId = ( TextView )view.findViewById( R.id.loginUserId );
             this.txtUserId.addTextChangedListener( new TextWatcher() {
 
+                @Override
                 public void afterTextChanged( final Editable s ) {
-                    final boolean enable = ( LoginFragment.this.txtUserId.getText().length() != 0 );
-                    enableSignIn( enable );
+                    userIdChanged();
                 }
 
+                @Override
                 public void beforeTextChanged( final CharSequence s,
                                                final int start,
                                                final int count,
@@ -85,12 +100,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     // nothing to do
                 }
 
+                @Override
                 public void onTextChanged( final CharSequence s,
                                            final int start,
                                            final int before,
                                            final int count ) {
                     // nothing to do
                 }
+
             } );
         }
 

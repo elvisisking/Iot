@@ -23,7 +23,6 @@ public class OrdersFragment extends ListFragment
     implements AdapterView.OnItemClickListener {
 
     private Activity activity;
-    private OrderAdapter adapter;
 
     public OrdersFragment() {
         // nothing to do
@@ -39,8 +38,8 @@ public class OrdersFragment extends ListFragment
 
         // obtain customer orders and create adapter
         final Order[] orders = DataProvider.get().getOrders( customerId );
-        this.adapter = new OrderAdapter( this.activity, orders );
-        setListAdapter( this.adapter );
+        final OrderAdapter adapter = new OrderAdapter( this.activity, orders );
+        setListAdapter( adapter );
 
         // register click listener
         getListView().setOnItemClickListener( this );

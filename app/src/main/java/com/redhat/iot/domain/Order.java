@@ -1,7 +1,5 @@
 package com.redhat.iot.domain;
 
-import com.redhat.iot.IotConstants;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +50,7 @@ public class Order {
      * @param json a JSON representation of an order (cannot be empty)
      * @throws JSONException if there is a problem parsing the JSON
      */
-    public Order( final String json ) throws JSONException, ParseException {
+    public Order( final String json ) throws JSONException {
         final JSONObject order = new JSONObject( json );
 
         // required
@@ -159,7 +157,7 @@ public class Order {
         return this.status;
     }
 
-    private Calendar parseDate( final String dateString ) throws ParseException {
+    private Calendar parseDate( final String dateString ) {
         // need to strip off "/Date(" from beginning and ")/" from end
         final String temp = dateString.substring( 6, dateString.length() - 2 );
         final long orderDate = Long.parseLong( temp );

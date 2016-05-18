@@ -20,7 +20,7 @@ import java.util.Calendar;
 /**
  * An adapter for displaying collections of {@link Order}s.
  */
-public class OrderAdapter extends BaseAdapter {
+class OrderAdapter extends BaseAdapter {
 
     private final Context context;
     private final Order[] orders;

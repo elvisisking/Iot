@@ -79,11 +79,7 @@ public class OrderDetail {
             return false;
         }
 
-        if ( this.orderLineNumber != that.orderLineNumber ) {
-            return false;
-        }
-
-        return ( this.productId == that.productId );
+        return ( ( this.orderLineNumber == that.orderLineNumber ) && ( this.productId == that.productId ) );
 
     }
 

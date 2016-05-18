@@ -51,11 +51,8 @@ public class Promotion {
             return false;
         }
 
-        if ( this.productId != that.productId ) {
-            return false;
-        }
+        return ( ( this.productId == that.productId ) && ( this.id == that.id ) );
 
-        return ( this.id == that.id );
     }
 
     /**

@@ -75,40 +75,34 @@ public interface IotConstants {
     interface TestData {
 
         int DEPT_1_ID = 1000;
-        Department DEPT_1 = new Department( DEPT_1_ID, "Womans", "Womans clothing and assessories." );
         String DEPT_1_JSON =
-            "{ \"departmentCode\" : \"1000\", \"departmentName\" : \"Womans\", \"departmentDescription\" : \"Womans clothing and " +
-                "assessories.\" }";
+            "{ \"departmentCode\" : \"" + DEPT_1_ID + "\", \"departmentName\" : \"Womans\", \"departmentDescription\" : \"Womans " +
+                "clothing and assessories.\" }";
 
         int DEPT_2_ID = 1001;
-        Department DEPT_2 = new Department( DEPT_2_ID, "Boys", "Boys clothing and assessories." );
         String DEPT_2_JSON =
-            "{ \"departmentCode\" : \"1001\", \"departmentName\" : \"Boys\", \"departmentDescription\" : \"Boys clothing and " +
-                "assessories.\" }";
+            "{ \"departmentCode\" : \"" + DEPT_2_ID + "\", \"departmentName\" : \"Boys\", \"departmentDescription\" : \"Boys " +
+                "clothing and assessories.\" }";
 
         int DEPT_3_ID = 1002;
-        Department DEPT_3 = new Department( DEPT_3_ID, "Girls", "Girls clothing and assessories." );
         String DEPT_3_JSON =
-            "{ \"departmentCode\" : \"1002\", \"departmentName\" : \"Girls\", \"departmentDescription\" : \"Girls clothing and " +
-                "assessories.\" }";
+            "{ \"departmentCode\" : \"" + DEPT_3_ID + "\", \"departmentName\" : \"Girls\", \"departmentDescription\" : \"Girls " +
+                "clothing and assessories.\" }";
 
         int DEPT_4_ID = 1003;
-        Department DEPT_4 = new Department( DEPT_4_ID, "Mens", "Mens clothing and assessories." );
         String DEPT_4_JSON =
-            "{ \"departmentCode\" : \"1003\", \"departmentName\" : \"Mens\", \"departmentDescription\" : \"Mens clothing and " +
-                "assessories.\" }";
+            "{ \"departmentCode\" : \"" + DEPT_4_ID + "\", \"departmentName\" : \"Mens\", \"departmentDescription\" : \"Mens " +
+                "clothing and assessories.\" }";
 
         int DEPT_5_ID = 1004;
-        Department DEPT_5 = new Department( DEPT_5_ID, "Formal", "Formal wear for men and women." );
         String DEPT_5_JSON =
-            "{ \"departmentCode\" : \"1004\", \"departmentName\" : \"Formal\", \"departmentDescription\" : \"Formal wear for men " +
-                "and women.\" }";
+            "{ \"departmentCode\" : \"" + DEPT_5_ID + "\", \"departmentName\" : \"Formal\", \"departmentDescription\" : \"Formal " +
+                "wear for men and women.\" }";
 
         int DEPT_6_ID = 1005;
-        Department DEPT_6 = new Department( DEPT_6_ID, "Sport", "Sports wear for men and women." );
         String DEPT_6_JSON =
-            "{ \"departmentCode\" : \"1005\", \"departmentName\" : \"Sport\", \"departmentDescription\" : \"Sports wear for men " +
-                "and women.\" }";
+            "{ \"departmentCode\" : \"" + DEPT_6_ID + "\", \"departmentName\" : \"Sport\", \"departmentDescription\" : \"Sports " +
+                "wear for men and women.\" }";
 
         String DEPARTMENTS_JSON = "{ d: { \"results\": [ "
             + DEPT_1_JSON + ','
@@ -120,23 +114,8 @@ public interface IotConstants {
             + " ] } }";
 
         int ELVIS_ID = 10000;
-        Customer ELVIS = new Customer( ELVIS_ID, "elvis@iot.com", "elvis", null, null, null, null, null, null, null, null, 1000 );
-        String ELVIS_JSON = "{\"id\" : 10000, \"email\" : \"elvis@iot.com\", \"name\" : \"elvis\", \"pswd\" : \"elvis\"}";
-
         int RINGO_ID = 10001;
-        Customer RINGO = new Customer( RINGO_ID, "ringo@iot.com", "ringo", null, null, null, null, null, null, null, null, 1000 );
-        String RINGO_JSON = "{\"id\" : 10001, \"email\" : \"ringo@iot.com\", \"name\" : \"ringo\", \"pswd\" : \"ringo\"}";
-
         int SLEDGE_ID = 10002;
-        Customer SLEDGE =
-            new Customer( SLEDGE_ID, "sledge@iot.com", "sledge", null, null, null, null, null, null, null, null, 1000 );
-        String SLEDGE_JSON = "{\"id\" : 10002, \"email\" : \"sledge@iot.com\", \"name\" : \"sledge\", \"pswd\" : \"sledge\"}";
-
-        String CUSTOMERS_JSON = "{ d: { \"results\": [ "
-            + ELVIS_JSON + ','
-            + RINGO_JSON + ','
-            + SLEDGE_JSON
-            + " ] } }";
 
         Product PRODUCT_100 = new Product( 100,
                                            DEPT_1_ID,
@@ -413,14 +392,6 @@ public interface IotConstants {
             + " ] } }";
 
         int ORDER_1010_ID = 1010;
-        Order ORDER_1010 = new Order( ORDER_1010_ID,
-                                      ELVIS_ID,
-                                      new GregorianCalendar( 2013, 3, 31 ),
-                                      12.34,
-                                      null,
-                                      null,
-                                      null,
-                                      null );
         OrderDetail DETAIL_1010_1 = new OrderDetail( ORDER_1010_ID, PRODUCT_300.getId(), 1, 5.5, 1 );
         String DETAIL_1010_1_JSON =
             "{\"orderNumber\" : 1010, \"productCode\" : 300, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
@@ -443,14 +414,6 @@ public interface IotConstants {
             + "\"price\" : 12.34}";
 
         int ORDER_2020_ID = 2020;
-        Order ORDER_2020 = new Order( ORDER_2020_ID,
-                                      RINGO_ID,
-                                      new GregorianCalendar( 2014, 1, 20 ),
-                                      23.45,
-                                      null,
-                                      null,
-                                      null,
-                                      null );
         OrderDetail DETAIL_2020_1 = new OrderDetail( ORDER_2020_ID, PRODUCT_100.getId(), 1, 5.5, 1 );
         String DETAIL_2020_1_JSON =
             "{\"orderNumber\" : 2020, \"productCode\" : 100, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
@@ -488,14 +451,6 @@ public interface IotConstants {
             + "\"price\" : 23.45}";
 
         int ORDER_3030_ID = 3030;
-        Order ORDER_3030 = new Order( ORDER_3030_ID,
-                                      RINGO_ID,
-                                      new GregorianCalendar( 2013, 2, 10 ),
-                                      26.67,
-                                      null,
-                                      null,
-                                      null,
-                                      null );
         OrderDetail DETAIL_3030_1 = new OrderDetail( ORDER_3030_ID, PRODUCT_202.getId(), 1, 5.5, 1 );
         String DETAIL_3030_1_JSON =
             "{\"orderNumber\" : 3030, \"productCode\" : 202, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
@@ -513,14 +468,6 @@ public interface IotConstants {
             + "\"price\" : 26.67}";
 
         int ORDER_4040_ID = 4040;
-        Order ORDER_4040 = new Order( ORDER_4040_ID,
-                                      SLEDGE_ID,
-                                      new GregorianCalendar( 2013, 3, 22 ),
-                                      34.56,
-                                      null,
-                                      null,
-                                      null,
-                                      null );
         OrderDetail DETAIL_4040_1 = new OrderDetail( ORDER_4040_ID, PRODUCT_101.getId(), 1, 5.5, 1 );
         String DETAIL_4040_1_JSON =
             "{\"orderNumber\" : 4040, \"productCode\" : 101, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
@@ -543,14 +490,6 @@ public interface IotConstants {
             + "\"price\" : 34.56}";
 
         int ORDER_5050_ID = 5050;
-        Order ORDER_5050 = new Order( ORDER_5050_ID,
-                                      SLEDGE_ID,
-                                      new GregorianCalendar( 2013, 4, 15 ),
-                                      35.67,
-                                      null,
-                                      null,
-                                      null,
-                                      null );
         OrderDetail DETAIL_5050_1 = new OrderDetail( ORDER_5050_ID, PRODUCT_301.getId(), 1, 5.5, 1 );
         String DETAIL_5050_1_JSON =
             "{\"orderNumber\" : 5050, \"productCode\" : 301, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
@@ -573,14 +512,6 @@ public interface IotConstants {
             + "\"price\" : 35.67}";
 
         int ORDER_6060_ID = 6060;
-        Order ORDER_6060 = new Order( ORDER_6060_ID,
-                                      SLEDGE_ID,
-                                      new GregorianCalendar( 2013, 11, 25 ),
-                                      36.78,
-                                      null,
-                                      null,
-                                      null,
-                                      null );
         OrderDetail DETAIL_6060_1 = new OrderDetail( ORDER_6060_ID, PRODUCT_100.getId(), 1, 5.5, 1 );
         String DETAIL_6060_1_JSON =
             "{\"orderNumber\" : 6060, \"productCode\" : 100, \"quantityOrdered\" : 1, \"priceEach\" : 5.5, \"orderLineNumber\" : " +
@@ -596,15 +527,6 @@ public interface IotConstants {
             + "\"orderDate\" : \"/Date(1419033600000)/\", "
             + "\"productIds\" : [ 100,502 ], "
             + "\"price\" : 36.78}";
-
-        String ORDERS_JSON = "{ d: { \"results\": [ "
-            + ORDER_1010_JSON + ','
-            + ORDER_2020_JSON + ','
-            + ORDER_3030_JSON + ','
-            + ORDER_4040_JSON + ','
-            + ORDER_5050_JSON + ','
-            + ORDER_6060_JSON
-            + " ] } }";
 
         String ELVIS_ORDERS_JSON = "{ d: { \"results\": [ "
             + ORDER_1010_JSON
@@ -680,40 +602,17 @@ public interface IotConstants {
             + DETAIL_6060_2_JSON
             + " ] } }";
 
-        Promotion PROMO_1 = new Promotion( 1, IotConstants.TestData.PRODUCT_100.getId(), 10.0 );
         String PROMO_1_JSON = "{\"id\" : 1, \"productCode\" : \"100\", \"discount\" : \"10.0\"}";
-
-        Promotion PROMO_2 = new Promotion( 2, IotConstants.TestData.PRODUCT_101.getId(), 20.0 );
         String PROMO_2_JSON = "{\"id\" : 2, \"productCode\" : \"101\", \"discount\" : \"20.0\"}";
-
-        Promotion PROMO_3 = new Promotion( 3, IotConstants.TestData.PRODUCT_200.getId(), 30.0 );
         String PROMO_3_JSON = "{\"id\" : 3, \"productCode\" : \"200\", \"discount\" : \"30.0\"}";
-
-        Promotion PROMO_4 = new Promotion( 4, IotConstants.TestData.PRODUCT_201.getId(), 40.0 );
         String PROMO_4_JSON = "{\"id\" : 4, \"productCode\" : \"201\", \"discount\" : \"40.0\"}";
-
-        Promotion PROMO_5 = new Promotion( 5, IotConstants.TestData.PRODUCT_300.getId(), 50.0 );
         String PROMO_5_JSON = "{\"id\" : 5, \"productCode\" : \"300\", \"discount\" : \"50.0\"}";
-
-        Promotion PROMO_6 = new Promotion( 6, IotConstants.TestData.PRODUCT_301.getId(), 10.0 );
         String PROMO_6_JSON = "{\"id\" : 6, \"productCode\" : \"301\", \"discount\" : \"10.0\"}";
-
-        Promotion PROMO_7 = new Promotion( 7, IotConstants.TestData.PRODUCT_400.getId(), 20.0 );
         String PROMO_7_JSON = "{\"id\" : 7, \"productCode\" : \"400\", \"discount\" : \"20.0\"}";
-
-        Promotion PROMO_8 = new Promotion( 8, IotConstants.TestData.PRODUCT_401.getId(), 30.0 );
         String PROMO_8_JSON = "{\"id\" : 8, \"productCode\" : \"401\", \"discount\" : \"30.0\"}";
-
-        Promotion PROMO_9 = new Promotion( 9, IotConstants.TestData.PRODUCT_500.getId(), 40.0 );
         String PROMO_9_JSON = "{\"id\" : 9, \"productCode\" : \"500\", \"discount\" : \"40.0\"}";
-
-        Promotion PROMO_10 = new Promotion( 10, IotConstants.TestData.PRODUCT_501.getId(), 50.0 );
         String PROMO_10_JSON = "{\"id\" : 10, \"productCode\" : \"501\", \"discount\" : \"50.0\"}";
-
-        Promotion PROMO_11 = new Promotion( 11, IotConstants.TestData.PRODUCT_600.getId(), 10.0 );
         String PROMO_11_JSON = "{\"id\" : 11, \"productCode\" : \"600\", \"discount\" : \"10.0\"}";
-
-        Promotion PROMO_12 = new Promotion( 12, IotConstants.TestData.PRODUCT_601.getId(), 20.0 );
         String PROMO_12_JSON = "{\"id\" : 12, \"productCode\" : \"601\", \"discount\" : \"20.0\"}";
 
         String PROMOTIONS_JSON = "{ d: { \"results\": [ "
