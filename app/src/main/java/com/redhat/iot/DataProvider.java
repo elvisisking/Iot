@@ -32,8 +32,10 @@ public class DataProvider {
 
     private static final String CUSTOMERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Customer?$format=json";
     private static final String DEPARTMENTS_URL = "http://10.0.2.2:8081/odata/customer_iot/FUSE.Department?$format=json";
-    private static final String ORDER_DETAILS_URL = "http://10.0.2.2:8081/odata/customer_iot/OrderDetail?$format=json";
-    private static final String ORDERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Order?$format=json";
+    private static final String ORDER_DETAILS_URL =
+        " http://localhost:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail?$format=json";
+    private static final String ORDERS_URL =
+        "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Customer(%s)/Order?$format=json";
     private static final String PRODUCTS_URL = "http://10.0.2.2:8081/odata/customer_iot/Product?$format=json";
     private static final String PROMOTIONS_URL = "http://10.0.2.2:8081/odata/customer_iot/Promotion?$format=json";
 
@@ -221,12 +223,13 @@ public class DataProvider {
      * @param orderId the ID of the order whose order details are being requested
      * @return the order details (never <code>null</code>)
      */
-    public OrderDetail[] getOrderDetails( final int orderId ) {
+    private OrderDetail[] getOrderDetails( final int orderId ) {
         try {
             String json;
 
             if ( USE_REAL_DATA ) {
-                json = new GetData( ORDER_DETAILS_URL ).execute().get();
+                final String url = String.format( ORDER_DETAILS_URL, orderId );
+                json = new GetData( url ).execute().get();
             } else {
                 json = IotConstants.TestData.ORDER_DETAILS_JSON;
             }
@@ -241,10 +244,7 @@ public class DataProvider {
                   ++i ) {
                 final JSONObject jdetail = jarray.getJSONObject( i );
                 final OrderDetail detail = new OrderDetail( jdetail.toString() );
-
-                if ( orderId == detail.getOrderId() ) {
-                    details.add( detail );
-                }
+                details.add( detail );
             }
 
             return details.toArray( new OrderDetail[ details.size() ] );
@@ -254,12 +254,17 @@ public class DataProvider {
         }
     }
 
-    private Order[] getOrdersFromJson() {
+    /**
+     * @param customerId the ID of the customer whose orders are being requested
+     * @return the orders (never <code>null</code>)
+     */
+    public Order[] getOrders( final int customerId ) {
         try {
             String json;
 
             if ( USE_REAL_DATA ) {
-                json = new GetData( ORDERS_URL ).execute().get();
+                final String url = String.format( ORDERS_URL, customerId );
+                json = new GetData( url ).execute().get();
             } else {
                 json = IotConstants.TestData.ORDERS_JSON;
             }
@@ -292,31 +297,6 @@ public class DataProvider {
             Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
             return Order.NO_ORDERS;
         }
-    }
-
-    /**
-     * @param customerId the ID of the customer whose orders are being requested
-     * @return the orders (never <code>null</code>)
-     */
-    public Order[] getOrders( final int customerId ) {
-        final List< Order > orders = new ArrayList<>();
-
-        for ( final Order order : getOrdersFromJson() ) {
-            if ( customerId == order.getCustomerId() ) {
-                final OrderDetail[] items = getOrderDetails( order.getId() );
-                final int[] productIds = new int[ items.length ];
-                int i = 0;
-
-                for ( final OrderDetail item : items ) {
-                    productIds[ i++ ] = item.getProductId();
-                }
-
-                order.setProducts( productIds );
-                orders.add( order );
-            }
-        }
-
-        return orders.toArray( new Order[ orders.size() ] );
     }
 
     private Product[] getProductsFromJson() {

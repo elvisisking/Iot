@@ -427,7 +427,7 @@ public interface IotConstants {
 
         String ORDER_1010_JSON = "{\"orderNumber\" : 1010, "
             + "\"customerNumber\" : " + ELVIS.getId() + ", "
-            + "\"orderDate\" : \"Date(1463360426000)\", "
+            + "\"orderDate\" : \"/Date(1463360426000)/\", "
             + "\"price\" : 12.34}";
 
         Order ORDER_2020 = new Order( 2020,
@@ -470,7 +470,7 @@ public interface IotConstants {
 
         String ORDER_2020_JSON = "{\"orderNumber\" : 2020, "
             + "\"customerNumber\" : " + RINGO.getId() + ", "
-            + "\"orderDate\" : \"Date(1463360451000)\", "
+            + "\"orderDate\" : \"/Date(1463360451000)/\", "
             + "\"price\" : 23.45}";
 
         Order ORDER_3030 = new Order( 3030,
@@ -493,7 +493,7 @@ public interface IotConstants {
 
         String ORDER_3030_JSON = "{\"orderNumber\" : 3030, "
             + "\"customerNumber\" : " + RINGO.getId() + ", "
-            + "\"orderDate\" : \"Date(1419033600000)\", "
+            + "\"orderDate\" : \"/Date(1419033600000)/\", "
             + "\"price\" : 26.67}";
 
         Order ORDER_4040 = new Order( 4040,
@@ -521,7 +521,7 @@ public interface IotConstants {
 
         String ORDER_4040_JSON = "{\"orderNumber\" : 4040, "
             + "\"customerNumber\" : " + SLEDGE.getId() + ", "
-            + "\"orderDate\" : \"Date(1419033600000)\", "
+            + "\"orderDate\" : \"/Date(1419033600000)/\", "
             + "\"price\" : 34.56}";
 
         Order ORDER_5050 = new Order( 5050,
@@ -549,7 +549,7 @@ public interface IotConstants {
 
         String ORDER_5050_JSON = "{\"orderNumber\" : 5050, "
             + "\"customerNumber\" : " + SLEDGE.getId() + ", "
-            + "\"orderDate\" : \"Date(1419033600000)\", "
+            + "\"orderDate\" : \"/Date(1419033600000)/\", "
             + "\"price\" : 35.67}";
 
         Order ORDER_6060 = new Order( 6060,
@@ -572,7 +572,7 @@ public interface IotConstants {
 
         String ORDER_6060_JSON = "{\"orderNumber\" : 6060, "
             + "\"customerNumber\" : " + SLEDGE.getId() + ", "
-            + "\"orderDate\" : \"Date(1419033600000)\", "
+            + "\"orderDate\" : \"/Date(1419033600000)/\", "
             + "\"price\" : 36.78}";
 
         String ORDERS_JSON = "{ d: { \"results\": [ "

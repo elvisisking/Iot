@@ -160,8 +160,8 @@ public class Order {
     }
 
     private Calendar parseDate( final String dateString ) throws ParseException {
-        // need to strip off Date( from beginning and ) from end
-        final String temp = dateString.substring( 5, dateString.length() - 1 );
+        // need to strip off "/Date(" from beginning and ")/" from end
+        final String temp = dateString.substring( 6, dateString.length() - 2 );
         final long orderDate = Long.parseLong( temp );
         final Calendar cal = Calendar.getInstance();
         cal.setTime( new Date( orderDate ) );
