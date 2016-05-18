@@ -48,9 +48,9 @@ public class OrderDetail {
         // required
         this.orderId = orderDetail.getInt( "orderNumber" ); // must have an order ID
         this.productId = orderDetail.getInt( "productCode" ); // must have a product ID
-        this.priceEach = orderDetail.getDouble( "priceEach" ); // must have a item price
 
         // optional
+        this.priceEach = ( orderDetail.has( "priceEach" ) ? orderDetail.getDouble( "priceEach" ) : -1 );
         this.quantity = ( orderDetail.has( "quantityOrdered" ) ? orderDetail.getInt( "quantityOrdered" ) : 1 );
         this.orderLineNumber = ( orderDetail.has( "orderLineNumber" ) ? orderDetail.getInt( "orderLineNumber" ) : -1 );
     }
