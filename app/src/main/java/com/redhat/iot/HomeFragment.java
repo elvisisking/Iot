@@ -2,11 +2,13 @@ package com.redhat.iot;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.graphics.Outline;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -18,15 +20,6 @@ import com.redhat.iot.domain.Department;
  * The home screen.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener {
-//
-//    private static final int[] COLORS = new int[]{
-//        Color.parseColor( "#E6EE7C" ),
-//        Color.parseColor( "#ADEE7C" ),
-//        Color.parseColor( "#E7A146" ),
-//        Color.parseColor( "#EE7CAD" ),
-//        Color.parseColor( "#7CE6EE" ),
-//        Color.parseColor( "#BD7CEE" ),
-//        Color.parseColor( "#7CADEE" ) };
 
     public HomeFragment() {
         // Required empty public constructor
@@ -46,7 +39,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         // create department buttons
         final Typeface cursive = Typeface.create( "cursive", Typeface.BOLD );
-        final Department[] departments = DataProvider.get().getDepartmentsFromJson();
+        final Department[] departments = DataProvider.get().getDepartments();
         final TableLayout table = ( TableLayout )view.findViewById( R.id.homeDeptTable );
         TableRow row = null;
         int i = 0;
@@ -67,13 +60,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                                                                 TableRow.LayoutParams.MATCH_PARENT,
                                                                                 1.0f );
                 btn.setLayoutParams( params );
-                btn.setBackgroundResource( R.drawable.rounded_corner );
-//                btn.setBackgroundColor(COLORS[i]);
+                btn.setBackgroundColor( DataProvider.get().getDepartmentColor( dept ) );
                 btn.setText( dept.getName() );
                 btn.setTextSize( 30 );
+                btn.setTextColor( getActivity().getResources().getColor( R.color.colorPrimaryDark, null ) );
                 btn.setTypeface( cursive );
-                btn.setPadding( 30, 30, 30, 30 );
                 btn.setOnClickListener( this );
+
+                final ViewOutlineProvider provider = new ViewOutlineProvider() {
+
+                    @Override
+                    public void getOutline( final View view,
+                                            final Outline outline ) {
+                        outline.setRoundRect( 10, 10, btn.getWidth() - 10, btn.getHeight() - 10, 30.0f );
+                    }
+                };
+                btn.setOutlineProvider( provider );
+                btn.setClipToOutline( true );
+
+                btn.setElevation( 10.0f );
                 row.addView( btn );
             }
 

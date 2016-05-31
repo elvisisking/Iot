@@ -3,6 +3,8 @@ package com.redhat.iot.domain;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Comparator;
+
 /**
  * Represents a store department.
  */
@@ -12,6 +14,18 @@ public class Department {
      * An empty collection of departments.
      */
     public static final Department[] NO_DEPARTMENTS = new Department[ 0 ];
+
+    /**
+     * Sorts {@link Department departments} by name.
+     */
+    public static final Comparator< Department > NAME_SORTER = new Comparator< Department >() {
+
+        @Override
+        public int compare( final Department thisDepartment,
+                            final Department thatDepartment ) {
+            return thisDepartment.getName().compareTo( thatDepartment.getName() );
+        }
+    };
 
     private final String description;
     private final long id;
@@ -66,6 +80,11 @@ public class Department {
      */
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
 }

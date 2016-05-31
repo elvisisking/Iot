@@ -3,15 +3,14 @@ package com.redhat.iot.promotion;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.GridView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.Toast;
 
 import com.redhat.iot.DataProvider;
 import com.redhat.iot.R;
@@ -29,11 +28,40 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
 
     private Activity activity;
     private PromotionAdapter adapter;
-    private GridView grid;
     private final Collection< CheckBox > chkDepts = new ArrayList<>();
+    private RecyclerView promotionssView;
 
     public PromotionsFragment() {
         // nothing to do
+    }
+
+    @Override
+    public void onActivityCreated( final Bundle savedInstanceState ) {
+        super.onActivityCreated( savedInstanceState );
+
+        // get all current promotions
+        final Promotion[] promotions = DataProvider.get().getPromotions();
+        this.adapter = new PromotionAdapter( this.activity, promotions );
+        this.promotionssView = ( RecyclerView )getActivity().findViewById( R.id.gridDeals );
+        this.promotionssView.setAdapter( adapter );
+        this.promotionssView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
+    }
+
+    public void onClick( final View view ) {
+        final List< Long > selected = new ArrayList<>( this.chkDepts.size() );
+
+        for ( final CheckBox chk : this.chkDepts ) {
+            if ( chk.isChecked() ) {
+                selected.add( ( long )chk.getTag() );
+            }
+        }
+
+        // reload the promotions
+        this.adapter = new PromotionAdapter( this.activity,
+                                             DataProvider.get()
+                                                 .getDepartmentPromotions( selected.toArray( new Long[ selected.size() ] ) ) );
+        this.promotionssView.setAdapter( this.adapter );
+        this.adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -41,27 +69,11 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
                               final ViewGroup parent,
                               final Bundle savedInstanceState ) {
         this.activity = getActivity();
-        final View view = inflater.inflate( R.layout.promotions, parent, false );
-
-        this.grid = ( GridView )view.findViewById( R.id.gridDeals );
-
-        final Promotion[] promotions = DataProvider.get().getPromotionsFromJson();
-        this.adapter = new PromotionAdapter( this.activity, promotions );
-        grid.setAdapter( adapter );
-        grid.setOnItemClickListener( new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick( final AdapterView< ? > parent,
-                                     final View view,
-                                     final int position,
-                                     final long id ) {
-                Toast.makeText( getActivity(), "You Clicked at " + promotions[ +position ], Toast.LENGTH_SHORT ).show();
-            }
-        } );
+        final View promotionsView = inflater.inflate( R.layout.promotions, parent, false );
 
         // create department checkboxes
-        final Department[] departments = DataProvider.get().getDepartmentsFromJson();
-        final TableLayout table = ( TableLayout )view.findViewById( R.id.promoDepartments );
+        final Department[] departments = DataProvider.get().getDepartments();
+        final TableLayout table = ( TableLayout )promotionsView.findViewById( R.id.promoDepartments );
         TableRow row = null;
         int i = 0;
 
@@ -81,7 +93,11 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
                 final ViewGroup.LayoutParams params = new TableRow.LayoutParams( TableRow.LayoutParams.WRAP_CONTENT,
                                                                                  TableRow.LayoutParams.WRAP_CONTENT );
                 chk.setLayoutParams( params );
+                chk.setPadding( 10, 10, 10, 10 );
                 chk.setText( dept.getName() );
+                chk.setTextColor( getResources().getColor( R.color.textColorPrimary, null ) );
+                chk.setTextSize( 20.0f );
+//                chk.setBackgroundColor( DataProvider.get().getDepartmentColor( dept ) );
                 chk.setTag( dept.getId() );
                 chk.setChecked( true );
                 chk.setOnClickListener( this );
@@ -92,23 +108,8 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
 
             ++i;
         }
-        return view;
-    }
 
-    public void onClick( final View view ) {
-        final List< Long > selected = new ArrayList<>( this.chkDepts.size() );
-
-        for ( final CheckBox chk : this.chkDepts ) {
-            if ( chk.isChecked() ) {
-                selected.add( ( long )chk.getTag() );
-            }
-        }
-
-        this.adapter.notifyDataSetInvalidated();
-        this.adapter = new PromotionAdapter( this.activity,
-                                             DataProvider.get().getPromotions( selected.toArray( new Long[ selected.size() ] ) ) );
-        this.grid.setAdapter( this.adapter );
-        this.adapter.notifyDataSetChanged();
+        return promotionsView;
     }
 
 }

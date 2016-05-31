@@ -1,12 +1,13 @@
 package com.redhat.iot;
 
+import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
@@ -45,7 +46,7 @@ public class SettingsFragment extends Fragment
             String name = null;
             final int userId = IotApp.getUserId();
 
-            if ( userId != DataProvider.UNKNOWN_USER ) {
+            if ( userId != Customer.UNKNOWN_USER ) {
                 name = DataProvider.get().getCustomerName( userId );
             }
 
@@ -58,17 +59,22 @@ public class SettingsFragment extends Fragment
 
         {// enable notifications
             final CheckBox chk = ( CheckBox )view.findViewById( R.id.settingsEnableNotifications );
+            final boolean checked = ( IotApp.getPrefs()
+                .getBoolean( IotConstants.Prefs.ENABLE_NOTIFICATIONS, IotConstants.Prefs.DEFAULT_ENABLE_NOTIFICATIONS ) );
+            chk.setChecked( checked );
             chk.setOnCheckedChangeListener( this );
-
         }
 
         {// notification interval
             final Spinner spinner = ( Spinner )view.findViewById( R.id.settingsNotificationInterval );
             spinner.setOnItemSelectedListener( this );
 
+            final ArrayAdapter< CharSequence > adapter = new ArrayAdapter<>( getActivity(), R.layout.notification_interval, getResources().getTextArray( R.array.notification_intervals ) );
+            spinner.setAdapter( adapter );
+
             // set selection to value of preference
-            final int interval = ( IotApp.getPrefs()
-                .getInt( IotConstants.Prefs.NOTIFICATION_INTERVAL, IotConstants.Prefs.DEFAULT_NOTIFICATION_INTERVAL ) / 60000 );
+            final int interval = ( ( IotApp.getPrefs()
+                .getInt( IotConstants.Prefs.NOTIFICATION_INTERVAL, IotConstants.Prefs.DEFAULT_NOTIFICATION_INTERVAL ) ) / 60000 );
             int index;
 
             switch ( interval ) {

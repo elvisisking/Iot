@@ -26,6 +26,13 @@ public interface IotConstants {
         String CUSTOMER_ID = "customer_id";
 
         /**
+         * The customer ID when no one is logged in. Value is {@value}.
+         *
+         * @see Customer#UNKNOWN_USER
+         */
+        int DEFAULT_CUSTOMER_ID = Customer.UNKNOWN_USER;
+
+        /**
          * The default enable notifications preference value. Value is {@value}.
          */
         boolean DEFAULT_ENABLE_NOTIFICATIONS = true;

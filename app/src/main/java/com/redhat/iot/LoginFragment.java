@@ -2,13 +2,16 @@ package com.redhat.iot;
 
 import android.app.Fragment;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,30 +20,19 @@ import com.redhat.iot.domain.Customer;
 /**
  * A login screen.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment implements OnClickListener, OnSharedPreferenceChangeListener {
 
     private Button btnSignIn;
-    private TextView txtUserId;
+    private TextView txtCurrUser;
+    private EditText txtUserId;
     private TextView txtUserName;
 
     public LoginFragment() {
         // Required empty public constructor
     }
 
-    private void userIdChanged() {
-        final String idString = this.txtUserId.getText().toString();
-        boolean enable = !idString.isEmpty();
-
-        if ( enable ) {
-            final int userId = Integer.parseInt( idString );
-            final String name = DataProvider.get().getCustomerName( userId );
-            this.txtUserName.setText( ( name == null ) ? "" : name );
-            enable = ( name != null );
-        }
-
-        if ( this.btnSignIn.isEnabled() != enable ) {
-            this.btnSignIn.setEnabled( enable );
-        }
+    private int getCustomerId() {
+        return IotApp.getPrefs().getInt( IotConstants.Prefs.CUSTOMER_ID, Customer.UNKNOWN_USER );
     }
 
     @Override
@@ -81,10 +73,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
 
         // get reference to user name text view
+        this.txtCurrUser = ( TextView )view.findViewById( R.id.loginCurrentUser );
+
+        // get reference to user name text view
         this.txtUserName = ( TextView )view.findViewById( R.id.loginUserName );
 
-        {//key listener for the user ID textfield
-            this.txtUserId = ( TextView )view.findViewById( R.id.loginUserId );
+        {//setup key listener for the user ID textfield and set to current user's ID if necessary
+            this.txtUserId = ( EditText )view.findViewById( R.id.loginUserId );
             this.txtUserId.addTextChangedListener( new TextWatcher() {
 
                 @Override
@@ -109,9 +104,52 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 }
 
             } );
+
+            final int loggedInUser = getCustomerId();
+
+            if ( loggedInUser == Customer.UNKNOWN_USER ) {
+                this.txtCurrUser.setText( R.string.login_not_logged_in );
+            } else {
+                this.txtCurrUser.setText( DataProvider.get().getCustomerName( loggedInUser ) );
+                this.txtUserId.setText( Integer.toString( loggedInUser ) );
+                this.txtUserId.setSelection( this.txtUserId.getText().length() );
+            }
         }
 
+        // register to receive preference changes
+        IotApp.getPrefs().registerOnSharedPreferenceChangeListener( this );
+
         return view;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged( final SharedPreferences sharedPreferences,
+                                           final String key ) {
+        if ( IotConstants.Prefs.CUSTOMER_ID.equals( key ) ) {
+            final int custId = getCustomerId();
+
+            if ( custId == Customer.UNKNOWN_USER ) {
+                this.txtCurrUser.setText( R.string.login_not_logged_in );
+            } else {
+                this.txtCurrUser.setText( DataProvider.get().getCustomerName( custId ) );
+            }
+        }
+    }
+
+    private void userIdChanged() {
+        final String idString = this.txtUserId.getText().toString();
+        boolean enable = !idString.isEmpty();
+
+        if ( enable ) {
+            final int userId = Integer.parseInt( idString );
+            final String name = DataProvider.get().getCustomerName( userId );
+            this.txtUserName.setText( ( name == null ) ? "" : name );
+            enable = ( name != null );
+        }
+
+        if ( this.btnSignIn.isEnabled() != enable ) {
+            this.btnSignIn.setEnabled( enable );
+        }
     }
 
 }

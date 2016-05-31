@@ -7,26 +7,52 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.redhat.iot.domain.Customer;
 import com.redhat.iot.order.OrdersFragment;
 import com.redhat.iot.promotion.PromotionsFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final int ICON_INDEX = 0;
+    private static final int NAME_INDEX = 1;
+    private static final Integer[][] DRAWER_CONFIG = new Integer[][]{
+        new Integer[]{ R.drawable.ic_user, R.string.title_login_fragment },
+        new Integer[]{ R.drawable.ic_home, R.string.title_home_fragment },
+        new Integer[]{ R.drawable.ic_price_tags, R.string.title_deals_fragment },
+        new Integer[]{ R.drawable.ic_coin_dollar, R.string.title_orders_fragment },
+        new Integer[]{ R.drawable.ic_credit_card, R.string.title_billing_fragment },
+        new Integer[]{ R.drawable.ic_cog, R.string.title_settings_fragment },
+        new Integer[]{ R.drawable.ic_mail, R.string.title_contact_fragment },
+        new Integer[]{ R.drawable.ic_info, R.string.title_about_fragment },
+    };
+
+    private RecyclerView.Adapter drawerAdapter;
+    private DrawerLayout drawerLayout;
+    private RecyclerView.LayoutManager drawerLayoutMgr;
+    private RecyclerView drawerRecyclerView;
+    private ActionBarDrawerToggle drawerToggle;
 
     private Timer notifierTimer;
+    private Toolbar toolbar;
 
     @Override
     public void onBackPressed() {
@@ -46,22 +72,51 @@ public class MainActivity extends AppCompatActivity
 
         final Toolbar toolbar = ( Toolbar )findViewById( R.id.toolbar );
         setSupportActionBar( toolbar );
+        getSupportActionBar().setDisplayShowHomeEnabled( true );
 
-        final DrawerLayout drawer = ( DrawerLayout )findViewById( R.id.drawer_layout );
-        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close );
-        drawer.setDrawerListener( toggle );
-        toggle.syncState();
+        this.drawerRecyclerView = ( RecyclerView )findViewById( R.id.drawer_view );
+        this.drawerRecyclerView.setHasFixedSize( true );
 
-        final NavigationView navigationView = ( NavigationView )findViewById( R.id.nav_view );
-        navigationView.setNavigationItemSelectedListener( this );
+        this.drawerAdapter = new DrawerAdapter( this );
+        this.drawerRecyclerView.setAdapter( this.drawerAdapter );
+
+        this.drawerLayoutMgr = new LinearLayoutManager( this );
+        this.drawerRecyclerView.setLayoutManager( this.drawerLayoutMgr );
+
+        this.drawerLayout = ( DrawerLayout )findViewById( R.id.drawer_layout );
+        this.drawerToggle = new ActionBarDrawerToggle( this,
+                                                       this.drawerLayout,
+                                                       toolbar,
+                                                       R.string.navigation_drawer_open,
+                                                       R.string.navigation_drawer_close ) {
+
+            @Override
+            public void onDrawerOpened( final View drawerView ) {
+                super.onDrawerOpened( drawerView );
+                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
+                // open I am not going to put anything here)
+            }
+
+            @Override
+            public void onDrawerClosed( final View drawerView ) {
+                super.onDrawerClosed( drawerView );
+            }
+
+        };
+        this.drawerLayout.addDrawerListener( this.drawerToggle );
+        this.drawerToggle.syncState();
+//
+//        final NavigationView navigationView = ( NavigationView )findViewById( R.id.nav_view );
+//        navigationView.setNavigationItemSelectedListener( this );
 
         // set home as first fragment
         final FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
             .replace( R.id.content_frame, new HomeFragment() )
             .commit();
-        navigationView.setCheckedItem( R.id.nav_home );
+
+//        this.drawerLayoutMgr.scrollToPosition( 2 );
+//        this.drawerRecyclerView.setCheckedItem( R.id.nav_home );
 
         // register to receive preference changes
         IotApp.getPrefs().registerOnSharedPreferenceChangeListener( this );
@@ -74,57 +129,59 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onNavigationItemSelected( final MenuItem item ) {
-        // handle navigation drawer clicks
-        final int id = item.getItemId();
+    void showScreen( final int index ) {
         Fragment fragment = null;
         int titleId = -1;
 
-        if ( id == R.id.nav_login ) {
-            fragment = new LoginFragment();
-            titleId = R.string.title_login_fragment;
-        } else if ( id == R.id.nav_home ) {
-            fragment = new HomeFragment();
-        } else if ( id == R.id.nav_deals ) {
-            fragment = new PromotionsFragment();
-            titleId = R.string.title_deals_fragment;
-        } else if ( id == R.id.nav_purchase_history ) {
-            fragment = new OrdersFragment();
-            titleId = R.string.title_orders_fragment;
-        } else if ( id == R.id.nav_billing ) {
-            fragment = new BillingFragment();
-            titleId = R.string.title_billing_fragment;
-        } else if ( id == R.id.nav_settings ) {
-            fragment = new SettingsFragment();
-            titleId = R.string.title_settings_fragment;
-        } else if ( id == R.id.nav_contact ) {
-            fragment = new ContactFragment();
-            titleId = R.string.title_contact_fragment;
-        } else if ( id == R.id.nav_about ) {
-            fragment = new AboutFragment();
-            titleId = R.string.title_about_fragment;
+        switch ( index ) {
+            case 1:
+                fragment = new LoginFragment();
+                titleId = R.string.title_login_fragment;
+                break;
+            case 2:
+                fragment = new HomeFragment();
+                break;
+            case 3:
+                fragment = new PromotionsFragment();
+                titleId = R.string.title_deals_fragment;
+                break;
+            case 4:
+                fragment = new OrdersFragment();
+                titleId = R.string.title_orders_fragment;
+                break;
+            case 5:
+                fragment = new BillingFragment();
+                titleId = R.string.title_billing_fragment;
+                break;
+            case 6:
+                fragment = new SettingsFragment();
+                titleId = R.string.title_settings_fragment;
+                break;
+            case 7:
+                fragment = new ContactFragment();
+                titleId = R.string.title_contact_fragment;
+                break;
+            case 8:
+                fragment = new AboutFragment();
+                titleId = R.string.title_about_fragment;
+                break;
+            default:
+                Log.e( IotConstants.LOG_TAG, "index " + index + " does not create a fragment" );
+                fragment = new HomeFragment();
+                break;
         }
 
-        if ( fragment != null ) {
-            final FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace( R.id.content_frame, fragment ).commit();
+        final FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace( R.id.content_frame, fragment ).commit();
 
-            final DrawerLayout drawer = ( DrawerLayout )findViewById( R.id.drawer_layout );
-            drawer.closeDrawer( GravityCompat.START );
+        final DrawerLayout drawer = ( DrawerLayout )findViewById( R.id.drawer_layout );
+        drawer.closeDrawer( GravityCompat.START );
 
-            String title = getString( R.string.app_name );
-
-            if ( titleId != -1 ) {
-                title += " - " + getString( titleId );
-            }
-
-            getSupportActionBar().setTitle( title );
+        if ( titleId == -1 ) {
+            getSupportActionBar().setSubtitle( "" );
         } else {
-            Log.e( "MainActivity", "ID " + id + " does not create a fragment" );
+            getSupportActionBar().setSubtitle( getString( titleId ) );
         }
-
-        return true;
     }
 
     @Override
@@ -133,7 +190,7 @@ public class MainActivity extends AppCompatActivity
 
         // log user out
         if ( id == R.id.action_sign_out ) {
-            IotApp.setUserId( DataProvider.UNKNOWN_USER );
+            IotApp.setUserId( Customer.UNKNOWN_USER );
             return true;
         }
 
@@ -151,7 +208,9 @@ public class MainActivity extends AppCompatActivity
     protected void onRestart() {
         Log.d( IotConstants.LOG_TAG, "onRestart" );
         super.onRestart();
-        startNotificationThread();
+
+        // start notifications if pref is set
+        onSharedPreferenceChanged( IotApp.getPrefs(), IotConstants.Prefs.ENABLE_NOTIFICATIONS );
     }
 
     @Override
@@ -182,11 +241,12 @@ public class MainActivity extends AppCompatActivity
         // make sure we have a user logged in at startup
         final int userId = IotApp.getUserId();
 
-        if ( userId == DataProvider.UNKNOWN_USER ) {
+        if ( userId == Customer.UNKNOWN_USER ) {
             IotApp.setUserId( IotConstants.FIRST_CUST_ID );
         }
 
-        startNotificationThread();
+        // start notifications if pref is set
+        onSharedPreferenceChanged( IotApp.getPrefs(), IotConstants.Prefs.ENABLE_NOTIFICATIONS );
     }
 
     @Override
@@ -237,6 +297,84 @@ public class MainActivity extends AppCompatActivity
 
         private void sendNotification( final String msg ) {
             this.notifier.sendNotification( this.context.getString( R.string.app_name ), msg );
+        }
+
+    }
+
+    class DrawerAdapter extends RecyclerView.Adapter< DrawerAdapter.Holder > {
+
+        private final Context context;
+        private final LayoutInflater inflater;
+
+        DrawerAdapter( final Context c ) {
+            this.context = c;
+            this.inflater = LayoutInflater.from( this.context );
+        }
+
+        @Override
+        public int getItemCount() {
+            return ( DRAWER_CONFIG.length + 1 );
+        }
+
+        @Override
+        public long getItemId( final int position ) {
+            return position;
+        }
+
+        @Override
+        public int getItemViewType( final int position ) {
+            return ( ( position == 0 ) ? 0 : 1 );
+        }
+
+        @Override
+        public void onBindViewHolder( final Holder holder,
+                                      final int position ) {
+            if ( position != 0 ) {
+                holder.ivIcon.setImageResource( DRAWER_CONFIG[ position - 1 ][ ICON_INDEX ] );
+                holder.tvName.setText( DRAWER_CONFIG[ position - 1 ][ NAME_INDEX ] );
+            }
+        }
+
+        @Override
+        public Holder onCreateViewHolder( final ViewGroup parent,
+                                          final int viewType ) {
+            // item
+            if ( viewType == 1 ) {
+                final View view = this.inflater.inflate( R.layout.drawer_item, null );
+                return new Holder( view, viewType );
+            }
+
+            // header
+            final View view = this.inflater.inflate( R.layout.nav_header_main, null );
+            return new Holder( view, viewType );
+        }
+
+        class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+            private final ImageView ivIcon;
+            private final TextView tvName;
+
+            public Holder( final View itemView,
+                           final int itemType ) {
+                super( itemView );
+
+                if ( itemType == 1 ) {
+                    itemView.setClickable( true );
+                    itemView.setOnClickListener( this );
+
+                    this.ivIcon = ( ImageView )itemView.findViewById( R.id.drawerItemIcon );
+                    this.tvName = ( TextView )itemView.findViewById( R.id.drawerItemName );
+                } else {
+                    this.ivIcon = null;
+                    this.tvName = null;
+                }
+            }
+
+            @Override
+            public void onClick( final View view ) {
+                showScreen( getAdapterPosition() );
+            }
+
         }
 
     }

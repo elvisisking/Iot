@@ -13,6 +13,11 @@ public class Customer {
      */
     public static final Customer[] NO_CUSTOMERs = new Customer[ 0 ];
 
+    /**
+     * The ID of an unknown user.
+     */
+    public static final int UNKNOWN_USER = -1;
+
     private final String addressLine1;
     private final String addressLine2;
     private final String city;

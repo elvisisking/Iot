@@ -1,13 +1,14 @@
 package com.redhat.iot.order;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.redhat.iot.DataProvider;
 import com.redhat.iot.IotConstants;
@@ -20,25 +21,23 @@ import java.util.Calendar;
 /**
  * An adapter for displaying collections of {@link Order}s.
  */
-class OrderAdapter extends BaseAdapter {
+class OrderAdapter extends RecyclerView.Adapter {
 
     private final Context context;
+    private final LayoutInflater inflater;
     private final Order[] orders;
+    private RecyclerView recyclerView;
 
     public OrderAdapter( final Context c,
                          final Order[] orders ) {
         this.context = c;
+        this.inflater = LayoutInflater.from( this.context );
         this.orders = orders;
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return this.orders.length;
-    }
-
-    @Override
-    public Order getItem( final int position ) {
-        return this.orders[ position ];
     }
 
     @Override
@@ -46,31 +45,23 @@ class OrderAdapter extends BaseAdapter {
         return position;
     }
 
+    void handleOrderClicked( final View orderView ) {
+        final int index = this.recyclerView.getChildLayoutPosition( orderView );
+        final Order order = this.orders[ index ];
+        Toast.makeText( this.context, "Order: " + order.getId(), Toast.LENGTH_SHORT ).show();
+    }
+
     @Override
-    public View getView( final int position,
-                         final View convertView,
-                         final ViewGroup parent ) {
+    public void onAttachedToRecyclerView( final RecyclerView recyclerView ) {
+        super.onAttachedToRecyclerView( recyclerView );
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onBindViewHolder( final RecyclerView.ViewHolder viewHolder,
+                                  final int position ) {
+        final OrderViewHolder holder = ( OrderViewHolder )viewHolder;
         final Order order = this.orders[ position ];
-        ViewHolder holder;
-        View orderView;
-
-        if ( convertView == null ) {
-            final LayoutInflater inflater = ( LayoutInflater )this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-            orderView = inflater.inflate( R.layout.order, null );
-
-            holder = new ViewHolder();
-            holder.tvId = ( TextView )orderView.findViewById( R.id.orderId );
-            holder.tvDate = ( TextView )orderView.findViewById( R.id.orderDate );
-            holder.ivOrder = ( ImageView )orderView.findViewById( R.id.orderImage );
-            holder.tvDescription = ( TextView )orderView.findViewById( R.id.orderFirstItem );
-            holder.tvNumItems = ( TextView )orderView.findViewById( R.id.orderNumItems );
-            holder.tvPrice = ( TextView )orderView.findViewById( R.id.orderPrice );
-
-            orderView.setTag( holder );
-        } else {
-            orderView = convertView;
-            holder = ( ViewHolder )orderView.getTag();
-        }
 
         // set order ID
         holder.tvId.setText( this.context.getString( R.string.order_id, order.getId() ) );
@@ -106,18 +97,43 @@ class OrderAdapter extends BaseAdapter {
 
         // set order price
         holder.tvPrice.setText( this.context.getString( R.string.order_price, order.getPrice() ) );
-
-        return orderView;
     }
 
-    static class ViewHolder {
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder( final ViewGroup parent,
+                                                       final int viewType ) {
+        final View view = this.inflater.inflate( R.layout.order, null );
+        return new OrderViewHolder( view );
+    }
 
-        TextView tvId;
-        TextView tvDate;
-        ImageView ivOrder;
-        TextView tvDescription;
-        TextView tvNumItems;
-        TextView tvPrice;
+    private class OrderViewHolder extends RecyclerView.ViewHolder {
+
+        private final ImageView ivOrder;
+        private final TextView tvDate;
+        private final TextView tvDescription;
+        private final TextView tvId;
+        private final TextView tvNumItems;
+        private final TextView tvPrice;
+
+        public OrderViewHolder( final View orderView ) {
+            super( orderView );
+
+            this.ivOrder = ( ImageView )orderView.findViewById( R.id.orderImage );
+            this.tvDate = ( TextView )orderView.findViewById( R.id.orderDate );
+            this.tvDescription = ( TextView )orderView.findViewById( R.id.orderFirstItem );
+            this.tvId = ( TextView )orderView.findViewById( R.id.orderId );
+            this.tvNumItems = ( TextView )orderView.findViewById( R.id.orderNumItems );
+            this.tvPrice = ( TextView )orderView.findViewById( R.id.orderPrice );
+
+            orderView.setOnClickListener( new View.OnClickListener() {
+
+                @Override
+                public void onClick( final View orderView ) {
+                    handleOrderClicked( orderView );
+                }
+
+            } );
+        }
 
     }
 
