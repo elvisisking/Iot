@@ -1,14 +1,38 @@
 package com.redhat.iot.domain;
 
+import com.redhat.iot.DataProvider;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Comparator;
 
 /**
  * Represents a promotion.
  */
 public class Promotion {
 
+    /**
+     * An empty collection of {@link Promotion}s.
+     */
     public static final Promotion[] NO_PROMOTIONS = new Promotion[ 0 ];
+
+    /**
+     * Sorts {@link Promotion promotions} be {@link Department department} name.
+     */
+    public static final Comparator< Promotion > DEPT__NAME_SORTER = new Comparator< Promotion >() {
+
+        @Override
+        public int compare( final Promotion thisPromo,
+                            final Promotion thatPromo ) {
+            final DataProvider store = DataProvider.get();
+            final Product thisProduct = store.findProduct( thisPromo.getProductId() );
+            final Product thatProduct = store.findProduct( thatPromo.getProductId() );
+            final Department thisDept = store.findDepartment( thisProduct.getDepartmentId() );
+            final Department thatDept = store.findDepartment( thatProduct.getDepartmentId() );
+            return Department.NAME_SORTER.compare( thisDept, thatDept );
+        }
+    };
 
     private final double discount;
     private final int productId;

@@ -1,5 +1,7 @@
 package com.redhat.iot;
 
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
@@ -30,21 +32,18 @@ import java.util.Map;
  */
 public class DataProvider {
 
-    private static final boolean USE_REAL_DATA = true;
+    private static final boolean USE_REAL_DATA = false;
 
     private static final String CUSTOMERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Customer?$format=json";
     private static final String DEPARTMENTS_URL = "http://10.0.2.2:8081/odata/customer_iot/FUSE.Department?$format=json";
     private static final String ORDER_DETAILS_URL =
-        " http://localhost:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail?$format=json";
+        "http://localhost:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail?$format=json";
     private static final String ORDERS_URL =
         "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Customer(%s)/Order?$format=json";
-    private static final String PRODUCTS_URL = "http://10.0.2.2:8081/odata/customer_iot/Product?$format=json";
-    private static final String PROMOTIONS_URL = "http://10.0.2.2:8081/odata/customer_iot/Promotion?$format=json";
-
-    /**
-     * The ID of an unknown user.
-     */
-    public static final int UNKNOWN_USER = -1;
+    private static final String PRODUCTS_URL =
+        "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Product?$format=json";
+    private static final String PROMOTIONS_URL =
+        "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Promotion?$format=json";
 
     private static DataProvider _shared = null;
 
@@ -60,7 +59,8 @@ public class DataProvider {
     }
 
     private long userIdCacheTime;
-    private Map< Integer, String > idNameMap = new HashMap<>();
+    private Map< Integer, String > idNameMap = new HashMap<>(); // customer names and ID cache
+    private Map< Department, Integer > deptColors = new HashMap<>();
 
     /**
      * Don't allow construction outside of this class.
@@ -113,11 +113,25 @@ public class DataProvider {
     }
 
     /**
+     * @param deptId the ID of the department being requested
+     * @return the department or <code>null</code> if not found
+     */
+    public Department findDepartment( final long deptId ) {
+        for ( final Department dept : getDepartments() ) {
+            if ( deptId == dept.getId() ) {
+                return dept;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param productId the ID of the product being requested
      * @return the product or <code>null</code> if not found
      */
     public Product findProduct( final int productId ) {
-        for ( final Product product : getProductsFromJson() ) {
+        for ( final Product product : getProducts() ) {
             if ( productId == product.getId() ) {
                 return product;
             }
@@ -196,9 +210,78 @@ public class DataProvider {
     }
 
     /**
+     * @param deptId the ID of the department whose color is being requested (cannot be <code>null</code>)
+     * @return the ID of the color
+     */
+    public int getDepartmentColor( final long deptId ) {
+        // populate department cache if necessary
+        if ( this.deptColors.isEmpty() ) {
+            getDepartments();
+        }
+
+        for ( final Department dept : this.deptColors.keySet() ) {
+            if ( dept.getId() == deptId ) {
+                return getDepartmentColor( dept );
+            }
+        }
+
+        Log.e( IotConstants.LOG_TAG, "No department found in cache for department " + deptId );
+        return 0;
+    }
+
+    /**
+     * @param dept the department whose color is being requested (cannot be <code>null</code>)
+     * @return the ID of the color
+     */
+    public int getDepartmentColor( final Department dept ) {
+        // populate department cache if necessary
+        if ( this.deptColors.isEmpty() ) {
+            getDepartments();
+        }
+
+        return this.deptColors.get( dept );
+    }
+
+    /**
+     * @param departmentIds the IDs of the departments whose promotions are being requested (can be <code>null</code>)
+     * @return the promotions (never <code>null</code> but can be empty)
+     */
+    public Promotion[] getDepartmentPromotions( final Long... departmentIds ) {
+        if ( ( departmentIds == null ) || ( departmentIds.length == 0 ) ) {
+            return Promotion.NO_PROMOTIONS;
+        }
+
+        final List< Promotion > promotions = new ArrayList<>();
+        final List< Long > deptIds = Arrays.asList( departmentIds );
+
+        for ( final Promotion promotion : getPromotions() ) {
+            final int productId = promotion.getProductId();
+            final Product product = DataProvider.get().findProduct( productId );
+
+            if ( product == null ) {
+                Log.e( IotConstants.LOG_TAG,
+                       "Product " + productId + " was not found for promotion " + promotion.getId() );
+                continue;
+            }
+
+            if ( deptIds.contains( product.getDepartmentId() ) ) {
+                promotions.add( promotion );
+            }
+        }
+
+        return promotions.toArray( new Promotion[ promotions.size() ] );
+    }
+
+    /**
      * @return all store departments (never <code>null</code>)
      */
-    public Department[] getDepartmentsFromJson() {
+    public Department[] getDepartments() {
+        if ( !this.deptColors.isEmpty() ) {
+            final Department[] departments = this.deptColors.keySet().toArray( new Department[ this.deptColors.size() ] );
+            Arrays.sort( departments, Department.NAME_SORTER );
+            return departments;
+        }
+
         try {
             String json;
 
@@ -215,14 +298,24 @@ public class DataProvider {
             final JSONArray jarray = d.getJSONArray( "results" );
             final Department[] departments = new Department[ jarray.length() ];
 
+            final Resources res = IotApp.getContext().getResources();
+            final TypedArray deptColors = res.obtainTypedArray( R.array.dept_colors );
+
             for ( int i = 0;
                   i < jarray.length();
                   ++i ) {
                 final JSONObject jdept = jarray.getJSONObject( i );
                 final Department dept = new Department( jdept.toString() );
                 departments[ i ] = dept;
+
+                // populate department colors map
+                final int colorId = deptColors.getColor( i, 0 );
+                this.deptColors.put( dept, colorId );
             }
 
+            deptColors.recycle(); // call after done with TypeArray
+
+            Arrays.sort( departments, Department.NAME_SORTER );
             return departments;
         } catch ( final Exception e ) {
             Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
@@ -239,7 +332,7 @@ public class DataProvider {
         // 5. Notify them of first promotion
         final int userId = IotApp.getUserId();
 
-        if ( DataProvider.UNKNOWN_USER == userId ) {
+        if ( Customer.UNKNOWN_USER == userId ) {
             return null;
         }
 
@@ -363,7 +456,7 @@ public class DataProvider {
         }
     }
 
-    private Product[] getProductsFromJson() {
+    private Product[] getProducts() {
         try {
             String json;
 
@@ -396,7 +489,7 @@ public class DataProvider {
     /**
      * @return all promotions (never <code>null</code> but can be empty)
      */
-    public Promotion[] getPromotionsFromJson() {
+    public Promotion[] getPromotions() {
         try {
             String json;
 
@@ -419,41 +512,12 @@ public class DataProvider {
                 promotions[ i ] = promo;
             }
 
+            Arrays.sort( promotions, Promotion.DEPT__NAME_SORTER );
             return promotions;
         } catch ( final Exception e ) {
             Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
             return Promotion.NO_PROMOTIONS;
         }
-    }
-
-    /**
-     * @param departmentIds the IDs of the departments whose promotions are being requested (can be <code>null</code>)
-     * @return the promotions (never <code>null</code> but can be empty)
-     */
-    public Promotion[] getPromotions( final Long... departmentIds ) {
-        if ( ( departmentIds == null ) || ( departmentIds.length == 0 ) ) {
-            return Promotion.NO_PROMOTIONS;
-        }
-
-        final List< Promotion > promotions = new ArrayList<>();
-        final List< Long > deptIds = Arrays.asList( departmentIds );
-
-        for ( final Promotion promotion : getPromotionsFromJson() ) {
-            final int productId = promotion.getProductId();
-            final Product product = DataProvider.get().findProduct( productId );
-
-            if ( product == null ) {
-                Log.e( IotConstants.LOG_TAG,
-                       "Product " + productId + " was not found for promotion " + promotion.getId() );
-                continue;
-            }
-
-            if ( deptIds.contains( product.getDepartmentId() ) ) {
-                promotions.add( promotion );
-            }
-        }
-
-        return promotions.toArray( new Promotion[ promotions.size() ] );
     }
 
     private class GetData extends AsyncTask< Void, Void, String > {

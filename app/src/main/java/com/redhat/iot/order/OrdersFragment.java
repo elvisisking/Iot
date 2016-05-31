@@ -2,14 +2,13 @@ package com.redhat.iot.order;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ListFragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.redhat.iot.DataProvider;
 import com.redhat.iot.IotConstants;
@@ -19,8 +18,7 @@ import com.redhat.iot.domain.Order;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OrdersFragment extends ListFragment
-    implements AdapterView.OnItemClickListener {
+public class OrdersFragment extends Fragment {
 
     private Activity activity;
 
@@ -39,10 +37,9 @@ public class OrdersFragment extends ListFragment
         // obtain customer orders and create adapter
         final Order[] orders = DataProvider.get().getOrders( customerId );
         final OrderAdapter adapter = new OrderAdapter( this.activity, orders );
-        setListAdapter( adapter );
-
-        // register click listener
-        getListView().setOnItemClickListener( this );
+        final RecyclerView ordersView = ( RecyclerView )getActivity().findViewById( R.id.orderHistory );
+        ordersView.setAdapter( adapter );
+        ordersView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
     }
 
     @Override
@@ -50,15 +47,7 @@ public class OrdersFragment extends ListFragment
                               final ViewGroup parent,
                               final Bundle savedInstanceState ) {
         this.activity = getActivity();
-        return inflater.inflate( R.layout.order_history, parent, false );
-    }
-
-    @Override
-    public void onItemClick( final AdapterView< ? > parent,
-                             final View view,
-                             final int position,
-                             final long id ) {
-        Toast.makeText( this.activity, "Order: " + position, Toast.LENGTH_SHORT ).show();
+        return inflater.inflate( R.layout.orders, parent, false );
     }
 
 }

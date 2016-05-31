@@ -2,41 +2,45 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:layout_marginTop="16dp"
               android:orientation="vertical"
               tools:context=".MainActivity">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:background="@drawable/rounded_corner"
         android:orientation="vertical">
 
         <TextView
-            style="@style/Base.TextAppearance.AppCompat.Title"
+            style="@style/MedTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/deal_shop_departments"/>
+            android:fontFamily="sans-serif"
+            android:text="@string/deal_shop_departments"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
 
         <TableLayout
             android:id="@+id/promoDepartments"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
             android:orientation="horizontal">
         </TableLayout>
     </LinearLayout>
 
-    <GridView
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridDeals"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="10dp"
-        android:columnWidth="100dp"
-        android:gravity="center"
-        android:horizontalSpacing="10dp"
-        android:numColumns="2"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        android:scrollbars="vertical"/>
 </LinearLayout>

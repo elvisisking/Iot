@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
+import com.redhat.iot.domain.Customer;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -58,15 +60,15 @@ public class IotApp extends Application {
     }
 
     /**
-     * @return the ID of the logged in user or {@link DataProvider#UNKNOWN_USER} if no one is logged in
+     * @return the ID of the logged in user or {@link Customer#UNKNOWN_USER} if no one is logged in
      */
     public static int getUserId() {
         final SharedPreferences prefs = IotApp.getPrefs();
-        return prefs.getInt( IotConstants.Prefs.CUSTOMER_ID, DataProvider.UNKNOWN_USER );
+        return prefs.getInt( IotConstants.Prefs.CUSTOMER_ID, Customer.UNKNOWN_USER );
     }
 
     /**
-     * @param userId the ID of the logged in user or {@link DataProvider#UNKNOWN_USER} if no one is logged in
+     * @param userId the ID of the logged in user or {@link Customer#UNKNOWN_USER} if no one is logged in
      */
     public static void setUserId(final int userId ) {
         final SharedPreferences.Editor editor = getPrefs().edit();
