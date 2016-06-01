@@ -32,20 +32,34 @@ import java.util.Map;
  */
 public class DataProvider {
 
-    private static final boolean USE_REAL_DATA = false;
+    private static final boolean USE_REAL_DATA = true;
+    private static final String HOST = "10.0.2.2"; // when DV is running locally (use localhost in browser)
+    private static final String PORT = "8080";
 
-    private static final String CUSTOMERS_URL = "http://10.0.2.2:8081/odata/customer_iot/Customer?$format=json";
-    private static final String DEPARTMENTS_URL = "http://10.0.2.2:8081/odata/customer_iot/FUSE.Department?$format=json";
-    private static final String ORDER_DETAILS_URL =
-        "http://localhost:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail?$format=json";
-    private static final String ORDERS_URL =
-        "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Customer(%s)/Order?$format=json";
-    private static final String PRODUCTS_URL =
-        "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Product?$format=json";
-    private static final String PROMOTIONS_URL =
-        "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Promotion?$format=json";
-    private static final String ORDER_HISTORY_URL =
-        "http://localhost:8081/odata/customer_iot/getSalesHistory?customerNumber=%s&$format=json";
+    private static final String CUSTOMERS_URL;
+    private static final String DEPARTMENTS_URL;
+    private static final String ORDER_DETAILS_URL;
+    private static final String ORDER_HISTORY_URL;
+    private static final String ORDERS_URL;
+    private static final String PRODUCTS_URL;
+    private static final String PROMOTIONS_URL;
+
+    static {
+        final String jsonFormat = "?$format=json";
+        final String urlPattern = new StringBuilder( "http://" ).append( HOST )
+            .append( ':' )
+            .append( PORT )
+            .append( "/odata/customer_iot/%s" )
+            .toString();
+
+        CUSTOMERS_URL = String.format( urlPattern, "Customer" ) + jsonFormat;
+        DEPARTMENTS_URL = String.format( urlPattern, "FUSE.Department" ) + jsonFormat;
+        ORDER_DETAILS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail" ) + jsonFormat;
+        ORDER_HISTORY_URL = String.format( urlPattern, "getSalesHistory?customerNumber=%s&$format=json" );
+        ORDERS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Customer(%s)/Order" ) + jsonFormat;
+        PRODUCTS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Product" ) + jsonFormat;
+        PROMOTIONS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Promotion" ) + jsonFormat;
+    }
 
     private static DataProvider _shared = null;
 
@@ -60,19 +74,18 @@ public class DataProvider {
         return _shared;
     }
 
-    private long userIdCacheTime;
-    private final Map< Integer, String > idNameMap = new HashMap<>(); // customer names and ID cache
-    private final Map< Department, Integer > deptColors = new HashMap<>();
+    private final Map< Integer, Customer > customers = new HashMap<>();
+    private final Map< Long, Department > departments = new HashMap<>();
+    private final Map< Long, Integer > deptColors = new HashMap<>();
+    private final Map< Integer, Product > products = new HashMap<>();
+    private final Map< Integer, Promotion > promotions = new HashMap<>();
 
     /**
      * Don't allow construction outside of this class.
      */
     private DataProvider() {
-        // nothing to do
-    }
-
-    private boolean emptyCache( final long cachedTime ) {
-        return ( ( System.currentTimeMillis() - cachedTime ) > 300000 ); // 5 minutes
+        getDepartments(); // load departments
+        getCustomers(); // load customer data
     }
 
     private String executeHttpGet( final String urlAsString,
@@ -133,13 +146,38 @@ public class DataProvider {
      * @return the product or <code>null</code> if not found
      */
     public Product findProduct( final int productId ) {
-        for ( final Product product : getProducts() ) {
-            if ( productId == product.getId() ) {
-                return product;
+        if ( this.products.isEmpty() ) {
+            getProducts(); // load products
+        }
+
+        return this.products.get( productId );
+    }
+
+    /**
+     * @param deptIds the IDs of the departments whose promotions are being requested
+     * @return the requested promotions (never <code>null</code>)
+     */
+    public Promotion[] findPromotions( final Long... deptIds ) {
+        if ( ( deptIds == null ) || ( deptIds.length == 0 ) ) {
+            return Promotion.NO_PROMOTIONS;
+        }
+
+        final List< Long > requestedDepts = Arrays.asList( deptIds );
+        final Promotion[] promotions = getPromotions();
+        final List< Promotion > result = new ArrayList<>();
+
+        for ( final Promotion promo : promotions ) {
+            final int productId = promo.getProductId();
+            final Product product = findProduct( productId );
+
+            if ( product == null ) {
+                Log.e( IotConstants.LOG_TAG, "Product " + productId + " was not found" );
+            } else if ( requestedDepts.contains( product.getDepartmentId() ) ) {
+                result.add( promo );
             }
         }
 
-        return null;
+        return result.toArray( new Promotion[ result.size() ] );
     }
 
     /**
@@ -161,54 +199,57 @@ public class DataProvider {
      * @return the name or <code>null</code> if not found
      */
     public String getCustomerName( final int userId ) {
-        if ( this.idNameMap.isEmpty() || emptyCache( this.userIdCacheTime ) ) {
-            getCustomers(); // load map
+        if ( this.customers.isEmpty() ) {
+            getCustomers();
         }
 
-        return this.idNameMap.get( userId );
+        final Customer customer = this.customers.get( userId );
+
+        if ( customer != null ) {
+            return customer.getName();
+        }
+
+        return null;
     }
 
     private Customer[] getCustomers() {
-        try {
-            String json;
+        if ( this.customers.isEmpty() ) {
+            try {
+                String json;
 
-            if ( USE_REAL_DATA ) {
-                json = new GetData( CUSTOMERS_URL ).execute().get();
-            } else {
-                final InputStream is = IotApp.getContext().getResources().openRawResource( R.raw.customer );
-                final BufferedReader streamReader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
-                final StringBuilder builder = new StringBuilder();
-                String inputStr;
+                if ( USE_REAL_DATA ) {
+                    json = new GetData( CUSTOMERS_URL ).execute().get();
+                } else {
+                    final InputStream is = IotApp.getContext().getResources().openRawResource( R.raw.customer );
+                    final BufferedReader streamReader = new BufferedReader( new InputStreamReader( is, "UTF-8" ) );
+                    final StringBuilder builder = new StringBuilder();
+                    String inputStr;
 
-                while ( ( inputStr = streamReader.readLine() ) != null ) {
-                    builder.append( inputStr );
+                    while ( ( inputStr = streamReader.readLine() ) != null ) {
+                        builder.append( inputStr );
+                    }
+
+                    json = builder.toString();
                 }
 
-                json = builder.toString();
+                final JSONObject jobj = new JSONObject( json );
+                final JSONObject d = jobj.getJSONObject( "d" );
+                final JSONArray jarray = d.getJSONArray( "results" );
+
+                for ( int i = 0;
+                      i < jarray.length();
+                      ++i ) {
+                    final JSONObject jcust = jarray.getJSONObject( i );
+                    final Customer cust = new Customer( jcust.toString() );
+                    this.customers.put( cust.getId(), cust );
+                }
+            } catch ( final Exception e ) {
+                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                return Customer.NO_CUSTOMERs;
             }
-
-            final JSONObject jobj = new JSONObject( json );
-            final JSONObject d = jobj.getJSONObject( "d" );
-            final JSONArray jarray = d.getJSONArray( "results" );
-            final Customer[] customers = new Customer[ jarray.length() ];
-
-            for ( int i = 0;
-                  i < jarray.length();
-                  ++i ) {
-                final JSONObject jcust = jarray.getJSONObject( i );
-                final Customer cust = new Customer( jcust.toString() );
-                customers[ i ] = cust;
-
-                // cache ID/Name
-                this.idNameMap.put( cust.getId(), cust.getName() );
-            }
-
-            this.userIdCacheTime = System.currentTimeMillis();
-            return customers;
-        } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
-            return Customer.NO_CUSTOMERs;
         }
+
+        return this.customers.values().toArray( new Customer[ this.customers.size() ] );
     }
 
     /**
@@ -221,14 +262,14 @@ public class DataProvider {
             getDepartments();
         }
 
-        for ( final Department dept : this.deptColors.keySet() ) {
-            if ( dept.getId() == deptId ) {
-                return getDepartmentColor( dept );
-            }
+        final Department dept = this.departments.get( deptId );
+
+        if ( dept != null ) {
+            return this.deptColors.get( deptId );
         }
 
         Log.e( IotConstants.LOG_TAG, "No department found in cache for department " + deptId );
-        return 0;
+        return -1;
     }
 
     /**
@@ -236,93 +277,53 @@ public class DataProvider {
      * @return the ID of the color
      */
     public int getDepartmentColor( final Department dept ) {
-        // populate department cache if necessary
-        if ( this.deptColors.isEmpty() ) {
-            getDepartments();
-        }
-
-        return this.deptColors.get( dept );
-    }
-
-    /**
-     * @param departmentIds the IDs of the departments whose promotions are being requested (can be <code>null</code>)
-     * @return the promotions (never <code>null</code> but can be empty)
-     */
-    public Promotion[] getDepartmentPromotions( final Long... departmentIds ) {
-        if ( ( departmentIds == null ) || ( departmentIds.length == 0 ) ) {
-            return Promotion.NO_PROMOTIONS;
-        }
-
-        final List< Promotion > promotions = new ArrayList<>();
-        final List< Long > deptIds = Arrays.asList( departmentIds );
-
-        for ( final Promotion promotion : getPromotions() ) {
-            final int productId = promotion.getProductId();
-            final Product product = DataProvider.get().findProduct( productId );
-
-            if ( product == null ) {
-                Log.e( IotConstants.LOG_TAG,
-                       "Product " + productId + " was not found for promotion " + promotion.getId() );
-                continue;
-            }
-
-            if ( deptIds.contains( product.getDepartmentId() ) ) {
-                promotions.add( promotion );
-            }
-        }
-
-        return promotions.toArray( new Promotion[ promotions.size() ] );
+        return getDepartmentColor( dept.getId() );
     }
 
     /**
      * @return all store departments (never <code>null</code>)
      */
     public Department[] getDepartments() {
-        if ( !this.deptColors.isEmpty() ) {
-            final Department[] departments = this.deptColors.keySet().toArray( new Department[ this.deptColors.size() ] );
-            Arrays.sort( departments, Department.NAME_SORTER );
-            return departments;
-        }
+        if ( this.departments.isEmpty() ) {
+            try {
+                String json;
 
-        try {
-            String json;
+                // TODO fix this
+//                if ( USE_REAL_DATA ) {
+//                    json = new GetData( DEPARTMENTS_URL ).execute().get();
+//                } else {
+                json = IotConstants.TestData.DEPARTMENTS_JSON;
+//                }
 
-            // TODO fix this
+                final JSONObject jobj = new JSONObject( json );
+                final JSONObject d = jobj.getJSONObject( "d" );
+                final JSONArray jarray = d.getJSONArray( "results" );
 
-//            if ( USE_REAL_DATA ) {
-//                json = new GetData( DEPARTMENTS_URL ).execute().get();
-//            } else {
-            json = IotConstants.TestData.DEPARTMENTS_JSON;
-//            }
+                final Resources res = IotApp.getContext().getResources();
+                final TypedArray deptColors = res.obtainTypedArray( R.array.dept_colors );
 
-            final JSONObject jobj = new JSONObject( json );
-            final JSONObject d = jobj.getJSONObject( "d" );
-            final JSONArray jarray = d.getJSONArray( "results" );
-            final Department[] departments = new Department[ jarray.length() ];
+                for ( int i = 0;
+                      i < jarray.length();
+                      ++i ) {
+                    final JSONObject jdept = jarray.getJSONObject( i );
+                    final Department dept = new Department( jdept.toString() );
+                    this.departments.put( dept.getId(), dept );
 
-            final Resources res = IotApp.getContext().getResources();
-            final TypedArray deptColors = res.obtainTypedArray( R.array.dept_colors );
+                    // populate department colors map
+                    final int colorId = deptColors.getColor( i, 0 );
+                    this.deptColors.put( dept.getId(), colorId );
+                }
 
-            for ( int i = 0;
-                  i < jarray.length();
-                  ++i ) {
-                final JSONObject jdept = jarray.getJSONObject( i );
-                final Department dept = new Department( jdept.toString() );
-                departments[ i ] = dept;
-
-                // populate department colors map
-                final int colorId = deptColors.getColor( i, 0 );
-                this.deptColors.put( dept, colorId );
+                deptColors.recycle(); // call after done with TypeArray
+            } catch ( final Exception e ) {
+                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                return Department.NO_DEPARTMENTS;
             }
-
-            deptColors.recycle(); // call after done with TypeArray
-
-            Arrays.sort( departments, Department.NAME_SORTER );
-            return departments;
-        } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
-            return Department.NO_DEPARTMENTS;
         }
+
+        final Department[] result = this.departments.values().toArray( new Department[ this.departments.size() ] );
+        Arrays.sort( result, Department.NAME_SORTER );
+        return result;
     }
 
     public String getNotification() {
@@ -447,73 +448,77 @@ public class DataProvider {
     }
 
     private Product[] getProducts() {
-        try {
-            String json;
+        if ( this.products.isEmpty() ) {
+            try {
+                String json;
 
-            if ( USE_REAL_DATA ) {
-                json = new GetData( PRODUCTS_URL ).execute().get();
-            } else {
-                json = IotConstants.TestData.PRODUCTS_JSON;
+                if ( USE_REAL_DATA ) {
+                    json = new GetData( PRODUCTS_URL ).execute().get();
+                } else {
+                    json = IotConstants.TestData.PRODUCTS_JSON;
+                }
+
+                final JSONObject jobj = new JSONObject( json );
+                final JSONObject d = jobj.getJSONObject( "d" );
+                final JSONArray jarray = d.getJSONArray( "results" );
+
+                for ( int i = 0;
+                      i < jarray.length();
+                      ++i ) {
+                    final JSONObject jproduct = jarray.getJSONObject( i );
+                    final Product product = new Product( jproduct.toString() );
+                    this.products.put( product.getId(), product );
+                }
+            } catch ( final Exception e ) {
+                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                return Product.NO_PRODUCTS;
             }
-
-            final JSONObject jobj = new JSONObject( json );
-            final JSONObject d = jobj.getJSONObject( "d" );
-            final JSONArray jarray = d.getJSONArray( "results" );
-            final Product[] products = new Product[ jarray.length() ];
-
-            for ( int i = 0;
-                  i < jarray.length();
-                  ++i ) {
-                final JSONObject jproduct = jarray.getJSONObject( i );
-                final Product product = new Product( jproduct.toString() );
-                products[ i ] = product;
-            }
-
-            return products;
-        } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
-            return Product.NO_PRODUCTS;
         }
+
+        return this.products.values().toArray( new Product[ this.products.size() ] );
     }
 
     /**
      * @return all promotions (never <code>null</code> but can be empty)
      */
     public Promotion[] getPromotions() {
-        try {
-            String json;
+        if ( this.promotions.isEmpty() ) {
+            try {
+                String json;
 
-            if ( USE_REAL_DATA ) {
-                json = new GetData( PROMOTIONS_URL ).execute().get();
-            } else {
-                json = IotConstants.TestData.PROMOTIONS_JSON;
+                if ( USE_REAL_DATA ) {
+                    json = new GetData( PROMOTIONS_URL ).execute().get();
+                } else {
+                    json = IotConstants.TestData.PROMOTIONS_JSON;
+                }
+
+                final JSONObject jobj = new JSONObject( json );
+                final JSONObject d = jobj.getJSONObject( "d" );
+                final JSONArray jarray = d.getJSONArray( "results" );
+
+                for ( int i = 0;
+                      i < jarray.length();
+                      ++i ) {
+                    final JSONObject jpromo = jarray.getJSONObject( i );
+                    final Promotion promo = new Promotion( jpromo.toString() );
+                    this.promotions.put( promo.getId(), promo );
+                }
+            } catch ( final Exception e ) {
+                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                return Promotion.NO_PROMOTIONS;
             }
-
-            final JSONObject jobj = new JSONObject( json );
-            final JSONObject d = jobj.getJSONObject( "d" );
-            final JSONArray jarray = d.getJSONArray( "results" );
-            final Promotion[] promotions = new Promotion[ jarray.length() ];
-
-            for ( int i = 0;
-                  i < jarray.length();
-                  ++i ) {
-                final JSONObject jpromo = jarray.getJSONObject( i );
-                final Promotion promo = new Promotion( jpromo.toString() );
-                promotions[ i ] = promo;
-            }
-
-            Arrays.sort( promotions, Promotion.DEPT__NAME_SORTER );
-            return promotions;
-        } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
-            return Promotion.NO_PROMOTIONS;
         }
+
+        final Promotion[] result = this.promotions.values().toArray( new Promotion[ this.promotions.size() ] );
+        Arrays.sort( result, Promotion.DEPT__NAME_SORTER );
+        return result;
     }
 
     private class GetData extends AsyncTask< Void, Void, String > {
 
+        private static final boolean I_AM_TED = true;
         private static final String USER = "teiidUser";
-        private static final String PSWD = "TbJ01221991$";
+        private static final String PSWD = ( I_AM_TED ? "TbJ01221991$" : "4teiid$admin" );
 
         private final String url;
 
@@ -526,8 +531,7 @@ public class DataProvider {
             try {
                 return executeHttpGet( this.url, USER, PSWD );
             } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG_TAG,
-                       "Error in GetData AsyncTask. URL:  " + params[ 0 ] );
+                Log.e( IotConstants.LOG_TAG, "Error in GetData AsyncTask. URL:  " + params[ 0 ] );
                 return null;
             }
         }
