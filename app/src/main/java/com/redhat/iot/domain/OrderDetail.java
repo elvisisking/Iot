@@ -3,10 +3,30 @@ package com.redhat.iot.domain;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Comparator;
+
 /**
  * Represents a line item from the order.
  */
 public class OrderDetail {
+
+    /**
+     * Sorts {@link OrderDetail}s by order number then line number.
+     */
+    public static final Comparator< OrderDetail > SORTER = new Comparator< OrderDetail >() {
+
+        @Override
+        public int compare( final OrderDetail thisDetail,
+                            final OrderDetail thatDetail ) {
+            int result = Integer.compare( thisDetail.getOrderId(), thatDetail.getOrderId() );
+
+            if ( result == 0 ) {
+                return Integer.compare( thisDetail.getOrderLineNumber(), thatDetail.getOrderLineNumber() );
+            }
+
+            return result;
+        }
+    };
 
     /**
      * An empty collection of {@link OrderDetail}s.

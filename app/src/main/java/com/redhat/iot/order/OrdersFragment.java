@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.redhat.iot.DataProvider;
 import com.redhat.iot.IotConstants;
@@ -36,10 +37,20 @@ public class OrdersFragment extends Fragment {
 
         // obtain customer orders and create adapter
         final Order[] orders = DataProvider.get().getOrders( customerId );
-        final OrderAdapter adapter = new OrderAdapter( this.activity, orders );
         final RecyclerView ordersView = ( RecyclerView )getActivity().findViewById( R.id.orderHistory );
-        ordersView.setAdapter( adapter );
-        ordersView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
+        final TextView emptyView = ( TextView )getActivity().findViewById( R.id.tv_no_orders );
+
+        if ( orders.length == 0 ) {
+            ordersView.setVisibility( View.GONE );
+            emptyView.setVisibility( View.VISIBLE );
+        } else {
+            ordersView.setVisibility( View.VISIBLE );
+            emptyView.setVisibility( View.GONE );
+
+            final OrderAdapter adapter = new OrderAdapter( this.activity, orders );
+            ordersView.setAdapter( adapter );
+            ordersView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
+        }
     }
 
     @Override

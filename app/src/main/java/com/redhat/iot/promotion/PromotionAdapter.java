@@ -1,7 +1,6 @@
 package com.redhat.iot.promotion;
 
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,7 +45,7 @@ class PromotionAdapter extends RecyclerView.Adapter {
         return position;
     }
 
-    void handlePromotionClicked( final View promotionView ) {
+    private void handlePromotionClicked( final View promotionView ) {
         final int index = this.recyclerView.getChildLayoutPosition( promotionView );
         final Promotion promotion = this.promotions[ index ];
         Toast.makeText( this.context, "Promotion: " + promotion.getId(), Toast.LENGTH_SHORT ).show();
@@ -96,7 +95,7 @@ class PromotionAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder( final ViewGroup parent,
                                                        final int viewType ) {
-        final View promotionView = this.inflater.inflate( R.layout.promotion, null );
+        final View promotionView = this.inflater.inflate( R.layout.promotion, parent, false );
         return new PromotionViewHolder( promotionView );
     }
 

@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:fontFamily="sans-serif"
             android:text="@string/deal_shop_departments"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"/>
 
         <TableLayout

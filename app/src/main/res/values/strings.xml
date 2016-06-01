@@ -1,6 +1,7 @@
 <resources>
     <string name="iv_companyImage">Image of Johl\'s</string>
     <string name="iv_dealImage">Image of the product on sale</string>
+    <string name="iv_drawerItemImage">Image of the menu item</string>
     <string name="iv_orderImage">Image of Johl\'s</string>
 
     <string name="app_name">Johl\'s</string>

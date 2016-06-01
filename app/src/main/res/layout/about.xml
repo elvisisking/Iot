@@ -5,6 +5,7 @@
              tools:context="com.redhat.iot.AboutFragment">
 
     <TextView
+        style="@style/MedTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/title_about_fragment"/>
