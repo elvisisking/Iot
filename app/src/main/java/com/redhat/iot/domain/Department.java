@@ -84,7 +84,7 @@ public class Department {
 
     @Override
     public String toString() {
-        return getName();
+        return ( "Department: " + this.getId() + ", name=" + this.name );
     }
 
 }

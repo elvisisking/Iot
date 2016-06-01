@@ -194,4 +194,9 @@ public class Product {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return ( "Product: " + this.id );
+    }
+
 }

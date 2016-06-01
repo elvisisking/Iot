@@ -167,7 +167,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return ( "Customer: " + this.id );
+        return ( "Customer: " + this.id + ", name=" + this.name );
     }
 
 }
