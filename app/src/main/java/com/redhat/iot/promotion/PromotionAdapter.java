@@ -25,14 +25,14 @@ class PromotionAdapter extends RecyclerView.Adapter {
 
     private final Context context;
     private final LayoutInflater inflater;
-    private final Promotion[] promotions;
+    private Promotion[] promotions;
     private RecyclerView recyclerView;
 
     public PromotionAdapter( final Context c,
                              final Promotion[] promotions ) {
         this.context = c;
         this.inflater = LayoutInflater.from( this.context );
-        this.promotions = promotions;
+        this.promotions = ( ( promotions == null ) ? Promotion.NO_PROMOTIONS : promotions );
     }
 
     @Override
@@ -45,9 +45,13 @@ class PromotionAdapter extends RecyclerView.Adapter {
         return position;
     }
 
+    private Promotion getPromotion( final int index ) {
+        return this.promotions[ index ];
+    }
+
     private void handlePromotionClicked( final View promotionView ) {
         final int index = this.recyclerView.getChildLayoutPosition( promotionView );
-        final Promotion promotion = this.promotions[ index ];
+        final Promotion promotion = getPromotion( index );
         Toast.makeText( this.context, "Promotion: " + promotion.getId(), Toast.LENGTH_SHORT ).show();
     }
 
@@ -61,7 +65,7 @@ class PromotionAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder( final RecyclerView.ViewHolder promotionHolder,
                                   final int position ) {
         final PromotionViewHolder holder = ( PromotionViewHolder )promotionHolder;
-        final Promotion promotion = this.promotions[ position ];
+        final Promotion promotion = getPromotion( position );
         final Product product = DataProvider.get().findProduct( promotion.getProductId() );
 
         if ( product == null ) {
@@ -97,6 +101,14 @@ class PromotionAdapter extends RecyclerView.Adapter {
                                                        final int viewType ) {
         final View promotionView = this.inflater.inflate( R.layout.promotion, parent, false );
         return new PromotionViewHolder( promotionView );
+    }
+
+    /**
+     * @param departmentIds the IDs of the departments whose promotions should be shown (can be <code>null</code>)
+     */
+    void setFilter( final Long... departmentIds ) {
+        this.promotions = DataProvider.get().findPromotions( departmentIds );
+        notifyDataSetChanged();
     }
 
     private class PromotionViewHolder extends RecyclerView.ViewHolder {

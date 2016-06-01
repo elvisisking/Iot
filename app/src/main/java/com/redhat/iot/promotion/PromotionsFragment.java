@@ -29,7 +29,6 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
     private Activity activity;
     private PromotionAdapter adapter;
     private final Collection< CheckBox > chkDepts = new ArrayList<>();
-    private RecyclerView promotionssView;
 
     public PromotionsFragment() {
         // nothing to do
@@ -42,9 +41,10 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
         // get all current promotions
         final Promotion[] promotions = DataProvider.get().getPromotions();
         this.adapter = new PromotionAdapter( this.activity, promotions );
-        this.promotionssView = ( RecyclerView )getActivity().findViewById( R.id.gridDeals );
-        this.promotionssView.setAdapter( adapter );
-        this.promotionssView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
+
+        final RecyclerView promotionssView = ( RecyclerView )getActivity().findViewById( R.id.gridDeals );
+        promotionssView.setAdapter( this.adapter );
+        promotionssView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
     }
 
     public void onClick( final View view ) {
@@ -56,12 +56,8 @@ public class PromotionsFragment extends Fragment implements View.OnClickListener
             }
         }
 
-        // reload the promotions
-        this.adapter = new PromotionAdapter( this.activity,
-                                             DataProvider.get()
-                                                 .getDepartmentPromotions( selected.toArray( new Long[ selected.size() ] ) ) );
-        this.promotionssView.setAdapter( this.adapter );
-        this.adapter.notifyDataSetChanged();
+        // reload requested promotions
+        this.adapter.setFilter( selected.toArray( new Long[ selected.size() ] ) );
     }
 
     @Override
