@@ -111,7 +111,7 @@ public class LoginFragment extends Fragment implements OnClickListener, OnShared
                 this.txtCurrUser.setText( R.string.login_not_logged_in );
             } else {
                 this.txtCurrUser.setText( DataProvider.get().getCustomerName( loggedInUser ) );
-                this.txtUserId.setText( Integer.toString( loggedInUser ) );
+                this.txtUserId.setText( String.format( "%d", loggedInUser ) );
                 this.txtUserId.setSelection( this.txtUserId.getText().length() );
             }
         }

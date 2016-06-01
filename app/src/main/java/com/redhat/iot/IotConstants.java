@@ -1,14 +1,10 @@
 package com.redhat.iot;
 
 import com.redhat.iot.domain.Customer;
-import com.redhat.iot.domain.Department;
-import com.redhat.iot.domain.Order;
 import com.redhat.iot.domain.OrderDetail;
 import com.redhat.iot.domain.Product;
-import com.redhat.iot.domain.Promotion;
 
 import java.text.SimpleDateFormat;
-import java.util.GregorianCalendar;
 
 /**
  * Constants used in the IoT mobile app.
@@ -416,9 +412,7 @@ public interface IotConstants {
 
         String ORDER_1010_JSON = "{\"orderNumber\" : 1010, "
             + "\"customerNumber\" : " + ELVIS_ID + ", "
-            + "\"orderDate\" : \"/Date(1463360426000)/\", "
-            + "\"productIds\" : [ 300,301,302 ], "
-            + "\"price\" : 12.34}";
+            + "\"orderDate\" : \"/Date(1463360426000)/\"}";
 
         int ORDER_2020_ID = 2020;
         OrderDetail DETAIL_2020_1 = new OrderDetail( ORDER_2020_ID, PRODUCT_100.getId(), 1, 5.5, 1 );
@@ -453,9 +447,7 @@ public interface IotConstants {
 
         String ORDER_2020_JSON = "{\"orderNumber\" : 2020, "
             + "\"customerNumber\" : " + RINGO_ID + ", "
-            + "\"orderDate\" : \"/Date(1463360451000)/\", "
-            + "\"productIds\" : [ 100,200,602,400,500,600 ], "
-            + "\"price\" : 23.45}";
+            + "\"orderDate\" : \"/Date(1463360451000)/\"}";
 
         int ORDER_3030_ID = 3030;
         OrderDetail DETAIL_3030_1 = new OrderDetail( ORDER_3030_ID, PRODUCT_202.getId(), 1, 5.5, 1 );
@@ -470,9 +462,7 @@ public interface IotConstants {
 
         String ORDER_3030_JSON = "{\"orderNumber\" : 3030, "
             + "\"customerNumber\" : " + RINGO_ID + ", "
-            + "\"orderDate\" : \"/Date(1419033600000)/\", "
-            + "\"productIds\" : [ 202,102 ], "
-            + "\"price\" : 26.67}";
+            + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         int ORDER_4040_ID = 4040;
         OrderDetail DETAIL_4040_1 = new OrderDetail( ORDER_4040_ID, PRODUCT_101.getId(), 1, 5.5, 1 );
@@ -492,9 +482,7 @@ public interface IotConstants {
 
         String ORDER_4040_JSON = "{\"orderNumber\" : 4040, "
             + "\"customerNumber\" : " + SLEDGE_ID + ", "
-            + "\"orderDate\" : \"/Date(1419033600000)/\", "
-            + "\"productIds\" : [ 101,201,402 ], "
-            + "\"price\" : 34.56}";
+            + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         int ORDER_5050_ID = 5050;
         OrderDetail DETAIL_5050_1 = new OrderDetail( ORDER_5050_ID, PRODUCT_301.getId(), 1, 5.5, 1 );
@@ -514,9 +502,7 @@ public interface IotConstants {
 
         String ORDER_5050_JSON = "{\"orderNumber\" : 5050, "
             + "\"customerNumber\" : " + SLEDGE_ID + ", "
-            + "\"orderDate\" : \"/Date(1419033600000)/\", "
-            + "\"productIds\" : [ 301,401,501 ], "
-            + "\"price\" : 35.67}";
+            + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         int ORDER_6060_ID = 6060;
         OrderDetail DETAIL_6060_1 = new OrderDetail( ORDER_6060_ID, PRODUCT_100.getId(), 1, 5.5, 1 );
@@ -531,9 +517,7 @@ public interface IotConstants {
 
         String ORDER_6060_JSON = "{\"orderNumber\" : 6060, "
             + "\"customerNumber\" : " + SLEDGE_ID + ", "
-            + "\"orderDate\" : \"/Date(1419033600000)/\", "
-            + "\"productIds\" : [ 100,502 ], "
-            + "\"price\" : 36.78}";
+            + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         String ELVIS_ORDERS_JSON = "{ d: { \"results\": [ "
             + ORDER_1010_JSON

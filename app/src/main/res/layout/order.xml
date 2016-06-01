@@ -3,7 +3,7 @@
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
                                     android:id="@+id/card_view"
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:clickable="true"
                                     app:cardBackgroundColor="@color/cardview_light_background"
                                     app:cardCornerRadius="12dp"
@@ -28,8 +28,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:fontFamily="casual"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -38,8 +38,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="end"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"/>
+                android:textColor="@color/textColorSecondary"
+                android:textSize="20sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -64,14 +64,14 @@
                     android:id="@+id/orderFirstItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/textColorPrimary"
                     android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/orderNumItems"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/textColorPrimary"
                     android:textSize="18sp"/>
 
                 <TextView
@@ -80,8 +80,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-smallcaps"
                     android:gravity="end"
-                    android:textColor="@android:color/black"
-                    android:textSize="20dp"/>
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="20sp"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -14,6 +14,7 @@ import com.redhat.iot.DataProvider;
 import com.redhat.iot.IotConstants;
 import com.redhat.iot.R;
 import com.redhat.iot.domain.Order;
+import com.redhat.iot.domain.OrderDetail;
 import com.redhat.iot.domain.Product;
 
 import java.util.Calendar;
@@ -45,7 +46,7 @@ class OrderAdapter extends RecyclerView.Adapter {
         return position;
     }
 
-    void handleOrderClicked( final View orderView ) {
+    private void handleOrderClicked( final View orderView ) {
         final int index = this.recyclerView.getChildLayoutPosition( orderView );
         final Order order = this.orders[ index ];
         Toast.makeText( this.context, "Order: " + order.getId(), Toast.LENGTH_SHORT ).show();
@@ -72,14 +73,18 @@ class OrderAdapter extends RecyclerView.Adapter {
         final String formatted = IotConstants.DATE_FORMATTER.format( calendar.getTime() );
         holder.tvDate.setText( formatted );
 
-        // find first product
-        final int productId = order.getProducts()[ 0 ];
-        final Product firstProduct = DataProvider.get().findProduct( productId );
+        // details
+        final OrderDetail[] details = order.getDetails();
 
-        if ( firstProduct == null ) {
+        if ( details.length == 0 ) {
             Log.e( IotConstants.LOG_TAG,
-                   "Product " + productId + " was not found for order " + order.getId() );
+                   "Order " + order.getId() + " does not have any order details" );
+            holder.ivOrder.setImageResource( 0 );
+            holder.tvDescription.setText( "" );
         } else {
+            final int productId = details[ 0 ].getProductId();
+            final Product firstProduct = DataProvider.get().findProduct( productId );
+
             // set order image based on first item
             holder.ivOrder.setImageResource( firstProduct.getImageId() );
 
@@ -88,9 +93,8 @@ class OrderAdapter extends RecyclerView.Adapter {
         }
 
         // set number of items in order
-        if ( order.getProducts().length > 1 ) {
-            holder.tvNumItems.setText( this.context.getString( R.string.order_num_additional,
-                                                               ( order.getProducts().length - 1 ) ) );
+        if ( details.length > 1 ) {
+            holder.tvNumItems.setText( this.context.getString( R.string.order_num_additional, ( details.length - 1 ) ) );
         } else {
             holder.tvNumItems.setText( "" );
         }
@@ -102,7 +106,7 @@ class OrderAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder( final ViewGroup parent,
                                                        final int viewType ) {
-        final View view = this.inflater.inflate( R.layout.order, null );
+        final View view = this.inflater.inflate( R.layout.order, parent, false );
         return new OrderViewHolder( view );
     }
 

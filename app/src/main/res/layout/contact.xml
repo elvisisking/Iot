@@ -4,8 +4,8 @@
              android:layout_height="match_parent"
              tools:context="com.redhat.iot.ContactFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        style="@style/MedTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/title_contact_fragment"/>

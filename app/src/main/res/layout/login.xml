@@ -16,16 +16,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:labelFor="@+id/loginCurrentUser"
-            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
             android:text="@string/login_current_user"
-            android:textColor="@color/textColorPrimary"
             android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/loginCurrentUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
             android:textSize="20sp"/>
     </LinearLayout>
 
@@ -48,7 +46,7 @@
         android:inputType="number"
         android:maxLength="6"
         android:padding="10dp"
-        android:textColor="@color/textColorPrimary"
+        android:textColor="@color/textColorSecondary"
         android:textColorHint="@color/textHintColor"/>
 
     <Button

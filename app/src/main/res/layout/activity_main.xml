@@ -33,7 +33,7 @@
         android:id="@+id/drawer_view"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:layout_marginTop="15dp"
         android:background="@android:color/white"
         android:scrollbars="vertical">

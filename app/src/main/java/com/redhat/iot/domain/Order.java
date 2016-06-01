@@ -1,10 +1,9 @@
 package com.redhat.iot.domain;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,30 +20,12 @@ public class Order {
     private final String comments;
     private final int customerId;
     private final int id;
-    private int[] productIds;
+    private OrderDetail[] details = OrderDetail.NO_DETAILS;
     private final Calendar orderDate;
-    private final double price;
+    private double price = 0;
     private final Calendar requiredDate;
     private final Calendar shippedDate;
     private final String status;
-
-    public Order( final int id,
-                  final int customerId,
-                  final Calendar orderDate,
-                  final double price,
-                  final String comments,
-                  final String status,
-                  final Calendar shippedDate,
-                  final Calendar requiredDate ) {
-        this.id = id;
-        this.customerId = customerId;
-        this.orderDate = orderDate;
-        this.price = price;
-        this.comments = comments;
-        this.status = status;
-        this.shippedDate = shippedDate;
-        this.requiredDate = requiredDate;
-    }
 
     /**
      * @param json a JSON representation of an order (cannot be empty)
@@ -59,21 +40,7 @@ public class Order {
 
         // optional
         this.comments = ( order.has( "comments" ) ? order.getString( "comments" ) : "" );
-        this.price = ( order.has( "price" ) ? order.getDouble( "price" ) : -1 );
         this.status = ( order.has( "status" ) ? order.getString( "status" ) : "" );
-
-        if ( order.has( "productIds" ) ) {
-            final JSONArray jarray = order.getJSONArray( "productIds" );
-            this.productIds = new int[ jarray.length() ];
-
-            for ( int i = 0;
-                  i < jarray.length();
-                  ++i ) {
-                this.productIds[ i ] = jarray.getInt( i );
-            }
-        } else {
-            this.productIds = new int[ 0 ];
-        }
 
         if ( order.has( "orderDate" ) ) {
             this.orderDate = parseDate( order.getString( "orderDate" ) );
@@ -94,6 +61,53 @@ public class Order {
         }
     }
 
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+
+        if ( o == null || ( getClass() != o.getClass() ) ) {
+            return false;
+        }
+
+        final Order that = ( Order )o;
+
+        if ( this.customerId != that.customerId ) {
+            return false;
+        }
+        if ( this.id != that.id ) {
+            return false;
+        }
+
+        if ( Double.compare( that.price, this.price ) != 0 ) {
+            return false;
+        }
+
+        if ( ( this.comments != null ) ? !this.comments.equals( that.comments ) : ( that.comments != null ) ) {
+            return false;
+        }
+
+        if ( !Arrays.equals( this.details, that.details ) ) {
+            return false;
+        }
+
+        if ( ( this.orderDate != null ) ? !this.orderDate.equals( that.orderDate ) : ( that.orderDate != null ) ) {
+            return false;
+        }
+
+        if ( ( this.requiredDate != null ) ? !this.requiredDate.equals( that.requiredDate ) : ( that.requiredDate != null ) ) {
+            return false;
+        }
+
+        if ( ( this.shippedDate != null ) ? !this.shippedDate.equals( that.shippedDate ) : ( that.shippedDate != null ) ) {
+            return false;
+        }
+
+        return ( ( this.status != null ) ? this.status.equals( that.status ) : ( that.status == null ) );
+
+    }
+
     /**
      * @return the order comments (can be empty)
      */
@@ -109,17 +123,17 @@ public class Order {
     }
 
     /**
+     * @return the order details (never <code>null</code> but can be empty)
+     */
+    public OrderDetail[] getDetails() {
+        return this.details;
+    }
+
+    /**
      * @return the order ID
      */
     public int getId() {
         return this.id;
-    }
-
-    /**
-     * @return the IDs of the products bought with this order (never <code>null</code>)
-     */
-    public int[] getProducts() {
-        return this.productIds;
     }
 
     /**
@@ -157,6 +171,23 @@ public class Order {
         return this.status;
     }
 
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = ( ( comments != null ) ? comments.hashCode() : 0 );
+        result = ( 31 * result + customerId );
+        result = ( 31 * result + id );
+        result = ( 31 * result + Arrays.hashCode( details ) );
+        result = ( 31 * result + ( ( orderDate != null ) ? orderDate.hashCode() : 0 ) );
+        temp = Double.doubleToLongBits( price );
+        result = ( 31 * result + ( int )( temp ^ ( temp >>> 32 ) ) );
+        result = ( 31 * result + ( ( requiredDate != null ) ? requiredDate.hashCode() : 0 ) );
+        result = ( 31 * result + ( ( shippedDate != null ) ? shippedDate.hashCode() : 0 ) );
+        result = ( 31 * result + ( ( status != null ) ? status.hashCode() : 0 ) );
+        return result;
+    }
+
     private Calendar parseDate( final String dateString ) {
         // need to strip off "/Date(" from beginning and ")/" from end
         final String temp = dateString.substring( 6, dateString.length() - 2 );
@@ -167,10 +198,19 @@ public class Order {
     }
 
     /**
-     * @param productIds the IDs of the products bought with this order (never <code>null</code>)
+     * @param details the order details (can be <code>null</code>) sorted by line number
      */
-    public void setProducts( final int[] productIds ) {
-        this.productIds = productIds;
+    public void setDetails( final OrderDetail[] details ) {
+        this.details = ( ( details == null ) ? OrderDetail.NO_DETAILS : details );
+        this.price = 0;
+
+        if ( this.details.length != 0 ) {
+            Arrays.sort( this.details, OrderDetail.SORTER );
+
+            for ( final OrderDetail detail : this.details ) {
+                this.price += ( detail.getPriceEach() * detail.getQuantity() );
+            }
+        }
     }
 
     @Override

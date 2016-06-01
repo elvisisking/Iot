@@ -45,12 +45,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         new Integer[]{ R.drawable.ic_info, R.string.title_about_fragment },
     };
 
-    private RecyclerView.Adapter drawerAdapter;
-    private DrawerLayout drawerLayout;
-    private RecyclerView.LayoutManager drawerLayoutMgr;
-    private RecyclerView drawerRecyclerView;
-    private ActionBarDrawerToggle drawerToggle;
-
     private Timer notifierTimer;
     private Toolbar toolbar;
 
@@ -74,37 +68,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setSupportActionBar( toolbar );
         getSupportActionBar().setDisplayShowHomeEnabled( true );
 
-        this.drawerRecyclerView = ( RecyclerView )findViewById( R.id.drawer_view );
-        this.drawerRecyclerView.setHasFixedSize( true );
+        final RecyclerView drawerRecyclerView = ( RecyclerView )findViewById( R.id.drawer_view );
+        drawerRecyclerView.setHasFixedSize( true );
 
-        this.drawerAdapter = new DrawerAdapter( this );
-        this.drawerRecyclerView.setAdapter( this.drawerAdapter );
+        final RecyclerView.Adapter drawerAdapter = new DrawerAdapter( this );
+        drawerRecyclerView.setAdapter( drawerAdapter );
 
-        this.drawerLayoutMgr = new LinearLayoutManager( this );
-        this.drawerRecyclerView.setLayoutManager( this.drawerLayoutMgr );
+        final RecyclerView.LayoutManager drawerLayoutMgr = new LinearLayoutManager( this );
+        drawerRecyclerView.setLayoutManager( drawerLayoutMgr );
 
-        this.drawerLayout = ( DrawerLayout )findViewById( R.id.drawer_layout );
-        this.drawerToggle = new ActionBarDrawerToggle( this,
-                                                       this.drawerLayout,
-                                                       toolbar,
-                                                       R.string.navigation_drawer_open,
-                                                       R.string.navigation_drawer_close ) {
-
-            @Override
-            public void onDrawerOpened( final View drawerView ) {
-                super.onDrawerOpened( drawerView );
-                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-                // open I am not going to put anything here)
-            }
-
-            @Override
-            public void onDrawerClosed( final View drawerView ) {
-                super.onDrawerClosed( drawerView );
-            }
-
-        };
-        this.drawerLayout.addDrawerListener( this.drawerToggle );
-        this.drawerToggle.syncState();
+        final DrawerLayout drawerLayout = ( DrawerLayout )findViewById( R.id.drawer_layout );
+        final ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle( this,
+                                                                              drawerLayout,
+                                                                              toolbar,
+                                                                              R.string.navigation_drawer_open,
+                                                                              R.string.navigation_drawer_close );
+        drawerLayout.addDrawerListener( drawerToggle );
+        drawerToggle.syncState();
 //
 //        final NavigationView navigationView = ( NavigationView )findViewById( R.id.nav_view );
 //        navigationView.setNavigationItemSelectedListener( this );
@@ -124,13 +104,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public boolean onCreateOptionsMenu( final Menu menu ) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate( R.menu.main, menu );
         return true;
     }
 
-    void showScreen( final int index ) {
-        Fragment fragment = null;
+    private void showScreen( final int index ) {
+        Fragment fragment;
         int titleId = -1;
 
         switch ( index ) {
@@ -340,12 +319,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                                           final int viewType ) {
             // item
             if ( viewType == 1 ) {
-                final View view = this.inflater.inflate( R.layout.drawer_item, null );
+                final View view = this.inflater.inflate( R.layout.drawer_item, parent, false );
                 return new Holder( view, viewType );
             }
 
             // header
-            final View view = this.inflater.inflate( R.layout.nav_header_main, null );
+            final View view = this.inflater.inflate( R.layout.nav_header_main, parent, false );
             return new Holder( view, viewType );
         }
 

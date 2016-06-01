@@ -44,6 +44,8 @@ public class DataProvider {
         "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Product?$format=json";
     private static final String PROMOTIONS_URL =
         "http://10.0.2.2:8081/odata/customer_iot/PostgreSQL_Sales_Promotions.Promotion?$format=json";
+    private static final String ORDER_HISTORY_URL =
+        "http://localhost:8081/odata/customer_iot/getSalesHistory?customerNumber=%s&$format=json";
 
     private static DataProvider _shared = null;
 
@@ -59,8 +61,8 @@ public class DataProvider {
     }
 
     private long userIdCacheTime;
-    private Map< Integer, String > idNameMap = new HashMap<>(); // customer names and ID cache
-    private Map< Department, Integer > deptColors = new HashMap<>();
+    private final Map< Integer, String > idNameMap = new HashMap<>(); // customer names and ID cache
+    private final Map< Department, Integer > deptColors = new HashMap<>();
 
     /**
      * Don't allow construction outside of this class.
@@ -433,19 +435,7 @@ public class DataProvider {
                 final JSONObject jorder = jarray.getJSONObject( i );
                 final Order order = new Order( jorder.toString() );
                 final OrderDetail[] details = getOrderDetails( order.getId() );
-
-                if ( details.length != 0 ) {
-                    final int[] productIds = new int[ details.length ];
-
-                    for ( int j = 0;
-                          j < details.length;
-                          ++j ) {
-                        productIds[ j ] = details[ j ].getProductId();
-                    }
-
-                    order.setProducts( productIds );
-                }
-
+                order.setDetails( details );
                 orders[ i ] = order;
             }
 
