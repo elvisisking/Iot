@@ -11,7 +11,7 @@ import java.util.Comparator;
 public class OrderDetail {
 
     /**
-     * Sorts {@link OrderDetail}s by order number then line number.
+     * Sorts {@link OrderDetail}s by purchased products with the biggest discounts.
      */
     public static final Comparator< OrderDetail > SORTER = new Comparator< OrderDetail >() {
 
@@ -21,7 +21,7 @@ public class OrderDetail {
             int result = Integer.compare( thisDetail.getOrderId(), thatDetail.getOrderId() );
 
             if ( result == 0 ) {
-                return Integer.compare( thisDetail.getOrderLineNumber(), thatDetail.getOrderLineNumber() );
+                return Integer.compare( thatDetail.getDiscount(), thisDetail.getDiscount() );
             }
 
             return result;
@@ -36,26 +36,26 @@ public class OrderDetail {
     private final int orderId;
     private final int productId;
     private final int quantity;
-    private final double priceEach;
-    private final int orderLineNumber;
+    private final double msrp;
+    private final int discount; // percentage
 
     /**
-     * @param orderId         the ID of the order
-     * @param productId       the ID of the product
-     * @param quantity        the number of the products ordered
-     * @param priceEach       the price for each product
-     * @param orderLineNumber the line number on the order where this product was purchased
+     * @param orderId   the ID of the order
+     * @param productId the ID of the product
+     * @param quantity  the number of the products ordered
+     * @param msrp      the price for each product
+     * @param discount  the percentage of discount off the MSRP that the product was purchased
      */
     public OrderDetail( final int orderId,
                         final int productId,
                         final int quantity,
-                        final double priceEach,
-                        final int orderLineNumber ) {
+                        final double msrp,
+                        final int discount ) {
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
-        this.priceEach = priceEach;
-        this.orderLineNumber = orderLineNumber;
+        this.msrp = msrp;
+        this.discount = discount;
     }
 
     /**
@@ -68,11 +68,11 @@ public class OrderDetail {
         // required
         this.orderId = orderDetail.getInt( "orderNumber" ); // must have an order ID
         this.productId = orderDetail.getInt( "productCode" ); // must have a product ID
+        this.msrp = orderDetail.getDouble( "msrp" );
+        this.discount = orderDetail.getInt( "discount" );
 
         // optional
-        this.priceEach = ( orderDetail.has( "priceEach" ) ? orderDetail.getDouble( "priceEach" ) : -1 );
         this.quantity = ( orderDetail.has( "quantityOrdered" ) ? orderDetail.getInt( "quantityOrdered" ) : 1 );
-        this.orderLineNumber = ( orderDetail.has( "orderLineNumber" ) ? orderDetail.getInt( "orderLineNumber" ) : -1 );
     }
 
     @Override
@@ -95,12 +95,26 @@ public class OrderDetail {
             return false;
         }
 
-        if ( Double.compare( that.priceEach, this.priceEach ) != 0 ) {
+        if ( Double.compare( that.msrp, this.msrp ) != 0 ) {
             return false;
         }
 
-        return ( ( this.orderLineNumber == that.orderLineNumber ) && ( this.productId == that.productId ) );
+        return ( ( this.discount == that.discount ) && ( this.productId == that.productId ) );
 
+    }
+
+    /**
+     * @return the percentage discount off the MSRP the product was purchased for
+     */
+    public int getDiscount() {
+        return this.discount;
+    }
+
+    /**
+     * @return the price of each product ordered
+     */
+    public double getMsrp() {
+        return this.msrp;
     }
 
     /**
@@ -108,20 +122,6 @@ public class OrderDetail {
      */
     public int getOrderId() {
         return this.orderId;
-    }
-
-    /**
-     * @return the line number of the order that pertains to this product ordered
-     */
-    public int getOrderLineNumber() {
-        return this.orderLineNumber;
-    }
-
-    /**
-     * @return the price of each product ordered
-     */
-    public double getPriceEach() {
-        return this.priceEach;
     }
 
     /**
@@ -145,15 +145,15 @@ public class OrderDetail {
         result = this.orderId;
         result = 31 * result + this.productId;
         result = 31 * result + this.quantity;
-        temp = Double.doubleToLongBits( this.priceEach );
+        temp = Double.doubleToLongBits( this.msrp );
         result = 31 * result + ( int )( temp ^ ( temp >>> 32 ) );
-        result = 31 * result + this.orderLineNumber;
+        result = 31 * result + this.discount;
         return result;
     }
 
     @Override
     public String toString() {
-        return ( "OrderDetail: " + this.orderLineNumber );
+        return ( "OrderDetail: order=" + this.orderId + ", product=" + this.productId );
     }
 
 }

@@ -208,7 +208,7 @@ public class Order {
             Arrays.sort( this.details, OrderDetail.SORTER );
 
             for ( final OrderDetail detail : this.details ) {
-                this.price += ( detail.getPriceEach() * detail.getQuantity() );
+                this.price += ( ( detail.getMsrp() - ( detail.getMsrp() * detail.getDiscount() / 100 ) ) * detail.getQuantity() );
             }
         }
     }

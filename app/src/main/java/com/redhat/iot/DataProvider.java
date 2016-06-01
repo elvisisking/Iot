@@ -32,14 +32,16 @@ import java.util.Map;
  */
 public class DataProvider {
 
+    private static final boolean I_AM_TED = true;
     private static final boolean USE_REAL_DATA = true;
+
     private static final String HOST = "10.0.2.2"; // when DV is running locally (use localhost in browser)
-    private static final String PORT = "8080";
+    private static final String PORT = ( I_AM_TED ? "8081" : "8080" );
 
     private static final String CUSTOMERS_URL;
     private static final String DEPARTMENTS_URL;
     private static final String ORDER_DETAILS_URL;
-    private static final String ORDER_HISTORY_URL;
+    //    private static final String ORDER_HISTORY_URL;
     private static final String ORDERS_URL;
     private static final String PRODUCTS_URL;
     private static final String PROMOTIONS_URL;
@@ -55,7 +57,7 @@ public class DataProvider {
         CUSTOMERS_URL = String.format( urlPattern, "Customer" ) + jsonFormat;
         DEPARTMENTS_URL = String.format( urlPattern, "FUSE.Department" ) + jsonFormat;
         ORDER_DETAILS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail" ) + jsonFormat;
-        ORDER_HISTORY_URL = String.format( urlPattern, "getSalesHistory?customerNumber=%s&$format=json" );
+//        ORDER_HISTORY_URL = String.format( urlPattern, "getSalesHistory?customerNumber=%s&$format=json" );
         ORDERS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Customer(%s)/Order" ) + jsonFormat;
         PRODUCTS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Product" ) + jsonFormat;
         PROMOTIONS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Promotion" ) + jsonFormat;
@@ -516,7 +518,6 @@ public class DataProvider {
 
     private class GetData extends AsyncTask< Void, Void, String > {
 
-        private static final boolean I_AM_TED = true;
         private static final String USER = "teiidUser";
         private static final String PSWD = ( I_AM_TED ? "TbJ01221991$" : "4teiid$admin" );
 
