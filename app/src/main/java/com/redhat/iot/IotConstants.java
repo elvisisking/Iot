@@ -53,6 +53,11 @@ public interface IotConstants {
          */
         String PREFS_NAME = "IoTPrefs";
 
+        /**
+         * The name of the preference holding the department IDs of the last viewed promotions.
+         */
+        String PROMO_DEPT_IDS = "IoTPrefs";
+
     }
 
     /**
