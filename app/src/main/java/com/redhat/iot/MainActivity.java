@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -45,8 +46,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         new Integer[]{ R.drawable.ic_info, R.string.title_about_fragment },
     };
 
+    static final int LOGIN_SCREEN_INDEX = 1;
+    static final int HOME_SCREEN_INDEX = 2;
+    static final int PROMOTIOHS_SCREEN_INDEX = 3;
+    static final int ORDERS_SCREEN_INDEX = 4;
+    static final int BILLING_SCREEN_INDEX = 5;
+    static final int SETTINGS_SCREEN_INDEX = 6;
+    static final int CONTACT_SCREEN_INDEX = 7;
+    static final int ABOUT_SCREEN_INDEX = 8;
+
     private Timer notifierTimer;
-    private Toolbar toolbar;
 
     @Override
     public void onBackPressed() {
@@ -108,39 +117,39 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         return true;
     }
 
-    private void showScreen( final int index ) {
+    void showScreen( final int index ) {
         Fragment fragment;
         int titleId = -1;
 
         switch ( index ) {
-            case 1:
+            case LOGIN_SCREEN_INDEX:
                 fragment = new LoginFragment();
                 titleId = R.string.title_login_fragment;
                 break;
-            case 2:
+            case HOME_SCREEN_INDEX:
                 fragment = new HomeFragment();
                 break;
-            case 3:
+            case PROMOTIOHS_SCREEN_INDEX:
                 fragment = new PromotionsFragment();
                 titleId = R.string.title_deals_fragment;
                 break;
-            case 4:
+            case ORDERS_SCREEN_INDEX:
                 fragment = new OrdersFragment();
                 titleId = R.string.title_orders_fragment;
                 break;
-            case 5:
+            case BILLING_SCREEN_INDEX:
                 fragment = new BillingFragment();
                 titleId = R.string.title_billing_fragment;
                 break;
-            case 6:
+            case SETTINGS_SCREEN_INDEX:
                 fragment = new SettingsFragment();
                 titleId = R.string.title_settings_fragment;
                 break;
-            case 7:
+            case CONTACT_SCREEN_INDEX:
                 fragment = new ContactFragment();
                 titleId = R.string.title_contact_fragment;
                 break;
-            case 8:
+            case ABOUT_SCREEN_INDEX:
                 fragment = new AboutFragment();
                 titleId = R.string.title_about_fragment;
                 break;
@@ -156,10 +165,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         final DrawerLayout drawer = ( DrawerLayout )findViewById( R.id.drawer_layout );
         drawer.closeDrawer( GravityCompat.START );
 
-        if ( titleId == -1 ) {
-            getSupportActionBar().setSubtitle( "" );
-        } else {
-            getSupportActionBar().setSubtitle( getString( titleId ) );
+        if ( getSupportActionBar() != null ) {
+            if ( titleId == -1 ) {
+                getSupportActionBar().setSubtitle( "" );
+            } else {
+                getSupportActionBar().setSubtitle( getString( titleId ) );
+            }
         }
     }
 

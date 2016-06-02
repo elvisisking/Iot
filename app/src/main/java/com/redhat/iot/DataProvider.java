@@ -32,7 +32,8 @@ import java.util.Map;
  */
 public class DataProvider {
 
-    private static final boolean I_AM_TED = true;
+    private static final String LOG_MSG = ( DataProvider.class.getSimpleName() + ": %s: %s" );
+    private static final boolean I_AM_TED = false;
     private static final boolean USE_REAL_DATA = true;
 
     private static final String HOST = "10.0.2.2"; // when DV is running locally (use localhost in browser)
@@ -40,6 +41,7 @@ public class DataProvider {
 
     private static final String CUSTOMERS_URL;
     private static final String DEPARTMENTS_URL;
+    private static final String NOTIFICATIONS_URL;
     private static final String ORDER_DETAILS_URL;
     //    private static final String ORDER_HISTORY_URL;
     private static final String ORDERS_URL;
@@ -56,6 +58,7 @@ public class DataProvider {
 
         CUSTOMERS_URL = String.format( urlPattern, "Customer" ) + jsonFormat;
         DEPARTMENTS_URL = String.format( urlPattern, "FUSE.Department" ) + jsonFormat;
+        NOTIFICATIONS_URL = String.format( urlPattern, "getNotification?CustomerID=%s&$format=json" );
         ORDER_DETAILS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail" ) + jsonFormat;
 //        ORDER_HISTORY_URL = String.format( urlPattern, "getSalesHistory?customerNumber=%s&$format=json" );
         ORDERS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Customer(%s)/Order" ) + jsonFormat;
@@ -74,6 +77,12 @@ public class DataProvider {
         }
 
         return _shared;
+    }
+
+    private static void logError( final String context,
+                                  final String msg,
+                                  final Throwable e ) {
+        Log.e( IotConstants.LOG_TAG, String.format( LOG_MSG, context, msg ), e );
     }
 
     private final Map< Integer, Customer > customers = new HashMap<>();
@@ -110,7 +119,7 @@ public class DataProvider {
                 Log.d( IotConstants.LOG_TAG, ( "HTTP GET SUCCESS for URL: " + urlAsString ) );
                 is = urlConnection.getInputStream();
             } else {
-                Log.e( IotConstants.LOG_TAG, ( "HTTP GET FAILED for URL: " + urlAsString ) );
+                logError( "executeHttpGet", "url = '" + urlAsString + '\'', null );
                 is = urlConnection.getErrorStream();
             }
 
@@ -173,7 +182,7 @@ public class DataProvider {
             final Product product = findProduct( productId );
 
             if ( product == null ) {
-                Log.e( IotConstants.LOG_TAG, "Product " + productId + " was not found" );
+                logError( "findPromotions", "product '" + productId + "' was not found", null );
             } else if ( requestedDepts.contains( product.getDepartmentId() ) ) {
                 result.add( promo );
             }
@@ -246,7 +255,7 @@ public class DataProvider {
                     this.customers.put( cust.getId(), cust );
                 }
             } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                logError( "getCustomers", "url = '" + CUSTOMERS_URL + '\'', null );
                 return Customer.NO_CUSTOMERs;
             }
         }
@@ -270,7 +279,7 @@ public class DataProvider {
             return this.deptColors.get( deptId );
         }
 
-        Log.e( IotConstants.LOG_TAG, "No department found in cache for department " + deptId );
+        logError( "getDepartmentColor", "No department found for deptId '" + deptId + '\'', null );
         return -1;
     }
 
@@ -318,7 +327,7 @@ public class DataProvider {
 
                 deptColors.recycle(); // call after done with TypeArray
             } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                logError( "getDepartments", "url = '" + DEPARTMENTS_URL + '\'', e );
                 return Department.NO_DEPARTMENTS;
             }
         }
@@ -329,19 +338,27 @@ public class DataProvider {
     }
 
     public String getNotification() {
-        // TODO all of this...
-        // 1. find out department there in
-        // 2. find out if roaming or focused
-        // 3. if focused see if they ordered anything in that department in the past
-        // 4. if yes, get promotions for that department
-        // 5. Notify them of first promotion
-        final int userId = IotApp.getUserId();
+        final int customerId = IotApp.getUserId();
 
-        if ( Customer.UNKNOWN_USER == userId ) {
+        if ( Customer.UNKNOWN_USER == customerId ) {
             return null;
         }
 
-        return "10% all clothing in the Boy's department";
+        final String url = String.format( NOTIFICATIONS_URL, customerId );
+
+        try {
+            final String json = new GetData( url ).execute().get();
+
+            if ( ( json == null ) || json.isEmpty() ) {
+                return null;
+            }
+
+            // TODO parse JSON here
+            return json;
+        } catch ( final Exception e ) {
+            logError( "getNotification", "url = '" + url + '\'', e );
+            return null;
+        }
     }
 
     /**
@@ -349,11 +366,12 @@ public class DataProvider {
      * @return the order details (never <code>null</code>)
      */
     private OrderDetail[] getOrderDetails( final int orderId ) {
+        final String url = String.format( ORDER_DETAILS_URL, orderId );
+
         try {
             String json;
 
             if ( USE_REAL_DATA ) {
-                final String url = String.format( ORDER_DETAILS_URL, orderId );
                 json = new GetData( url ).execute().get();
             } else {
                 switch ( orderId ) {
@@ -395,7 +413,7 @@ public class DataProvider {
 
             return details.toArray( new OrderDetail[ details.size() ] );
         } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+            logError( "getOrderDetails", "url = '" + url + '\'', e );
             return OrderDetail.NO_DETAILS;
         }
     }
@@ -405,11 +423,12 @@ public class DataProvider {
      * @return the orders (never <code>null</code>)
      */
     public Order[] getOrders( final int customerId ) {
+        final String url = String.format( ORDERS_URL, customerId );
+
         try {
             String json;
 
             if ( USE_REAL_DATA ) {
-                final String url = String.format( ORDERS_URL, customerId );
                 json = new GetData( url ).execute().get();
             } else {
                 switch ( customerId ) {
@@ -444,7 +463,7 @@ public class DataProvider {
 
             return orders;
         } catch ( final Exception e ) {
-            Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+            logError( "getOrders", "url = '" + url + '\'', e );
             return Order.NO_ORDERS;
         }
     }
@@ -472,7 +491,7 @@ public class DataProvider {
                     this.products.put( product.getId(), product );
                 }
             } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                logError( "getProducts", "url = '" + PRODUCTS_URL + '\'', e );
                 return Product.NO_PRODUCTS;
             }
         }
@@ -506,7 +525,7 @@ public class DataProvider {
                     this.promotions.put( promo.getId(), promo );
                 }
             } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG_TAG, e.getLocalizedMessage() );
+                logError( "getPromotions", "url = '" + PROMOTIONS_URL + '\'', e );
                 return Promotion.NO_PROMOTIONS;
             }
         }
@@ -532,7 +551,7 @@ public class DataProvider {
             try {
                 return executeHttpGet( this.url, USER, PSWD );
             } catch ( final Exception e ) {
-                Log.e( IotConstants.LOG_TAG, "Error in GetData AsyncTask. URL:  " + params[ 0 ] );
+                logError( "GetData.doInBackground", "url = '" + this.url + '\'', e );
                 return null;
             }
         }
