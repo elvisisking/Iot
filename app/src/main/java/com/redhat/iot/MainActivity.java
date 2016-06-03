@@ -272,21 +272,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         public NotificationHandler( final Context context ) {
             this.context = context;
-            this.notifier = new Notifier( context );
+            this.notifier = new Notifier();
         }
 
         @Override
         public void handleMessage( final Message msg ) {
-            final String notification = DataProvider.get().getNotification();
+            final DataProvider.Notification notification = DataProvider.get().getNotification();
 
-            if ( ( notification != null ) && !notification.isEmpty() ) {
-                Log.d( IotConstants.LOG_TAG, "Sending notification: " + notification );
-                sendNotification( notification );
+            if ( notification != null ) {
+                this.notifier.sendNotification( notification );
             }
-        }
-
-        private void sendNotification( final String msg ) {
-            this.notifier.sendNotification( this.context.getString( R.string.app_name ), msg );
         }
 
     }

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.redhat.iot.domain.Customer;
 
@@ -60,6 +61,35 @@ public class IotApp extends Application {
     }
 
     /**
+     * @param hostIpAddress the IP address of the host that is being checked (cannot be empty)
+     * @return <code>true</code> if host is reachable
+     */
+    public static boolean ping( final String hostIpAddress ) {
+        boolean reachable = false;
+
+        try {
+            String cmd = "";
+
+            if ( System.getProperty( "os.name" ).startsWith( "Windows" ) ) {
+                cmd = ( "ping -n 1 " + hostIpAddress );
+            } else {
+                cmd = ( "ping -c 1 " + hostIpAddress );
+            }
+
+            final Process myProcess = Runtime.getRuntime().exec( cmd );
+            myProcess.waitFor();
+
+            if ( myProcess.exitValue() == 0 ) {
+                reachable = true;
+            }
+        } catch ( final Exception e ) {
+            reachable = false;
+        }
+
+        return reachable;
+    }
+
+    /**
      * @return the ID of the logged in user or {@link Customer#UNKNOWN_USER} if no one is logged in
      */
     public static int getUserId() {
@@ -70,7 +100,7 @@ public class IotApp extends Application {
     /**
      * @param userId the ID of the logged in user or {@link Customer#UNKNOWN_USER} if no one is logged in
      */
-    public static void setUserId(final int userId ) {
+    public static void setUserId( final int userId ) {
         final SharedPreferences.Editor editor = getPrefs().edit();
         editor.putInt( IotConstants.Prefs.CUSTOMER_ID, userId );
         editor.apply();

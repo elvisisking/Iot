@@ -41,7 +41,7 @@ public class LoginFragment extends Fragment implements OnClickListener, OnShared
         final int userId = Integer.parseInt( idTxt );
 
         // find customer
-        final Customer customer = DataProvider.get().getCustomer( userId );
+        final Customer customer = DataProvider.get().findCustomer( userId );
 
         if ( customer == null ) {
             Toast.makeText( getActivity(),

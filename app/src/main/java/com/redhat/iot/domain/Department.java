@@ -8,7 +8,7 @@ import java.util.Comparator;
 /**
  * Represents a store department.
  */
-public class Department {
+public class Department implements IotObject {
 
     /**
      * An empty collection of departments.

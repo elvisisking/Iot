@@ -76,6 +76,11 @@ public interface IotConstants {
     SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( DATE_FORMAT );
 
     /**
+     * The HANA IP address.
+     */
+    String HANA_IP_ADDRESS = "54.187.27.202";
+
+    /**
      * Tag to use when logging messages.
      */
     String LOG_TAG = "IoT_App";

@@ -33,6 +33,7 @@ import java.util.Map;
 public class DataProvider {
 
     private static final String LOG_MSG = ( DataProvider.class.getSimpleName() + ": %s: %s" );
+
     private static final boolean I_AM_TED = false;
     private static final boolean USE_REAL_DATA = true;
 
@@ -43,7 +44,6 @@ public class DataProvider {
     private static final String DEPARTMENTS_URL;
     private static final String NOTIFICATIONS_URL;
     private static final String ORDER_DETAILS_URL;
-    //    private static final String ORDER_HISTORY_URL;
     private static final String ORDERS_URL;
     private static final String PRODUCTS_URL;
     private static final String PROMOTIONS_URL;
@@ -60,7 +60,6 @@ public class DataProvider {
         DEPARTMENTS_URL = String.format( urlPattern, "FUSE.Department" ) + jsonFormat;
         NOTIFICATIONS_URL = String.format( urlPattern, "getNotification?CustomerID=%s&$format=json" );
         ORDER_DETAILS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail" ) + jsonFormat;
-//        ORDER_HISTORY_URL = String.format( urlPattern, "getSalesHistory?customerNumber=%s&$format=json" );
         ORDERS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Customer(%s)/Order" ) + jsonFormat;
         PRODUCTS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Product" ) + jsonFormat;
         PROMOTIONS_URL = String.format( urlPattern, "PostgreSQL_Sales_Promotions.Promotion" ) + jsonFormat;
@@ -79,15 +78,16 @@ public class DataProvider {
         return _shared;
     }
 
-    private static void logError( final String context,
+    private static void logError( final String methodNameWhereErrorOccurred,
                                   final String msg,
                                   final Throwable e ) {
-        Log.e( IotConstants.LOG_TAG, String.format( LOG_MSG, context, msg ), e );
+        Log.e( IotConstants.LOG_TAG, String.format( LOG_MSG, methodNameWhereErrorOccurred, msg ), e );
     }
 
     private final Map< Integer, Customer > customers = new HashMap<>();
     private final Map< Long, Department > departments = new HashMap<>();
     private final Map< Long, Integer > deptColors = new HashMap<>();
+    private final Map< Integer, List< Notification > > notifications = new HashMap<>();
     private final Map< Integer, Product > products = new HashMap<>();
     private final Map< Integer, Promotion > promotions = new HashMap<>();
 
@@ -106,6 +106,7 @@ public class DataProvider {
         final String userCredentials = ( user + ':' + pswd );
         final String encoding = new String( Base64.encode( userCredentials.getBytes(), Base64.DEFAULT ) ).replaceAll( "\\s+", "" );
 
+        Log.d( IotConstants.LOG_TAG, ( "before executeHttpGet for url = " + urlAsString ) );
         final HttpURLConnection urlConnection = ( HttpURLConnection )url.openConnection();
         urlConnection.setRequestProperty( "Authorization", "Basic " + encoding );
         urlConnection.setRequestMethod( "GET" );
@@ -113,13 +114,14 @@ public class DataProvider {
 
         try {
             final int code = urlConnection.getResponseCode();
+            final boolean ok = ( code == HttpURLConnection.HTTP_OK );
             InputStream is;
 
-            if ( code == HttpURLConnection.HTTP_OK ) {
+            if ( ok ) {
                 Log.d( IotConstants.LOG_TAG, ( "HTTP GET SUCCESS for URL: " + urlAsString ) );
                 is = urlConnection.getInputStream();
             } else {
-                logError( "executeHttpGet", "url = '" + urlAsString + '\'', null );
+                logError( "executeHttpGet FAILED:", "url = '" + urlAsString + '\'', null );
                 is = urlConnection.getErrorStream();
             }
 
@@ -132,10 +134,28 @@ public class DataProvider {
             }
 
             reader.close();
-            return builder.toString();
+
+            if ( ok ) {
+                return builder.toString();
+            }
+
+            logError( "executeHttpGet error:", builder.toString(), null );
+            return null;
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    /**
+     * @param custId the ID of the customer being requested
+     * @return the user or <code>null</code> if not found
+     */
+    public Customer findCustomer( final int custId ) {
+        if ( this.customers.isEmpty() ) {
+            getCustomers(); // load customers
+        }
+
+        return this.customers.get( custId );
     }
 
     /**
@@ -143,13 +163,11 @@ public class DataProvider {
      * @return the department or <code>null</code> if not found
      */
     public Department findDepartment( final long deptId ) {
-        for ( final Department dept : getDepartments() ) {
-            if ( deptId == dept.getId() ) {
-                return dept;
-            }
+        if ( this.departments.isEmpty() ) {
+            getDepartments(); // load departments
         }
 
-        return null;
+        return this.departments.get( deptId );
     }
 
     /**
@@ -162,6 +180,18 @@ public class DataProvider {
         }
 
         return this.products.get( productId );
+    }
+
+    /**
+     * @param promoId the ID of the promotion being requested
+     * @return the requested promotion or <code>null</code> if not found
+     */
+    public Promotion findPromotion( final int promoId ) {
+        if ( this.promotions.isEmpty() ) {
+            getPromotions(); // load promotions
+        }
+
+        return this.promotions.get( promoId );
     }
 
     /**
@@ -192,26 +222,12 @@ public class DataProvider {
     }
 
     /**
-     * @param userId the ID of the user being requested
-     * @return the user or <code>null</code> if not found
-     */
-    public Customer getCustomer( final int userId ) {
-        for ( final Customer customer : getCustomers() ) {
-            if ( customer.getId() == userId ) {
-                return customer;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @param userId the ID of the customer whose name is being requested
      * @return the name or <code>null</code> if not found
      */
     public String getCustomerName( final int userId ) {
         if ( this.customers.isEmpty() ) {
-            getCustomers();
+            getCustomers(); // load customers
         }
 
         final Customer customer = this.customers.get( userId );
@@ -268,9 +284,8 @@ public class DataProvider {
      * @return the ID of the color
      */
     public int getDepartmentColor( final long deptId ) {
-        // populate department cache if necessary
         if ( this.deptColors.isEmpty() ) {
-            getDepartments();
+            getDepartments(); // load departments
         }
 
         final Department dept = this.departments.get( deptId );
@@ -299,12 +314,16 @@ public class DataProvider {
             try {
                 String json;
 
-                // TODO fix this
-//                if ( USE_REAL_DATA ) {
-//                    json = new GetData( DEPARTMENTS_URL ).execute().get();
-//                } else {
-                json = IotConstants.TestData.DEPARTMENTS_JSON;
-//                }
+                if ( USE_REAL_DATA && new HanaCheck().execute().get() ) {
+                    json = new GetData( DEPARTMENTS_URL ).execute().get();
+                } else {
+                    json = IotConstants.TestData.DEPARTMENTS_JSON;
+                }
+
+                // check to see if error occurred
+                if ( json == null ) {
+                    return Department.NO_DEPARTMENTS;
+                }
 
                 final JSONObject jobj = new JSONObject( json );
                 final JSONObject d = jobj.getJSONObject( "d" );
@@ -337,7 +356,10 @@ public class DataProvider {
         return result;
     }
 
-    public String getNotification() {
+    /**
+     * @return a notification for the logged in user or <code>null</code> if a notification is not available
+     */
+    public Notification getNotification() {
         final int customerId = IotApp.getUserId();
 
         if ( Customer.UNKNOWN_USER == customerId ) {
@@ -353,8 +375,32 @@ public class DataProvider {
                 return null;
             }
 
-            // TODO parse JSON here
-            return json;
+            final JSONObject jobj = new JSONObject( json );
+            final JSONArray jarray = jobj.getJSONArray( "d" );
+            final JSONObject jnotification = jarray.getJSONObject( 0 );
+            final int promoId = jnotification.getInt( "id" );
+
+            if ( promoId == -1 ) {
+                return null;
+            }
+
+            List< Notification > alerts = this.notifications.get( customerId );
+
+            if ( alerts == null ) {
+                alerts = new ArrayList<>();
+                this.notifications.put( customerId, alerts );
+            }
+
+            for ( final Notification notification : alerts ) {
+                if ( promoId == notification.getPromotion().getId() ) {
+                    return null;
+                }
+            }
+
+            // send notification
+            final Notification newAlert = new Notification( customerId, promoId );
+            alerts.add( newAlert );
+            return newAlert;
         } catch ( final Exception e ) {
             logError( "getNotification", "url = '" + url + '\'', e );
             return null;
@@ -535,11 +581,24 @@ public class DataProvider {
         return result;
     }
 
+    Boolean isHanaRunning() {
+        final boolean reachable = IotApp.ping( IotConstants.HANA_IP_ADDRESS );
+
+        if ( reachable ) {
+            Log.d( IotConstants.LOG_TAG, "Ping HANA (" + IotConstants.HANA_IP_ADDRESS + ") was successful" );
+        } else {
+            logError( "isHanaRunning", "Ping of HANA (" + IotConstants.HANA_IP_ADDRESS + ") *** FAILED ***", null );
+        }
+
+        return reachable;
+    }
+
     private class GetData extends AsyncTask< Void, Void, String > {
 
         private static final String USER = "teiidUser";
         private static final String PSWD = ( I_AM_TED ? "TbJ01221991$" : "4teiid$admin" );
 
+        private Throwable error;
         private final String url;
 
         public GetData( final String url ) {
@@ -550,10 +609,68 @@ public class DataProvider {
         protected String doInBackground( final Void... params ) {
             try {
                 return executeHttpGet( this.url, USER, PSWD );
-            } catch ( final Exception e ) {
+            } catch ( final Throwable e ) {
+                this.error = e;
                 logError( "GetData.doInBackground", "url = '" + this.url + '\'', e );
                 return null;
             }
+        }
+
+        Throwable getError() {
+            return this.error;
+        }
+
+    }
+
+    private class HanaCheck extends AsyncTask< Void, Void, Boolean > {
+
+        @Override
+        protected Boolean doInBackground( final Void... params ) {
+            try {
+                return isHanaRunning();
+            } catch ( final Exception e ) {
+                logError( "HanaCheck.doInBackground", "", e );
+                return false;
+            }
+        }
+
+    }
+
+    class Notification {
+
+        private final int customerId;
+        private final String department;
+        private final Product product;
+        private final Promotion promotion;
+        private final long timestamp;
+
+        Notification( final int customerId,
+                      final int promoId ) {
+            this.customerId = customerId;
+            this.timestamp = System.currentTimeMillis();
+            this.promotion = DataProvider.get().findPromotion( promoId );
+            this.product = DataProvider.get().findProduct( this.promotion.getProductId() );
+            this.department = DataProvider.get().findDepartment( this.product.getDepartmentId() ).getName();
+        }
+
+        int getCustomerId() {
+            return this.customerId;
+        }
+
+        String getDepartment() {
+            return this.department;
+        }
+
+        Product getProduct() {
+            return this.product;
+        }
+
+        Promotion getPromotion() {
+            return this.promotion;
+        }
+
+        long getTimestamp() {
+            return this.timestamp;
         }
 
     }
