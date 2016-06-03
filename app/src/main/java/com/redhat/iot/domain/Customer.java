@@ -6,7 +6,7 @@ import org.json.JSONObject;
 /**
  * Represents a customer of the online store.
  */
-public class Customer {
+public class Customer implements IotObject {
 
     /**
      * An empty collection of {@link Customer}s.

@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Represents an order.
  */
-public class Order {
+public class Order implements IotObject {
 
     /**
      * An empty collection of {@link Order}s.

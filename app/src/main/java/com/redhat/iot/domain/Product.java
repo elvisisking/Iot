@@ -8,7 +8,7 @@ import org.json.JSONObject;
 /**
  * Represents a product from the store.
  */
-public class Product {
+public class Product implements IotObject {
 
     public static final Product[] NO_PRODUCTS = new Product[ 0 ];
 

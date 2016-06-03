@@ -10,7 +10,7 @@ import java.util.Comparator;
 /**
  * Represents a promotion.
  */
-public class Promotion {
+public class Promotion implements IotObject {
 
     /**
      * An empty collection of {@link Promotion}s.

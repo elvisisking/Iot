@@ -17,6 +17,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="notification_title">%s Department Promotion</string>
+    <string name="notification_message" formatted="false">%s discounted by %s percent</string>
+
     <string name="action_sign_out">Sign Out</string>
 
     <string name="title_about_fragment">About</string>

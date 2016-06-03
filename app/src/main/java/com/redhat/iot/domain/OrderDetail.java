@@ -8,7 +8,7 @@ import java.util.Comparator;
 /**
  * Represents a line item from the order.
  */
-public class OrderDetail {
+public class OrderDetail implements IotObject {
 
     /**
      * Sorts {@link OrderDetail}s by purchased products with the biggest discounts.
