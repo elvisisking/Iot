@@ -4,10 +4,19 @@
     <string name="iv_drawerItemImage">Image of the menu item</string>
     <string name="iv_orderImage">Image of Johl\'s</string>
 
+    <string name="app_error_dialog_title">Johl\'s Error</string>
+    <string name="app_load_data_progress_title">Load Data</string>
     <string name="app_name">Johl\'s</string>
     <string name="app_tagline">The Home of Smart Shopping</string>
 
-    <string name="login_current_user">Current User:</string>
+    <string name="load_customers">Fetching Customer records&#8230;</string>
+    <string name="load_departments">Fetching Department records&#8230;</string>
+    <string name="load_orders">Fetching Order records&#8230;</string>
+    <string name="load_order_details">Fetching Order Detail records&#8230;</string>
+    <string name="load_products">Fetching Product records&#8230;</string>
+    <string name="load_promotions">Fetching Promotion records&#8230;</string>
+
+    <string name="login_current_user">Current Customer</string>
     <string name="login_not_logged_in">** not logged in **</string>
     <string name="login_sign_in">Sign In</string>
     <string name="login_success">Successfully logged in</string>
@@ -42,7 +51,6 @@
 
     <string name="settings_enable_notifications">Enable notifications:</string>
     <string name="settings_notification_interval">Notification interval:</string>
-    <string name="settings_user">User: %s</string>
     <string name="settings_user_not_logged_in">[no user logged in]</string>
 
     <string-array name="notification_intervals">

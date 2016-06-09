@@ -1,11 +1,8 @@
 package com.redhat.iot.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Objects;
 
 /**
  * Represents an order.
@@ -19,46 +16,38 @@ public class Order implements IotObject {
 
     private final String comments;
     private final int customerId;
-    private final int id;
     private OrderDetail[] details = OrderDetail.NO_DETAILS;
+    private final int id;
     private final Calendar orderDate;
-    private double price = 0;
+    private double price;
     private final Calendar requiredDate;
     private final Calendar shippedDate;
     private final String status;
 
     /**
-     * @param json a JSON representation of an order (cannot be empty)
-     * @throws JSONException if there is a problem parsing the JSON
+     * @param id           the unique ID of this order
+     * @param comments     the order comments (can be empty)
+     * @param custId       the ID of the customer that this order applies
+     * @param orderDate    the date of the order (can be <code>null</code>)
+     * @param requiredDate the required delivery date of this order (can be <code>null</code>)
+     * @param shippedDate  the shipped date of the order (can be <code>null</code>)
+     * @param status       the order status (can be empty)
      */
-    public Order( final String json ) throws JSONException {
-        final JSONObject order = new JSONObject( json );
-
-        // required
-        this.id = order.getInt( "orderNumber" ); // must have an ID
-        this.customerId = order.getInt( "customerNumber" ); // must have a customer ID
-
-        // optional
-        this.comments = ( order.has( "comments" ) ? order.getString( "comments" ) : "" );
-        this.status = ( order.has( "status" ) ? order.getString( "status" ) : "" );
-
-        if ( order.has( "orderDate" ) ) {
-            this.orderDate = parseDate( order.getString( "orderDate" ) );
-        } else {
-            this.orderDate = null;
-        }
-
-        if ( order.has( "requiredDate" ) ) {
-            this.requiredDate = parseDate( order.getString( "requiredDate" ) );
-        } else {
-            this.requiredDate = null;
-        }
-
-        if ( order.has( "shippedDate" ) ) {
-            this.shippedDate = parseDate( order.getString( "shippedDate" ) );
-        } else {
-            this.shippedDate = null;
-        }
+    public Order( final int id,
+                  final String comments,
+                  final int custId,
+                  final Calendar orderDate,
+                  final Calendar requiredDate,
+                  final Calendar shippedDate,
+                  final String status
+                ) {
+        this.id = id;
+        this.comments = comments;
+        this.customerId = custId;
+        this.orderDate = orderDate;
+        this.requiredDate = requiredDate;
+        this.shippedDate = shippedDate;
+        this.status = status;
     }
 
     @Override
@@ -84,7 +73,7 @@ public class Order implements IotObject {
             return false;
         }
 
-        if ( ( this.comments != null ) ? !this.comments.equals( that.comments ) : ( that.comments != null ) ) {
+        if ( !Objects.equals( this.comments, that.comments ) ) {
             return false;
         }
 
@@ -92,20 +81,19 @@ public class Order implements IotObject {
             return false;
         }
 
-        if ( ( this.orderDate != null ) ? !this.orderDate.equals( that.orderDate ) : ( that.orderDate != null ) ) {
+        if ( !Objects.equals( this.orderDate, that.orderDate ) ) {
             return false;
         }
 
-        if ( ( this.requiredDate != null ) ? !this.requiredDate.equals( that.requiredDate ) : ( that.requiredDate != null ) ) {
+        if ( !Objects.equals( this.requiredDate, that.requiredDate ) ) {
             return false;
         }
 
-        if ( ( this.shippedDate != null ) ? !this.shippedDate.equals( that.shippedDate ) : ( that.shippedDate != null ) ) {
+        if ( !Objects.equals( this.shippedDate, that.shippedDate ) ) {
             return false;
         }
 
-        return ( ( this.status != null ) ? this.status.equals( that.status ) : ( that.status == null ) );
-
+        return Objects.equals( this.status, that.status );
     }
 
     /**
@@ -173,28 +161,15 @@ public class Order implements IotObject {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = ( ( comments != null ) ? comments.hashCode() : 0 );
-        result = ( 31 * result + customerId );
-        result = ( 31 * result + id );
-        result = ( 31 * result + Arrays.hashCode( details ) );
-        result = ( 31 * result + ( ( orderDate != null ) ? orderDate.hashCode() : 0 ) );
-        temp = Double.doubleToLongBits( price );
-        result = ( 31 * result + ( int )( temp ^ ( temp >>> 32 ) ) );
-        result = ( 31 * result + ( ( requiredDate != null ) ? requiredDate.hashCode() : 0 ) );
-        result = ( 31 * result + ( ( shippedDate != null ) ? shippedDate.hashCode() : 0 ) );
-        result = ( 31 * result + ( ( status != null ) ? status.hashCode() : 0 ) );
-        return result;
-    }
-
-    private Calendar parseDate( final String dateString ) {
-        // need to strip off "/Date(" from beginning and ")/" from end
-        final String temp = dateString.substring( 6, dateString.length() - 2 );
-        final long orderDate = Long.parseLong( temp );
-        final Calendar cal = Calendar.getInstance();
-        cal.setTime( new Date( orderDate ) );
-        return cal;
+        return Objects.hash( this.comments,
+                             this.customerId,
+                             this.details,
+                             this.id,
+                             this.orderDate,
+                             this.price,
+                             this.requiredDate,
+                             this.shippedDate,
+                             this.status );
     }
 
     /**
@@ -215,7 +190,7 @@ public class Order implements IotObject {
 
     @Override
     public String toString() {
-        return ( "Order: " + this.id );
+        return ( "Order: id = " + this.customerId + ", custId = " + this.customerId );
     }
 
 }

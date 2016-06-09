@@ -2,10 +2,8 @@ package com.redhat.iot.domain;
 
 import com.redhat.iot.DataProvider;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Represents a promotion.
@@ -25,38 +23,42 @@ public class Promotion implements IotObject {
         @Override
         public int compare( final Promotion thisPromo,
                             final Promotion thatPromo ) {
-            final DataProvider store = DataProvider.get();
-            final Product thisProduct = store.findProduct( thisPromo.getProductId() );
-            final Product thatProduct = store.findProduct( thatPromo.getProductId() );
-            final Department thisDept = store.findDepartment( thisProduct.getDepartmentId() );
-            final Department thatDept = store.findDepartment( thatProduct.getDepartmentId() );
-            return Department.NAME_SORTER.compare( thisDept, thatDept );
+            final String thisDeptName = DataProvider.get().getDepartmentName( thisPromo.getProductId() );
+            final String thatDeptName = DataProvider.get().getDepartmentName( thatPromo.getProductId() );
+
+            if ( Objects.equals( thisDeptName, thatDeptName ) ) {
+                return 0;
+            }
+
+            // should not happen
+            if ( thisDeptName == null ) {
+                return -1;
+            }
+
+            // should not happen
+            if ( thatDeptName == null ) {
+                return 1;
+            }
+
+            return thisDeptName.compareTo( thatDeptName );
         }
     };
 
     private final double discount;
-    private final int productId;
     private final int id;
+    private final int productId;
 
+    /**
+     * @param id        the unique ID of this promotion
+     * @param productId the ID of the product that is on sale
+     * @param discount  the percentage discount
+     */
     public Promotion( final int id,
                       final int productId,
                       final double discount ) {
         this.id = id;
         this.productId = productId;
         this.discount = discount;
-    }
-
-    /**
-     * @param json a JSON representation of a promotion (cannot be empty)
-     * @throws JSONException if there is a problem parsing the JSON
-     */
-    public Promotion( final String json ) throws JSONException {
-        final JSONObject cust = new JSONObject( json );
-
-        // required
-        this.id = cust.getInt( "id" ); // must have an ID
-        this.productId = cust.getInt( "productCode" ); // must have a product ID
-        this.discount = cust.getDouble( "discount" ); // must have a discount
     }
 
     @Override
@@ -102,18 +104,12 @@ public class Promotion implements IotObject {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits( discount );
-        result = ( int )( temp ^ ( temp >>> 32 ) );
-        result = 31 * result + productId;
-        result = 31 * result + id;
-        return result;
+        return Objects.hash( this.discount, this.id, this.productId );
     }
 
     @Override
     public String toString() {
-        return ( "Promotion: " + this.id );
+        return ( "Promotion: id = " + this.id + ", productId = " + this.productId );
     }
 
 }

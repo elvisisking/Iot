@@ -12,17 +12,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.redhat.iot.DataProvider;
-import com.redhat.iot.IotConstants;
-import com.redhat.iot.R;
+import com.redhat.iot.IotConstants.Prefs;
+import com.redhat.iot.R.id;
+import com.redhat.iot.R.layout;
+import com.redhat.iot.concurrent.OrderCallback;
+import com.redhat.iot.domain.Customer;
 import com.redhat.iot.domain.Order;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A screen for displaying the {@link Order} history of the logged in {@link Customer}.
  */
 public class OrdersFragment extends Fragment {
 
     private Activity activity;
+    private TextView emptyView;
+    private RecyclerView ordersView;
 
+    /**
+     * Constructs an {@link Order}s screen.
+     */
     public OrdersFragment() {
         // nothing to do
     }
@@ -31,25 +39,21 @@ public class OrdersFragment extends Fragment {
     public void onActivityCreated( final Bundle savedInstanceState ) {
         super.onActivityCreated( savedInstanceState );
 
-        // look up customer ID
-        final SharedPreferences settings = this.activity.getSharedPreferences( IotConstants.Prefs.PREFS_NAME, 0 );
-        final int customerId = settings.getInt( IotConstants.Prefs.CUSTOMER_ID, -1 );
+        // look up currently logged in customer
+        final SharedPreferences settings = this.activity.getSharedPreferences( Prefs.PREFS_NAME, 0 );
+        final int customerId = settings.getInt( Prefs.CUSTOMER_ID, Customer.UNKNOWN_USER );
 
-        // obtain customer orders and create adapter
-        final Order[] orders = DataProvider.get().getOrders( customerId );
-        final RecyclerView ordersView = ( RecyclerView )getActivity().findViewById( R.id.orderHistory );
-        final TextView emptyView = ( TextView )getActivity().findViewById( R.id.tv_no_orders );
-
-        if ( orders.length == 0 ) {
-            ordersView.setVisibility( View.GONE );
-            emptyView.setVisibility( View.VISIBLE );
+        if ( customerId == Customer.UNKNOWN_USER ) {
+            setDataOnCreated( Order.NO_ORDERS );
         } else {
-            ordersView.setVisibility( View.VISIBLE );
-            emptyView.setVisibility( View.GONE );
+            // obtain customer orders and create adapter
+            DataProvider.get().getOrders( customerId, new OrderCallback() {
 
-            final OrderAdapter adapter = new OrderAdapter( this.activity, orders );
-            ordersView.setAdapter( adapter );
-            ordersView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
+                @Override
+                public void onSuccess( final Order[] results ) {
+                    setDataOnCreated( results );
+                }
+            } );
         }
     }
 
@@ -58,7 +62,26 @@ public class OrdersFragment extends Fragment {
                               final ViewGroup parent,
                               final Bundle savedInstanceState ) {
         this.activity = getActivity();
-        return inflater.inflate( R.layout.orders, parent, false );
+
+        final View view = inflater.inflate( layout.orders, parent, false );
+        this.emptyView = ( TextView )view.findViewById( id.tv_no_orders );
+        this.ordersView = ( RecyclerView )view.findViewById( id.orderHistory );
+
+        final OrderAdapter adapter = new OrderAdapter( this.activity, Order.NO_ORDERS );
+        this.ordersView.setAdapter( adapter );
+        this.ordersView.setLayoutManager( new GridLayoutManager( this.activity, 1 ) );
+
+        return view;
+    }
+
+    private void setDataOnCreated( final Order[] orders ) {
+        final boolean noOrders = ( orders.length == 0 );
+        this.ordersView.setVisibility( noOrders ? View.GONE : View.VISIBLE );
+        this.emptyView.setVisibility( noOrders ? View.VISIBLE : View.GONE );
+
+        final OrderAdapter adapter = new OrderAdapter( this.activity, orders );
+        this.ordersView.setAdapter( adapter );
+        adapter.notifyDataSetChanged();
     }
 
 }

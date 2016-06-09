@@ -1,9 +1,7 @@
 package com.redhat.iot.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Represents a line item from the order.
@@ -33,11 +31,11 @@ public class OrderDetail implements IotObject {
      */
     public static final OrderDetail[] NO_DETAILS = new OrderDetail[ 0 ];
 
+    private final int discount; // percentage
+    private final double msrp;
     private final int orderId;
     private final int productId;
     private final int quantity;
-    private final double msrp;
-    private final int discount; // percentage
 
     /**
      * @param orderId   the ID of the order
@@ -56,23 +54,6 @@ public class OrderDetail implements IotObject {
         this.quantity = quantity;
         this.msrp = msrp;
         this.discount = discount;
-    }
-
-    /**
-     * @param json a JSON representation of a order line item (cannot be empty)
-     * @throws JSONException if there is a problem parsing the JSON
-     */
-    public OrderDetail( final String json ) throws JSONException {
-        final JSONObject orderDetail = new JSONObject( json );
-
-        // required
-        this.orderId = orderDetail.getInt( "orderNumber" ); // must have an order ID
-        this.productId = orderDetail.getInt( "productCode" ); // must have a product ID
-        this.msrp = orderDetail.getDouble( "msrp" );
-        this.discount = orderDetail.getInt( "discount" );
-
-        // optional
-        this.quantity = ( orderDetail.has( "quantityOrdered" ) ? orderDetail.getInt( "quantityOrdered" ) : 1 );
     }
 
     @Override
@@ -140,20 +121,12 @@ public class OrderDetail implements IotObject {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = this.orderId;
-        result = 31 * result + this.productId;
-        result = 31 * result + this.quantity;
-        temp = Double.doubleToLongBits( this.msrp );
-        result = 31 * result + ( int )( temp ^ ( temp >>> 32 ) );
-        result = 31 * result + this.discount;
-        return result;
+        return Objects.hash( this.discount, this.msrp, this.orderId, this.productId, this.quantity );
     }
 
     @Override
     public String toString() {
-        return ( "OrderDetail: order=" + this.orderId + ", product=" + this.productId );
+        return ( "OrderDetail: orderId = " + this.orderId + ", productId = " + this.productId );
     }
 
 }

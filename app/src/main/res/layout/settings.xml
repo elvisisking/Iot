@@ -6,15 +6,29 @@
               android:orientation="vertical"
               tools:context="com.redhat.iot.SettingsFragment">
 
-    <TextView
-        android:id="@+id/settingsTextView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:gravity="center"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:layout_marginBottom="50dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:labelFor="@+id/loginCurrentUser"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/login_current_user"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/settingsCurrentUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

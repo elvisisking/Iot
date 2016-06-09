@@ -1,7 +1,6 @@
 package com.redhat.iot.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Objects;
 
 /**
  * Represents a customer of the online store.
@@ -11,7 +10,7 @@ public class Customer implements IotObject {
     /**
      * An empty collection of {@link Customer}s.
      */
-    public static final Customer[] NO_CUSTOMERs = new Customer[ 0 ];
+    public static final Customer[] NO_CUSTOMERS = new Customer[ 0 ];
 
     /**
      * The ID of an unknown user.
@@ -31,6 +30,20 @@ public class Customer implements IotObject {
     private final String pswd;
     private final String state;
 
+    /**
+     * @param id           the unique ID of the customer
+     * @param email        the customer email (can be empty)
+     * @param pswd         the customer password (can be empty)
+     * @param name         the customer name (cannot be empty)
+     * @param addressLine1 the first line of the customer address (can be empty)
+     * @param addressLine2 the second line of the customer address (can be empty)
+     * @param city         the city of the customer address (can be empty)
+     * @param state        the state of the customer address (can be empty)
+     * @param postalCode   the zipcode of the customer address (can be empty)
+     * @param country      the country of the customer address (can be empty)
+     * @param phone        the customer phone number (can be empty)
+     * @param creditLimit  the first line of the customer address
+     */
     public Customer( final int id,
                      final String email,
                      final String pswd,
@@ -39,6 +52,7 @@ public class Customer implements IotObject {
                      final String addressLine2,
                      final String city,
                      final String state,
+
                      final String postalCode,
                      final String country,
                      final String phone,
@@ -57,28 +71,63 @@ public class Customer implements IotObject {
         this.creditLimit = creditLimit;
     }
 
-    /**
-     * @param json a JSON representation of a customer (cannot be empty)
-     * @throws JSONException if there is a problem parsing the JSON
-     */
-    public Customer( final String json ) throws JSONException {
-        final JSONObject cust = new JSONObject( json );
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
 
-        // required
-        this.id = cust.getInt( "id" ); // must have an ID
-        this.name = cust.getString( "name" ); // must have a name
+        if ( ( o == null ) || ( getClass() != o.getClass() ) ) {
+            return false;
+        }
 
-        // optional
-        this.addressLine1 = ( cust.has( "addressLine1" ) ? cust.getString( "addressLine1" ) : "" );
-        this.addressLine2 = ( cust.has( "addressLine2" ) ? cust.getString( "addressLine2" ) : "" );
-        this.city = ( cust.has( "city" ) ? cust.getString( "city" ) : "" );
-        this.country = ( cust.has( "country" ) ? cust.getString( "country" ) : "" );
-        this.creditLimit = ( cust.has( "creditLimit" ) ? cust.getInt( "creditLimit" ) : -1 );
-        this.email = ( cust.has( "email" ) ? cust.getString( "email" ) : "" );
-        this.phone = ( cust.has( "phone" ) ? cust.getString( "phone" ) : "" );
-        this.postalCode = ( cust.has( "postalCode" ) ? cust.getString( "postalCode" ) : "" );
-        this.pswd = ( cust.has( "pswd" ) ? cust.getString( "pswd" ) : "" );
-        this.state = ( cust.has( "state" ) ? cust.getString( "state" ) : "" );
+        final Customer that = ( Customer )o;
+
+        if ( this.creditLimit != that.creditLimit ) {
+            return false;
+        }
+
+        if ( this.id != that.id ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.addressLine1, that.addressLine1 ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.addressLine2, that.addressLine2 ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.city, that.city ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.country, that.country ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.email, that.email ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.name, that.name ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.phone, that.phone ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.postalCode, that.postalCode ) ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.pswd, that.pswd ) ) {
+            return false;
+        }
+
+        return Objects.equals( this.state, that.state );
     }
 
     /**
@@ -166,8 +215,24 @@ public class Customer implements IotObject {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash( this.addressLine1,
+                             this.addressLine2,
+                             this.city,
+                             this.country,
+                             this.creditLimit,
+                             this.email,
+                             this.id,
+                             this.name,
+                             this.phone,
+                             this.postalCode,
+                             this.pswd,
+                             this.state );
+    }
+
+    @Override
     public String toString() {
-        return ( "Customer: " + this.id + ", name=" + this.name );
+        return ( "Customer: id = " + this.id + ", name = " + this.name );
     }
 
 }
