@@ -3,9 +3,11 @@ package com.redhat.iot;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.redhat.iot.IotConstants.Prefs;
 import com.redhat.iot.domain.Customer;
 
 import java.util.HashMap;
@@ -17,9 +19,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class IotApp extends Application {
 
-    private static final int NUM_IMAGES = 50;
+    private static final String LOG_MSG = ( "%s: %s: %s" );
+
     private static final AtomicInteger IMAGE_COUNT = new AtomicInteger( 1 );
     private static final Map< Long, Integer > IMAGE_MAP = new HashMap<>();
+    private static final int NUM_IMAGES = 50;
 
     private static Context _context;
 
@@ -28,6 +32,14 @@ public class IotApp extends Application {
      */
     public static Context getContext() {
         return _context;
+    }
+
+    /**
+     * @return the ID of the logged in customer or {@link Customer#UNKNOWN_USER} if no one is logged in
+     */
+    public static int getCustomerId() {
+        final SharedPreferences prefs = getPrefs();
+        return prefs.getInt( Prefs.CUSTOMER_ID, Customer.UNKNOWN_USER );
     }
 
     /**
@@ -57,7 +69,21 @@ public class IotApp extends Application {
      * @return the app preferences (never <code>null</code>)
      */
     public static SharedPreferences getPrefs() {
-        return _context.getSharedPreferences( IotConstants.Prefs.PREFS_NAME, 0 );
+        return _context.getSharedPreferences( Prefs.PREFS_NAME, 0 );
+    }
+
+    /**
+     * @param clazz         the name of the class logging the error message (cannot be <code>null</code>)
+     * @param methodContext the name of the method where the error is being logged (cannot be empty)
+     * @param msg           the error message (can be empty)
+     * @param e             the error (can be <code>null</code>)
+     */
+    public static void logError( final Class< ? > clazz,
+                                 final String methodContext,
+                                 final String msg,
+                                 final Throwable e ) {
+        final String errorMsg = ( ( msg == null ) ? "" : msg );
+        Log.e( IotConstants.LOG_TAG, String.format( LOG_MSG, clazz.getSimpleName(), methodContext, errorMsg ), e );
     }
 
     /**
@@ -68,7 +94,7 @@ public class IotApp extends Application {
         boolean reachable = false;
 
         try {
-            String cmd = "";
+            String cmd;
 
             if ( System.getProperty( "os.name" ).startsWith( "Windows" ) ) {
                 cmd = ( "ping -n 1 " + hostIpAddress );
@@ -90,26 +116,25 @@ public class IotApp extends Application {
     }
 
     /**
-     * @return the ID of the logged in user or {@link Customer#UNKNOWN_USER} if no one is logged in
+     * Must be called once at startup from the main activity.
+     *
+     * @param mainActivity the shared context used by the app (cannot be <code>null</code>)
      */
-    public static int getUserId() {
-        final SharedPreferences prefs = IotApp.getPrefs();
-        return prefs.getInt( IotConstants.Prefs.CUSTOMER_ID, Customer.UNKNOWN_USER );
+    public static void setContext( final Context mainActivity ) {
+        if ( _context == null ) {
+            _context = mainActivity;
+        } else {
+            logError( IotApp.class, "setContext", "setting context more than once", null );
+        }
     }
 
     /**
      * @param userId the ID of the logged in user or {@link Customer#UNKNOWN_USER} if no one is logged in
      */
     public static void setUserId( final int userId ) {
-        final SharedPreferences.Editor editor = getPrefs().edit();
-        editor.putInt( IotConstants.Prefs.CUSTOMER_ID, userId );
+        final Editor editor = getPrefs().edit();
+        editor.putInt( Prefs.CUSTOMER_ID, userId );
         editor.apply();
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        _context = this;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.redhat.iot.domain;
 
 /**
- * Represents a IoT domain object.
+ * Represents an IoT domain object.
  */
 public interface IotObject {
 

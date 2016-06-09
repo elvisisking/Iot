@@ -2,8 +2,7 @@ package com.redhat.iot.domain;
 
 import com.redhat.iot.IotApp;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Objects;
 
 /**
  * Represents a product from the store.
@@ -17,8 +16,8 @@ public class Product implements IotObject {
     private final String description;
     private final int id;
     private final double msrp;
-    private final String size;
     private final String name;
+    private final String size;
     private final String vendor;
 
     /**
@@ -49,28 +48,6 @@ public class Product implements IotObject {
         this.vendor = vendor;
     }
 
-    /**
-     * @param json a JSON representation of a product (cannot be empty)
-     * @throws JSONException if there is a problem parsing the JSON
-     */
-    public Product( final String json ) throws JSONException {
-        final JSONObject product = new JSONObject( json );
-
-        // required
-        this.id = product.getInt( "productCode" ); // must have an ID
-        this.departmentId = product.getInt( "departmentCode" ); // must have a department ID
-
-        // optional
-        this.description = ( product.has( "productDescription" ) ? product.getString( "productDescription" ) : "" );
-        this.size = ( product.has( "productSize" ) ? product.getString( "productSize" ) : "" );
-        this.name = ( product.has( "productName" ) ? product.getString( "productName" ) : "" );
-        this.vendor = ( product.has( "productVendor" ) ? product.getString( "productVendor" ) : "" );
-        this.buyPrice = ( product.has( "buyPrice" ) ? product.getDouble( "buyPrice" ) : -1 );
-        this.msrp = ( product.has( "MSRP" ) ? product.getDouble( "MSRP" ) : -1 );
-
-        // TODO need quantityInStock
-    }
-
     @Override
     public boolean equals( final Object o ) {
         if ( this == o ) {
@@ -99,19 +76,19 @@ public class Product implements IotObject {
             return false;
         }
 
-        if ( ( this.description != null ) ? !description.equals( that.description ) : ( that.description != null ) ) {
+        if ( !Objects.equals( this.description, that.description ) ) {
             return false;
         }
 
-        if ( ( size != null ) ? !size.equals( that.size ) : ( that.size != null ) ) {
+        if ( !Objects.equals( this.size, that.size ) ) {
             return false;
         }
 
-        if ( ( name != null ) ? !name.equals( that.name ) : ( that.name != null ) ) {
+        if ( !Objects.equals( this.name, that.name ) ) {
             return false;
         }
 
-        return ( vendor != null ) ? vendor.equals( that.vendor ) : ( that.vendor == null );
+        return Objects.equals( this.vendor, that.vendor );
     }
 
     /**
@@ -179,24 +156,19 @@ public class Product implements IotObject {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits( this.buyPrice );
-        result = ( int )( temp ^ ( temp >>> 32 ) );
-        result = 31 * result + ( int )this.departmentId;
-        result = 31 * result + ( ( this.description != null ) ? this.description.hashCode() : 0 );
-        result = 31 * result + this.id;
-        temp = Double.doubleToLongBits( this.msrp );
-        result = 31 * result + ( int )( temp ^ ( temp >>> 32 ) );
-        result = 31 * result + ( ( this.size != null ) ? this.size.hashCode() : 0 );
-        result = 31 * result + ( ( this.name != null ) ? this.name.hashCode() : 0 );
-        result = 31 * result + ( ( this.vendor != null ) ? this.vendor.hashCode() : 0 );
-        return result;
+        return Objects.hash( this.buyPrice,
+                             this.departmentId,
+                             this.description,
+                             this.id,
+                             this.msrp,
+                             this.name,
+                             this.size,
+                             this.vendor );
     }
 
     @Override
     public String toString() {
-        return ( "Product: " + this.id );
+        return ( "Product: id = " + this.id + ", name = " + this.name );
     }
 
 }

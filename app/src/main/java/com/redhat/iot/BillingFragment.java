@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.redhat.iot.R.layout;
+
 /**
  * A billing screen.
  */
@@ -19,7 +21,7 @@ public class BillingFragment extends Fragment {
     public View onCreateView( final LayoutInflater inflater,
                               final ViewGroup container,
                               final Bundle savedInstanceState ) {
-        return inflater.inflate( R.layout.billing, container, false );
+        return inflater.inflate( layout.billing, container, false );
     }
 
 }

@@ -10,13 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
-        android:orientation="horizontal">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:labelFor="@+id/loginCurrentUser"
             android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:textStyle="bold"
             android:text="@string/login_current_user"
             android:textSize="20sp"/>
 

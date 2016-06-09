@@ -1,9 +1,7 @@
 package com.redhat.iot.domain;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Represents a store department.
@@ -44,21 +42,27 @@ public class Department implements IotObject {
         this.description = description;
     }
 
-    /**
-     * @param json a JSON representation of a department (cannot be empty)
-     * @throws JSONException if there is a problem parsing the JSON
-     */
-    public Department( final String json ) throws JSONException {
-        final JSONObject dept = new JSONObject( json );
+    @Override
+    public boolean equals( final Object o ) {
+        if ( this == o ) {
+            return true;
+        }
 
-        // required
-        this.id = dept.getLong( "departmentCode" ); // must have an ID
-        this.name = dept.getString( "departmentName" ); // must have a name
+        if ( ( o == null ) || ( getClass() != o.getClass() ) ) {
+            return false;
+        }
 
-        // optional
-        this.description = ( dept.has( "departmentDescription" ) ? dept.getString( "departmentDescription" ) : "" );
+        final Department that = ( Department )o;
 
-        // TODO need dimension
+        if ( this.id != that.id ) {
+            return false;
+        }
+
+        if ( !Objects.equals( this.description, that.description ) ) {
+            return false;
+        }
+
+        return Objects.equals( this.name, that.name );
     }
 
     /**
@@ -83,8 +87,13 @@ public class Department implements IotObject {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash( this.description, this.id, this.name );
+    }
+
+    @Override
     public String toString() {
-        return ( "Department: " + this.getId() + ", name=" + this.name );
+        return ( "Department: id = " + this.id + ", name = " + this.name );
     }
 
 }

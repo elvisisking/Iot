@@ -1,25 +1,35 @@
 package com.redhat.iot;
 
 import android.app.Fragment;
-import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.redhat.iot.IotConstants.Prefs;
+import com.redhat.iot.R.array;
+import com.redhat.iot.R.id;
+import com.redhat.iot.R.layout;
+import com.redhat.iot.R.string;
+import com.redhat.iot.concurrent.CustomerCallback;
 import com.redhat.iot.domain.Customer;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SettingsFragment extends Fragment
-    implements CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+    implements OnCheckedChangeListener, OnItemSelectedListener {
+
+    private TextView txt;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -30,76 +40,82 @@ public class SettingsFragment extends Fragment
                                   final boolean isChecked ) {
 
         // save preference
-        final SharedPreferences.Editor editor = IotApp.getPrefs().edit();
-        editor.putBoolean( IotConstants.Prefs.ENABLE_NOTIFICATIONS, isChecked );
+        final Editor editor = IotApp.getPrefs().edit();
+        editor.putBoolean( Prefs.ENABLE_NOTIFICATIONS, isChecked );
         editor.apply();
+    }
+
+    private void setDataOnCreateView( final Customer customer ) {
+        final String name =
+            ( ( customer == null ) ? getActivity().getString( string.settings_user_not_logged_in ) : customer.getName() );
+
+        this.txt.setText( name );
     }
 
     @Override
     public View onCreateView( final LayoutInflater inflater,
                               final ViewGroup container,
                               final Bundle savedInstanceState ) {
-        final View view = inflater.inflate( R.layout.settings, container, false );
+        final View view = inflater.inflate( layout.settings, container, false );
 
-        {// user name
-            final TextView txt = ( TextView )view.findViewById( R.id.settingsTextView );
-            String name = null;
-            final int userId = IotApp.getUserId();
+        // user name
+        this.txt = ( TextView )view.findViewById( id.settingsCurrentUser );
+        final int userId = IotApp.getCustomerId();
 
-            if ( userId != Customer.UNKNOWN_USER ) {
-                name = DataProvider.get().getCustomerName( userId );
+        DataProvider.get().findCustomer( userId, new CustomerCallback() {
+
+            @Override
+            public void onSuccess( final Customer[] results ) {
+                final Customer customer = ( ( ( results == null ) || ( results.length != 1 ) ) ? null : results[ 0 ] );
+                setDataOnCreateView( customer );
             }
+        } );
 
-            if ( name == null ) {
-                name = getActivity().getString( R.string.settings_user_not_logged_in );
-            }
+        // enable notifications
+        final CheckBox chk = ( CheckBox )view.findViewById( id.settingsEnableNotifications );
+        final boolean checked = ( IotApp.getPrefs()
+            .getBoolean( Prefs.ENABLE_NOTIFICATIONS, Prefs.DEFAULT_ENABLE_NOTIFICATIONS ) );
+        chk.setChecked( checked );
+        chk.setOnCheckedChangeListener( this );
 
-            txt.setText( getActivity().getString( R.string.settings_user, name ) );
+        // notification interval
+        final Spinner spinner = ( Spinner )view.findViewById( id.settingsNotificationInterval );
+        spinner.setOnItemSelectedListener( this );
+
+        final ArrayAdapter< CharSequence > adapter = new ArrayAdapter<>( getActivity(),
+                                                                         layout.notification_interval,
+                                                                         getResources().getTextArray( array
+                                                                                                          .notification_intervals
+                                                                                                    ) );
+        spinner.setAdapter( adapter );
+
+        // set selection to value of preference
+        final int interval = ( ( IotApp.getPrefs()
+            .getInt( Prefs.NOTIFICATION_INTERVAL, Prefs.DEFAULT_NOTIFICATION_INTERVAL ) ) / 60000 );
+        int index;
+
+        switch ( interval ) {
+            case 2:
+                index = 1;
+                break;
+            case 3:
+                index = 2;
+                break;
+            case 4:
+                index = 3;
+                break;
+            case 5:
+                index = 4;
+                break;
+            case 10:
+                index = 5;
+                break;
+            default:
+                index = 0;
+                break;
         }
 
-        {// enable notifications
-            final CheckBox chk = ( CheckBox )view.findViewById( R.id.settingsEnableNotifications );
-            final boolean checked = ( IotApp.getPrefs()
-                .getBoolean( IotConstants.Prefs.ENABLE_NOTIFICATIONS, IotConstants.Prefs.DEFAULT_ENABLE_NOTIFICATIONS ) );
-            chk.setChecked( checked );
-            chk.setOnCheckedChangeListener( this );
-        }
-
-        {// notification interval
-            final Spinner spinner = ( Spinner )view.findViewById( R.id.settingsNotificationInterval );
-            spinner.setOnItemSelectedListener( this );
-
-            final ArrayAdapter< CharSequence > adapter = new ArrayAdapter<>( getActivity(), R.layout.notification_interval, getResources().getTextArray( R.array.notification_intervals ) );
-            spinner.setAdapter( adapter );
-
-            // set selection to value of preference
-            final int interval = ( ( IotApp.getPrefs()
-                .getInt( IotConstants.Prefs.NOTIFICATION_INTERVAL, IotConstants.Prefs.DEFAULT_NOTIFICATION_INTERVAL ) ) / 60000 );
-            int index;
-
-            switch ( interval ) {
-                case 2:
-                    index = 1;
-                    break;
-                case 3:
-                    index = 2;
-                    break;
-                case 4:
-                    index = 3;
-                    break;
-                case 5:
-                    index = 4;
-                    break;
-                case 10:
-                    index = 5;
-                    break;
-                default:
-                    index = 0;
-                    break;
-            }
-
-            spinner.setSelection( index );
-        }
+        spinner.setSelection( index );
 
         return view;
     }
@@ -136,8 +152,8 @@ public class SettingsFragment extends Fragment
         }
 
         // save preference
-        final SharedPreferences.Editor editor = IotApp.getPrefs().edit();
-        editor.putInt( IotConstants.Prefs.NOTIFICATION_INTERVAL, ( minutes * 60000 ) );
+        final Editor editor = IotApp.getPrefs().edit();
+        editor.putInt( Prefs.NOTIFICATION_INTERVAL, ( minutes * 60000 ) );
         editor.apply();
     }
 
