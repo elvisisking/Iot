@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.redhat.iot.IotConstants.Prefs;
-import com.redhat.iot.MainActivity.DrawerAdapter.Holder;
 import com.redhat.iot.R.drawable;
 import com.redhat.iot.R.id;
 import com.redhat.iot.R.layout;
@@ -382,7 +381,10 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         }
     }
 
-    class DrawerAdapter extends Adapter< Holder > {
+    /**
+     * The entire path to DrawerAdapter.Holder needs to be here in order for the build to work correctly!
+     */
+    class DrawerAdapter extends Adapter< com.redhat.iot.MainActivity.DrawerAdapter.Holder > {
 
         private final Context context;
         private final LayoutInflater inflater;

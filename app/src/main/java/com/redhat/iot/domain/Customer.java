@@ -52,7 +52,6 @@ public class Customer implements IotObject {
                      final String addressLine2,
                      final String city,
                      final String state,
-
                      final String postalCode,
                      final String country,
                      final String phone,
