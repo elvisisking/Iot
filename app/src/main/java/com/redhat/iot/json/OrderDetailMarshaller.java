@@ -48,8 +48,8 @@ public class OrderDetailMarshaller implements IotMarshaller< OrderDetail > {
             final JSONObject orderDetail = new JSONObject( json );
 
             // required
-            final int orderId = orderDetail.getInt( "orderNumber" ); // must have an order ID
-            final int productId = orderDetail.getInt( "productCode" ); // must have a product ID
+            final int orderId = orderDetail.getInt( "orderId" ); // must have an order ID
+            final int productId = orderDetail.getInt( "productId" ); // must have a product ID
             final double msrp = orderDetail.getDouble( "msrp" );
             final int discount = orderDetail.getInt( "discount" );
 

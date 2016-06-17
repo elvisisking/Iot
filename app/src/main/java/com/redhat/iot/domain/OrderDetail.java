@@ -67,20 +67,11 @@ public class OrderDetail implements IotObject {
         }
 
         final OrderDetail that = ( OrderDetail )o;
-
-        if ( this.orderId != that.orderId ) {
-            return false;
-        }
-
-        if ( this.quantity != that.quantity ) {
-            return false;
-        }
-
-        if ( Double.compare( that.msrp, this.msrp ) != 0 ) {
-            return false;
-        }
-
-        return ( ( this.discount == that.discount ) && ( this.productId == that.productId ) );
+        return ( ( this.orderId == that.orderId )
+            && ( this.quantity == that.quantity )
+            && ( Double.compare( that.msrp, this.msrp ) == 0 )
+            && ( this.discount == that.discount )
+            && ( this.productId == that.productId ) );
 
     }
 

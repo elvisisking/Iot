@@ -12,14 +12,14 @@ public class GetProducts extends GetData< Product > {
     /**
      * The OData URL used to obtain {@link Product}s.
      */
-    private static final String PRODUCTS_URL =
+    private static final String URL =
         ( String.format( GetData.URL_PATTERN, "PostgreSQL_Sales_Promotions.Product" ) + GetData.JSONS_FORMAT );
 
     /**
      * @param callback the callback (cannot be <code>null</code>)
      */
-    public GetProducts( final IotCallback< Product > callback ) {
-        super( PRODUCTS_URL, callback, Product.class, string.load_products );
+    public GetProducts( final ProductCallback callback ) {
+        super( URL, callback, Product.class, string.load_products );
     }
 
     @Override

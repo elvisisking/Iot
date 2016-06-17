@@ -13,14 +13,13 @@ public class GetNotifications extends GetData< IotNotification > {
     /**
      * The OData URL used to obtain {@link Promotion}s.
      */
-    private static final String NOTIFICATIONS_URL =
-        String.format( GetData.URL_PATTERN, "getNotification?CustomerID=%s&$format=json" );
+    private static final String URL = String.format( GetData.URL_PATTERN, "getNotification?CustomerID=%s&$format=json" );
 
     /**
      * @param callback the callback (cannot be <code>null</code>)
      */
-    public GetNotifications( final IotCallback< IotNotification > callback ) {
-        super( NOTIFICATIONS_URL, callback, IotNotification.class, -1 );
+    public GetNotifications( final NotificationCallback callback ) {
+        super( URL, callback, IotNotification.class, -1 );
     }
 
     @Override

@@ -61,39 +61,15 @@ public class Order implements IotObject {
         }
 
         final Order that = ( Order )o;
-
-        if ( this.customerId != that.customerId ) {
-            return false;
-        }
-        if ( this.id != that.id ) {
-            return false;
-        }
-
-        if ( Double.compare( that.price, this.price ) != 0 ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.comments, that.comments ) ) {
-            return false;
-        }
-
-        if ( !Arrays.equals( this.details, that.details ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.orderDate, that.orderDate ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.requiredDate, that.requiredDate ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.shippedDate, that.shippedDate ) ) {
-            return false;
-        }
-
-        return Objects.equals( this.status, that.status );
+        return ( ( this.customerId == that.customerId )
+            && ( this.id == that.id )
+            && ( Double.compare( that.price, this.price ) == 0 )
+            && Objects.equals( this.comments, that.comments )
+            && Arrays.equals( this.details, that.details )
+            && Objects.equals( this.orderDate, that.orderDate )
+            && Objects.equals( this.requiredDate, that.requiredDate )
+            && Objects.equals( this.shippedDate, that.shippedDate )
+            && Objects.equals( this.status, that.status ) );
     }
 
     /**

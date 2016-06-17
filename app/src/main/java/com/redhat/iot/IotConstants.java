@@ -49,6 +49,12 @@ public interface IotConstants {
          */
         String PROMO_DEPT_IDS = "IoTPrefs";
 
+        /**
+         * The name of the <code>int</code> preference that contains the ID of the customer's chosen {@link
+         * com.redhat.iot.domain.Store}}.
+         */
+        String STORE_ID = "store_id";
+
     }
 
     /**
@@ -84,6 +90,34 @@ public interface IotConstants {
     interface TestData {
 
         String NOTIFICATIONS = "{ \"d\" : [ { \"id\" : 1 } ] }";
+
+        String STORE_9001_JSON =
+            "{ \"id\" : 9001, \"addressLine1\" : \"1 Lennon Lane\", \"city\" : \"Lennon\", \"state\" : \"Michigan\", " +
+                "\"postalCode\" : \"48449\", \"phone\": \"(800)101-5645\" }";
+
+        String STORE_9002_JSON =
+            "{ \"id\" : 9002, \"addressLine1\" : \"2 McCartney Way\", \"city\" : \"McCammon\", \"state\" : \"Idaho\", " +
+                "\"postalCode\" : \"83250\", \"phone\": \"(800)202-5645\" }";
+
+        String STORE_9003_JSON =
+            "{ \"id\" : 9003, \"addressLine1\" : \"3 Harrison Road\", \"city\" : \"Harrison\", \"state\" : \"Maine\", " +
+                "\"postalCode\" : \"04040\", \"phone\": \"(800)303-5645\" }";
+
+        String STORE_9004_JSON =
+            "{ \"id\" : 9004, \"addressLine1\" : \"4 Starkey Street\", \"city\" : \"Starr\", \"state\" : \"South Carolina\", " +
+                "\"postalCode\" : \"29684\", \"phone\": \"(800)404-5645\" }";
+
+        String STORE_9005_JSON =
+            "{ \"id\" : 9005, \"addressLine1\" : \"5 Best Place\", \"city\" : \"Veribest\", \"state\" : \"Texas\", " +
+                "\"postalCode\" : \"76886\", \"phone\": \"(800)505-5645\" }";
+
+        String STORES_JSON = "{ d: { \"results\": [ "
+            + STORE_9001_JSON + ','
+            + STORE_9002_JSON + ','
+            + STORE_9003_JSON + ','
+            + STORE_9004_JSON + ','
+            + STORE_9005_JSON
+            + " ] } }";
 
         int DEPT_1_ID = 1000;
         String DEPT_1_JSON =
@@ -128,130 +162,130 @@ public interface IotConstants {
         int RINGO_ID = 10001;
         int SLEDGE_ID = 10002;
 
-        String PRODUCT_100_JSON = "{\"productCode\" : 100, "
+        String PRODUCT_100_JSON = "{\"id\" : 100, "
             + "\"departmentCode\" : " + DEPT_1_ID + ", "
             + "\"productDescription\" : \"Boy's socks, Ages 1-3\", "
             + "\"productName\" : \"Socks\", "
-            + "\"MSRP\" : 1.99, "
+            + "\"msrp\" : 1.99, "
             + "\"buyPrice\" : 1.00 }";
 
-        String PRODUCT_101_JSON = "{\"productCode\" : 101, "
+        String PRODUCT_101_JSON = "{\"id\" : 101, "
             + "\"departmentCode\" : " + DEPT_1_ID + ", "
             + "\"productDescription\" : \"Boy's shirt, Size 12\", "
             + "\"productName\" : \"Dress Shirt\", "
-            + "\"MSRP\" : 10.50, "
+            + "\"msrp\" : 10.50, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_102_JSON = "{\"productCode\" : 102, "
+        String PRODUCT_102_JSON = "{\"id\" : 102, "
             + "\"departmentCode\" : " + DEPT_1_ID + ", "
             + "\"productDescription\" : \"Boy's shoes, Size 11\", "
             + "\"productName\" : \"Tennis Shoes\", "
-            + "\"MSRP\" : 11.00, "
+            + "\"msrp\" : 11.00, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_200_JSON = "{\"productCode\" : 200, "
+        String PRODUCT_200_JSON = "{\"id\" : 200, "
             + "\"departmentCode\" : " + DEPT_2_ID + ", "
             + "\"productDescription\" : \"Gold cuff links\", "
             + "\"productName\" : \"Cuff links\", "
-            + "\"MSRP\" : 5.99, "
+            + "\"msrp\" : 5.99, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_201_JSON = "{\"productCode\" : 201, "
+        String PRODUCT_201_JSON = "{\"id\" : 201, "
             + "\"departmentCode\" : " + DEPT_2_ID + ", "
             + "\"productDescription\" : \"Black tuxedo pants, Size 32W 32L\", "
             + "\"productName\" : \"Tuxedo Pants\", "
-            + "\"MSRP\" : 50.50, "
+            + "\"msrp\" : 50.50, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_202_JSON = "{\"productCode\" : 202, "
+        String PRODUCT_202_JSON = "{\"id\" : 202, "
             + "\"departmentCode\" : " + DEPT_2_ID + ", "
             + "\"productDescription\" : \"White tuxedo shirt, Size 15\", "
             + "\"productName\" : \"Tuxedo Shirt\", "
-            + "\"MSRP\" : 55.00, "
+            + "\"msrp\" : 55.00, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_300_JSON = "{\"productCode\" : 300, "
+        String PRODUCT_300_JSON = "{\"id\" : 300, "
             + "\"departmentCode\" : " + DEPT_3_ID + ", "
             + "\"productDescription\" : \"Girl's socks, Ages 5-10\", "
             + "\"productName\" : \"Socks\", "
-            + "\"MSRP\" : 3.99, "
+            + "\"msrp\" : 3.99, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_301_JSON = "{\"productCode\" : " + 301 + ", "
+        String PRODUCT_301_JSON = "{\"id\" : " + 301 + ", "
             + "\"departmentCode\" : " + DEPT_3_ID + ", "
             + "\"productDescription\" : \"Girl's dress, White, Full length\", "
             + "\"productName\" : \"Summer Dress\", "
-            + "\"MSRP\" : 30.50, "
+            + "\"msrp\" : 30.50, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_302_JSON = "{\"productCode\" : 302, "
+        String PRODUCT_302_JSON = "{\"id\" : 302, "
             + "\"departmentCode\" : " + DEPT_3_ID + ", "
             + "\"productDescription\" : \"Girl's outfit, Shirt and Slacks\", "
             + "\"productName\" : \"Outfit\", "
-            + "\"MSRP\" : 33.00, "
+            + "\"msrp\" : 33.00, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_400_JSON = "{\"productCode\" : 400, "
+        String PRODUCT_400_JSON = "{\"id\" : 400, "
             + "\"departmentCode\" : " + DEPT_4_ID + ", "
             + "\"productDescription\" : \"Men's tie, Black, Thin\", "
             + "\"productName\" : \"Tie\", "
-            + "\"MSRP\" : 4.99, "
+            + "\"msrp\" : 4.99, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_401_JSON = "{\"productCode\" : 401, "
+        String PRODUCT_401_JSON = "{\"id\" : 401, "
             + "\"departmentCode\" : " + DEPT_4_ID + ", "
             + "\"productDescription\" : \"Men's dress pants, Size 34W 33L\", "
             + "\"productName\" : \"Dress Pants\", "
-            + "\"MSRP\" : 40.50, "
+            + "\"msrp\" : 40.50, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_402_JSON = "{\"productCode\" : 402, "
+        String PRODUCT_402_JSON = "{\"id\" : 402, "
             + "\"departmentCode\" : " + DEPT_4_ID + ", "
             + "\"productDescription\" : \"Men's sport coat, Winter, Wool3\", "
             + "\"productName\" : \"Sport Coat\", "
-            + "\"MSRP\" : 44.00, "
+            + "\"msrp\" : 44.00, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_500_JSON = "{\"productCode\" : 500, "
+        String PRODUCT_500_JSON = "{\"id\" : 500, "
             + "\"departmentCode\" : " + DEPT_5_ID + ", "
             + "\"productDescription\" : \"Swim suit, Women's, 2 piece\", "
             + "\"productName\" : \"Swim Suit\", "
-            + "\"MSRP\" : 5.99, "
+            + "\"msrp\" : 5.99, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_501_JSON = "{\"productCode\" : 501, "
+        String PRODUCT_501_JSON = "{\"id\" : 501, "
             + "\"departmentCode\" : " + DEPT_5_ID + ", "
             + "\"productDescription\" : \"Jogging pants, Cleveland Cavaliers\", "
             + "\"productName\" : \"Jogging Pants\", "
-            + "\"MSRP\" : 50.50, "
+            + "\"msrp\" : 50.50, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_502_JSON = "{\"productCode\" : 502, "
+        String PRODUCT_502_JSON = "{\"id\" : 502, "
             + "\"departmentCode\" : " + DEPT_5_ID + ", "
             + "\"productDescription\" : \"St Louis Blues Jersey, Wayne Gretsky\", "
             + "\"productName\" : \"Team Jersey\", "
-            + "\"MSRP\" : 55.00, "
+            + "\"msrp\" : 55.00, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_600_JSON = "{\"productCode\" : 600, "
+        String PRODUCT_600_JSON = "{\"id\" : 600, "
             + "\"departmentCode\" : " + DEPT_6_ID + ", "
             + "\"productDescription\" : \"Woman's scarf, Multi-colored\", "
             + "\"productName\" : \"Scarf\", "
-            + "\"MSRP\" : 6.99, "
+            + "\"msrp\" : 6.99, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_601_JSON = "{\"productCode\" : 601, "
+        String PRODUCT_601_JSON = "{\"id\" : 601, "
             + "\"departmentCode\" : " + DEPT_6_ID + ", "
             + "\"productDescription\" : \"Woman's summer dress, Peach\", "
             + "\"productName\" : \"Dress\", "
-            + "\"MSRP\" : 60.50, "
+            + "\"msrp\" : 60.50, "
             + "\"buyPrice\" : 1.00}";
 
-        String PRODUCT_602_JSON = "{\"productCode\" : 602, "
+        String PRODUCT_602_JSON = "{\"id\" : 602, "
             + "\"departmentCode\" : " + DEPT_6_ID + ", "
             + "\"productDescription\" : \"Woman's cowboy boots\", "
             + "\"productName\" : \"Boots\", "
-            + "\"MSRP\" : 66.00, "
+            + "\"msrp\" : 66.00, "
             + "\"buyPrice\" : 1.00}";
 
         String PRODUCTS_JSON = "{ d: { \"results\": [ "
@@ -275,110 +309,392 @@ public interface IotConstants {
             + PRODUCT_602_JSON
             + " ] } }";
 
+        String INVENTORY_9001_100_JSON = "{\"storeId\" : 9001, \"productId\" : \"100\", \"quantity\" : \"100\"}";
+        String INVENTORY_9001_101_JSON = "{\"storeId\" : 9001, \"productId\" : \"101\", \"quantity\" : \"101\"}";
+        String INVENTORY_9001_102_JSON = "{\"storeId\" : 9001, \"productId\" : \"102\", \"quantity\" : \"102\"}";
+        String INVENTORY_9001_200_JSON = "{\"storeId\" : 9001, \"productId\" : \"200\", \"quantity\" : \"200\"}";
+        String INVENTORY_9001_201_JSON = "{\"storeId\" : 9001, \"productId\" : \"201\", \"quantity\" : \"201\"}";
+        String INVENTORY_9001_202_JSON = "{\"storeId\" : 9001, \"productId\" : \"202\", \"quantity\" : \"202\"}";
+        String INVENTORY_9001_300_JSON = "{\"storeId\" : 9001, \"productId\" : \"200\", \"quantity\" : \"300\"}";
+        String INVENTORY_9001_301_JSON = "{\"storeId\" : 9001, \"productId\" : \"201\", \"quantity\" : \"301\"}";
+        String INVENTORY_9001_302_JSON = "{\"storeId\" : 9001, \"productId\" : \"202\", \"quantity\" : \"302\"}";
+        String INVENTORY_9001_400_JSON = "{\"storeId\" : 9001, \"productId\" : \"200\", \"quantity\" : \"400\"}";
+        String INVENTORY_9001_401_JSON = "{\"storeId\" : 9001, \"productId\" : \"201\", \"quantity\" : \"401\"}";
+        String INVENTORY_9001_402_JSON = "{\"storeId\" : 9001, \"productId\" : \"202\", \"quantity\" : \"402\"}";
+        String INVENTORY_9001_500_JSON = "{\"storeId\" : 9001, \"productId\" : \"200\", \"quantity\" : \"500\"}";
+        String INVENTORY_9001_501_JSON = "{\"storeId\" : 9001, \"productId\" : \"201\", \"quantity\" : \"501\"}";
+        String INVENTORY_9001_502_JSON = "{\"storeId\" : 9001, \"productId\" : \"202\", \"quantity\" : \"502\"}";
+        String INVENTORY_9001_600_JSON = "{\"storeId\" : 9001, \"productId\" : \"200\", \"quantity\" : \"600\"}";
+        String INVENTORY_9001_601_JSON = "{\"storeId\" : 9001, \"productId\" : \"201\", \"quantity\" : \"601\"}";
+        String INVENTORY_9001_602_JSON = "{\"storeId\" : 9001, \"productId\" : \"202\", \"quantity\" : \"602\"}";
+
+        String STORE_9001_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_100_JSON + ','
+            + INVENTORY_9001_101_JSON + ','
+            + INVENTORY_9001_102_JSON + ','
+            + INVENTORY_9001_200_JSON + ','
+            + INVENTORY_9001_201_JSON + ','
+            + INVENTORY_9001_202_JSON + ','
+            + INVENTORY_9001_300_JSON + ','
+            + INVENTORY_9001_301_JSON + ','
+            + INVENTORY_9001_302_JSON + ','
+            + INVENTORY_9001_400_JSON + ','
+            + INVENTORY_9001_401_JSON + ','
+            + INVENTORY_9001_402_JSON + ','
+            + INVENTORY_9001_500_JSON + ','
+            + INVENTORY_9001_501_JSON + ','
+            + INVENTORY_9001_502_JSON + ','
+            + INVENTORY_9001_600_JSON + ','
+            + INVENTORY_9001_601_JSON + ','
+            + INVENTORY_9001_602_JSON
+            + " ] } }";
+
+        String INVENTORY_9002_100_JSON = "{\"storeId\" : 9002, \"productId\" : \"100\", \"quantity\" : \"1001\"}";
+        String INVENTORY_9002_102_JSON = "{\"storeId\" : 9002, \"productId\" : \"102\", \"quantity\" : \"1022\"}";
+        String INVENTORY_9002_201_JSON = "{\"storeId\" : 9002, \"productId\" : \"201\", \"quantity\" : \"2013\"}";
+        String INVENTORY_9002_300_JSON = "{\"storeId\" : 9002, \"productId\" : \"200\", \"quantity\" : \"3004\"}";
+        String INVENTORY_9002_302_JSON = "{\"storeId\" : 9002, \"productId\" : \"202\", \"quantity\" : \"3025\"}";
+        String INVENTORY_9002_401_JSON = "{\"storeId\" : 9002, \"productId\" : \"201\", \"quantity\" : \"4016\"}";
+        String INVENTORY_9002_500_JSON = "{\"storeId\" : 9002, \"productId\" : \"200\", \"quantity\" : \"5007\"}";
+        String INVENTORY_9002_502_JSON = "{\"storeId\" : 9002, \"productId\" : \"202\", \"quantity\" : \"5028\"}";
+        String INVENTORY_9002_601_JSON = "{\"storeId\" : 9002, \"productId\" : \"201\", \"quantity\" : \"6019\"}";
+
+        String STORE_9002_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9002_100_JSON + ','
+            + INVENTORY_9002_102_JSON + ','
+            + INVENTORY_9002_201_JSON + ','
+            + INVENTORY_9002_300_JSON + ','
+            + INVENTORY_9002_302_JSON + ','
+            + INVENTORY_9002_401_JSON + ','
+            + INVENTORY_9002_500_JSON + ','
+            + INVENTORY_9002_502_JSON + ','
+            + INVENTORY_9002_601_JSON
+            + " ] } }";
+
+        String INVENTORY_9003_100_JSON = "{\"storeId\" : 9003, \"productId\" : \"100\", \"quantity\" : \"100\"}";
+        String INVENTORY_9003_101_JSON = "{\"storeId\" : 9003, \"productId\" : \"101\", \"quantity\" : \"200\"}";
+        String INVENTORY_9003_102_JSON = "{\"storeId\" : 9003, \"productId\" : \"102\", \"quantity\" : \"300\"}";
+        String INVENTORY_9003_200_JSON = "{\"storeId\" : 9003, \"productId\" : \"200\", \"quantity\" : \"400\"}";
+        String INVENTORY_9003_201_JSON = "{\"storeId\" : 9003, \"productId\" : \"201\", \"quantity\" : \"500\"}";
+        String INVENTORY_9003_202_JSON = "{\"storeId\" : 9003, \"productId\" : \"202\", \"quantity\" : \"600\"}";
+        String INVENTORY_9003_300_JSON = "{\"storeId\" : 9003, \"productId\" : \"200\", \"quantity\" : \"700\"}";
+        String INVENTORY_9003_301_JSON = "{\"storeId\" : 9003, \"productId\" : \"201\", \"quantity\" : \"800\"}";
+        String INVENTORY_9003_302_JSON = "{\"storeId\" : 9003, \"productId\" : \"202\", \"quantity\" : \"900\"}";
+        String INVENTORY_9003_400_JSON = "{\"storeId\" : 9003, \"productId\" : \"200\", \"quantity\" : \"1000\"}";
+        String INVENTORY_9003_401_JSON = "{\"storeId\" : 9003, \"productId\" : \"201\", \"quantity\" : \"1010\"}";
+        String INVENTORY_9003_402_JSON = "{\"storeId\" : 9003, \"productId\" : \"202\", \"quantity\" : \"1020\"}";
+
+        String STORE_9003_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9003_100_JSON + ','
+            + INVENTORY_9003_101_JSON + ','
+            + INVENTORY_9003_102_JSON + ','
+            + INVENTORY_9003_200_JSON + ','
+            + INVENTORY_9003_201_JSON + ','
+            + INVENTORY_9003_202_JSON + ','
+            + INVENTORY_9003_300_JSON + ','
+            + INVENTORY_9003_301_JSON + ','
+            + INVENTORY_9003_302_JSON + ','
+            + INVENTORY_9003_400_JSON + ','
+            + INVENTORY_9003_401_JSON + ','
+            + INVENTORY_9003_402_JSON
+            + " ] } }";
+
+        String INVENTORY_9004_100_JSON = "{\"storeId\" : 9004, \"productId\" : \"100\", \"quantity\" : \"10\"}";
+        String INVENTORY_9004_101_JSON = "{\"storeId\" : 9004, \"productId\" : \"101\", \"quantity\" : \"20\"}";
+        String INVENTORY_9004_102_JSON = "{\"storeId\" : 9004, \"productId\" : \"102\", \"quantity\" : \"30\"}";
+        String INVENTORY_9004_200_JSON = "{\"storeId\" : 9004, \"productId\" : \"200\", \"quantity\" : \"40\"}";
+        String INVENTORY_9004_201_JSON = "{\"storeId\" : 9004, \"productId\" : \"201\", \"quantity\" : \"50\"}";
+        String INVENTORY_9004_202_JSON = "{\"storeId\" : 9004, \"productId\" : \"202\", \"quantity\" : \"60\"}";
+        String INVENTORY_9004_300_JSON = "{\"storeId\" : 9004, \"productId\" : \"200\", \"quantity\" : \"70\"}";
+        String INVENTORY_9004_301_JSON = "{\"storeId\" : 9004, \"productId\" : \"201\", \"quantity\" : \"80\"}";
+        String INVENTORY_9004_302_JSON = "{\"storeId\" : 9004, \"productId\" : \"202\", \"quantity\" : \"90\"}";
+
+        String STORE_9004_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9004_100_JSON + ','
+            + INVENTORY_9004_101_JSON + ','
+            + INVENTORY_9004_102_JSON + ','
+            + INVENTORY_9004_200_JSON + ','
+            + INVENTORY_9004_201_JSON + ','
+            + INVENTORY_9004_202_JSON + ','
+            + INVENTORY_9004_300_JSON + ','
+            + INVENTORY_9004_301_JSON + ','
+            + INVENTORY_9004_302_JSON
+            + " ] } }";
+
+        String INVENTORY_9005_100_JSON = "{\"storeId\" : 9005, \"productId\" : \"100\", \"quantity\" : \"1\"}";
+        String INVENTORY_9005_101_JSON = "{\"storeId\" : 9005, \"productId\" : \"101\", \"quantity\" : \"2\"}";
+        String INVENTORY_9005_102_JSON = "{\"storeId\" : 9005, \"productId\" : \"102\", \"quantity\" : \"3\"}";
+
+        String STORE_9005_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9005_100_JSON + ','
+            + INVENTORY_9005_101_JSON + ','
+            + INVENTORY_9005_102_JSON
+            + " ] } }";
+
+        String PRODUCT_100_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_100_JSON + ','
+            + INVENTORY_9002_100_JSON + ','
+            + INVENTORY_9003_100_JSON + ','
+            + INVENTORY_9004_100_JSON + ','
+            + INVENTORY_9005_100_JSON
+            + " ] } }";
+
+        String PRODUCT_101_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_101_JSON + ','
+            + INVENTORY_9003_101_JSON + ','
+            + INVENTORY_9004_101_JSON + ','
+            + INVENTORY_9005_101_JSON
+            + " ] } }";
+
+        String PRODUCT_102_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_102_JSON + ','
+            + INVENTORY_9002_102_JSON + ','
+            + INVENTORY_9003_102_JSON + ','
+            + INVENTORY_9004_102_JSON + ','
+            + INVENTORY_9005_102_JSON
+            + " ] } }";
+
+        String PRODUCT_200_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_200_JSON + ','
+            + INVENTORY_9003_200_JSON + ','
+            + INVENTORY_9004_200_JSON
+            + " ] } }";
+
+        String PRODUCT_201_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_201_JSON + ','
+            + INVENTORY_9002_201_JSON + ','
+            + INVENTORY_9003_201_JSON + ','
+            + INVENTORY_9004_201_JSON
+            + " ] } }";
+
+        String PRODUCT_202_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_202_JSON + ','
+            + INVENTORY_9003_202_JSON + ','
+            + INVENTORY_9004_202_JSON
+            + " ] } }";
+
+        String PRODUCT_300_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_300_JSON + ','
+            + INVENTORY_9002_300_JSON + ','
+            + INVENTORY_9003_300_JSON + ','
+            + INVENTORY_9004_300_JSON
+            + " ] } }";
+
+        String PRODUCT_301_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_301_JSON + ','
+            + INVENTORY_9003_301_JSON + ','
+            + INVENTORY_9004_301_JSON
+            + " ] } }";
+
+        String PRODUCT_302_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_302_JSON + ','
+            + INVENTORY_9002_302_JSON + ','
+            + INVENTORY_9003_302_JSON + ','
+            + INVENTORY_9004_302_JSON
+            + " ] } }";
+
+        String PRODUCT_400_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_400_JSON + ','
+            + INVENTORY_9003_400_JSON
+            + " ] } }";
+
+        String PRODUCT_401_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_401_JSON + ','
+            + INVENTORY_9002_401_JSON + ','
+            + INVENTORY_9003_401_JSON
+            + " ] } }";
+
+        String PRODUCT_402_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_402_JSON + ','
+            + INVENTORY_9003_402_JSON
+            + " ] } }";
+
+        String PRODUCT_500_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_500_JSON + ','
+            + INVENTORY_9002_500_JSON
+            + " ] } }";
+
+        String PRODUCT_501_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_501_JSON + ','
+            + " ] } }";
+
+        String PRODUCT_502_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_502_JSON + ','
+            + INVENTORY_9002_502_JSON
+            + " ] } }";
+
+        String PRODUCT_600_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_600_JSON + ','
+            + " ] } }";
+
+        String PRODUCT_601_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_601_JSON + ','
+            + INVENTORY_9002_601_JSON
+            + " ] } }";
+
+        String PRODUCT_602_INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_602_JSON + ','
+            + " ] } }";
+
+        String INVENTORY_JSON = "{ d: { \"results\": [ "
+            + INVENTORY_9001_100_JSON + ','
+            + INVENTORY_9001_100_JSON + ','
+            + INVENTORY_9001_101_JSON + ','
+            + INVENTORY_9001_102_JSON + ','
+            + INVENTORY_9001_200_JSON + ','
+            + INVENTORY_9001_201_JSON + ','
+            + INVENTORY_9001_202_JSON + ','
+            + INVENTORY_9001_300_JSON + ','
+            + INVENTORY_9001_301_JSON + ','
+            + INVENTORY_9001_302_JSON + ','
+            + INVENTORY_9001_400_JSON + ','
+            + INVENTORY_9001_401_JSON + ','
+            + INVENTORY_9001_402_JSON + ','
+            + INVENTORY_9001_500_JSON + ','
+            + INVENTORY_9001_501_JSON + ','
+            + INVENTORY_9001_502_JSON + ','
+            + INVENTORY_9001_600_JSON + ','
+            + INVENTORY_9001_601_JSON + ','
+            + INVENTORY_9001_602_JSON + ','
+            + INVENTORY_9002_100_JSON + ','
+            + INVENTORY_9002_102_JSON + ','
+            + INVENTORY_9002_201_JSON + ','
+            + INVENTORY_9002_300_JSON + ','
+            + INVENTORY_9002_302_JSON + ','
+            + INVENTORY_9002_401_JSON + ','
+            + INVENTORY_9002_500_JSON + ','
+            + INVENTORY_9002_502_JSON + ','
+            + INVENTORY_9002_601_JSON + ','
+            + INVENTORY_9003_100_JSON + ','
+            + INVENTORY_9003_101_JSON + ','
+            + INVENTORY_9003_102_JSON + ','
+            + INVENTORY_9003_200_JSON + ','
+            + INVENTORY_9003_201_JSON + ','
+            + INVENTORY_9003_202_JSON + ','
+            + INVENTORY_9003_300_JSON + ','
+            + INVENTORY_9003_301_JSON + ','
+            + INVENTORY_9003_302_JSON + ','
+            + INVENTORY_9003_400_JSON + ','
+            + INVENTORY_9003_401_JSON + ','
+            + INVENTORY_9003_402_JSON + ','
+            + INVENTORY_9004_100_JSON + ','
+            + INVENTORY_9004_101_JSON + ','
+            + INVENTORY_9004_102_JSON + ','
+            + INVENTORY_9004_200_JSON + ','
+            + INVENTORY_9004_201_JSON + ','
+            + INVENTORY_9004_202_JSON + ','
+            + INVENTORY_9004_300_JSON + ','
+            + INVENTORY_9004_301_JSON + ','
+            + INVENTORY_9004_302_JSON + ','
+            + INVENTORY_9005_100_JSON + ','
+            + INVENTORY_9005_101_JSON + ','
+            + INVENTORY_9005_102_JSON
+            + " ] } }";
+
         int ORDER_1010_ID = 1010;
         String DETAIL_1010_1_JSON =
-            "{\"orderNumber\" : 1010, \"productCode\" : 300, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
+            "{\"orderId\" : 1010, \"productId\" : 300, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
                 "10 }";
 
         String DETAIL_1010_2_JSON =
-            "{\"orderNumber\" : 1010, \"productCode\" : 301, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
+            "{\"orderId\" : 1010, \"productId\" : 301, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
                 " 20 }";
 
         String DETAIL_1010_3_JSON =
-            "{\"orderNumber\" : 1010, \"productCode\" : 302, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
+            "{\"orderId\" : 1010, \"productId\" : 302, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
                 " 30 }";
 
-        String ORDER_1010_JSON = "{\"orderNumber\" : 1010, "
-            + "\"customerNumber\" : " + ELVIS_ID + ", "
+        String ORDER_1010_JSON = "{\"id\" : 1010, "
+            + "\"customerId\" : " + ELVIS_ID + ", "
             + "\"orderDate\" : \"/Date(1463360426000)/\"}";
 
         int ORDER_2020_ID = 2020;
         String DETAIL_2020_1_JSON =
-            "{\"orderNumber\" : 2020, \"productCode\" : 100, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
+            "{\"orderId\" : 2020, \"productId\" : 100, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
                 "10 }";
 
         String DETAIL_2020_2_JSON =
-            "{\"orderNumber\" : 2020, \"productCode\" : 200, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
+            "{\"orderId\" : 2020, \"productId\" : 200, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
                 " 20 }";
 
         String DETAIL_2020_3_JSON =
-            "{\"orderNumber\" : 2020, \"productCode\" : 602, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
+            "{\"orderId\" : 2020, \"productId\" : 602, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
                 " 30 }";
 
         String DETAIL_2020_4_JSON =
-            "{\"orderNumber\" : 2020, \"productCode\" : 400, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
+            "{\"orderId\" : 2020, \"productId\" : 400, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
                 "40 }";
 
         String DETAIL_2020_5_JSON =
-            "{\"orderNumber\" : 2020, \"productCode\" : 500, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
+            "{\"orderId\" : 2020, \"productId\" : 500, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
                 " 15 }";
 
         String DETAIL_2020_6_JSON =
-            "{\"orderNumber\" : 2020, \"productCode\" : 600, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
+            "{\"orderId\" : 2020, \"productId\" : 600, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
                 " 25 }";
 
-        String ORDER_2020_JSON = "{\"orderNumber\" : 2020, "
-            + "\"customerNumber\" : " + RINGO_ID + ", "
+        String ORDER_2020_JSON = "{\"id\" : 2020, "
+            + "\"customerId\" : " + RINGO_ID + ", "
             + "\"orderDate\" : \"/Date(1463360451000)/\"}";
 
         int ORDER_3030_ID = 3030;
         String DETAIL_3030_1_JSON =
-            "{\"orderNumber\" : 3030, \"productCode\" : 202, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
+            "{\"orderId\" : 3030, \"productId\" : 202, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
                 "10 }";
 
         String DETAIL_3030_2_JSON =
-            "{\"orderNumber\" : 3030, \"productCode\" : 102, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
+            "{\"orderId\" : 3030, \"productId\" : 102, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
                 " 20 }";
 
-        String ORDER_3030_JSON = "{\"orderNumber\" : 3030, "
-            + "\"customerNumber\" : " + RINGO_ID + ", "
+        String ORDER_3030_JSON = "{\"id\" : 3030, "
+            + "\"customerId\" : " + RINGO_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         int ORDER_4040_ID = 4040;
         String DETAIL_4040_1_JSON =
-            "{\"orderNumber\" : 4040, \"productCode\" : 101, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
+            "{\"orderId\" : 4040, \"productId\" : 101, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
                 "10 }";
 
         String DETAIL_4040_2_JSON =
-            "{\"orderNumber\" : 4040, \"productCode\" : 201, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
+            "{\"orderId\" : 4040, \"productId\" : 201, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
                 " 20 }";
 
         String DETAIL_4040_3_JSON =
-            "{\"orderNumber\" : 4040, \"productCode\" : 402, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
+            "{\"orderId\" : 4040, \"productId\" : 402, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
                 " 30 }";
 
-        String ORDER_4040_JSON = "{\"orderNumber\" : 4040, "
-            + "\"customerNumber\" : " + SLEDGE_ID + ", "
+        String ORDER_4040_JSON = "{\"id\" : 4040, "
+            + "\"customerId\" : " + SLEDGE_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         int ORDER_5050_ID = 5050;
         String DETAIL_5050_1_JSON =
-            "{\"orderNumber\" : 5050, \"productCode\" : 301, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
+            "{\"orderId\" : 5050, \"productId\" : 301, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
                 "10 }";
 
         String DETAIL_5050_2_JSON =
-            "{\"orderNumber\" : 5050, \"productCode\" : 401, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
+            "{\"orderId\" : 5050, \"productId\" : 401, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
                 " 20 }";
 
         String DETAIL_5050_3_JSON =
-            "{\"orderNumber\" : 5050, \"productCode\" : 501, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
+            "{\"orderId\" : 5050, \"productId\" : 501, \"quantityOrdered\" : 2, \"msrp\" : 20.5, \"discount\" :" +
                 " 30 }";
 
-        String ORDER_5050_JSON = "{\"orderNumber\" : 5050, "
-            + "\"customerNumber\" : " + SLEDGE_ID + ", "
+        String ORDER_5050_JSON = "{\"id\" : 5050, "
+            + "\"customerId\" : " + SLEDGE_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         int ORDER_6060_ID = 6060;
         String DETAIL_6060_1_JSON =
-            "{\"orderNumber\" : 6060, \"productCode\" : 100, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
+            "{\"orderId\" : 6060, \"productId\" : 100, \"quantityOrdered\" : 1, \"msrp\" : 5.5, \"discount\" : " +
                 "10 }";
 
         String DETAIL_6060_2_JSON =
-            "{\"orderNumber\" : 6060, \"productCode\" : 502, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
+            "{\"orderId\" : 6060, \"productId\" : 502, \"quantityOrdered\" : 2, \"msrp\" : 10.0, \"discount\" :" +
                 " 20 }";
 
-        String ORDER_6060_JSON = "{\"orderNumber\" : 6060, "
-            + "\"customerNumber\" : " + SLEDGE_ID + ", "
+        String ORDER_6060_JSON = "{\"id\" : 6060, "
+            + "\"customerId\" : " + SLEDGE_ID + ", "
             + "\"orderDate\" : \"/Date(1419033600000)/\"}";
 
         String ELVIS_ORDERS_JSON = "{ d: { \"results\": [ "
@@ -433,18 +749,18 @@ public interface IotConstants {
             + DETAIL_6060_2_JSON
             + " ] } }";
 
-        String PROMO_1_JSON = "{\"id\" : 1, \"productCode\" : \"100\", \"discount\" : \"10.0\"}";
-        String PROMO_2_JSON = "{\"id\" : 2, \"productCode\" : \"101\", \"discount\" : \"20.0\"}";
-        String PROMO_3_JSON = "{\"id\" : 3, \"productCode\" : \"200\", \"discount\" : \"30.0\"}";
-        String PROMO_4_JSON = "{\"id\" : 4, \"productCode\" : \"201\", \"discount\" : \"40.0\"}";
-        String PROMO_5_JSON = "{\"id\" : 5, \"productCode\" : \"300\", \"discount\" : \"50.0\"}";
-        String PROMO_6_JSON = "{\"id\" : 6, \"productCode\" : \"301\", \"discount\" : \"10.0\"}";
-        String PROMO_7_JSON = "{\"id\" : 7, \"productCode\" : \"400\", \"discount\" : \"20.0\"}";
-        String PROMO_8_JSON = "{\"id\" : 8, \"productCode\" : \"401\", \"discount\" : \"30.0\"}";
-        String PROMO_9_JSON = "{\"id\" : 9, \"productCode\" : \"500\", \"discount\" : \"40.0\"}";
-        String PROMO_10_JSON = "{\"id\" : 10, \"productCode\" : \"501\", \"discount\" : \"50.0\"}";
-        String PROMO_11_JSON = "{\"id\" : 11, \"productCode\" : \"600\", \"discount\" : \"10.0\"}";
-        String PROMO_12_JSON = "{\"id\" : 12, \"productCode\" : \"601\", \"discount\" : \"20.0\"}";
+        String PROMO_1_JSON = "{\"id\" : 1, \"productId\" : \"100\", \"discount\" : \"10.0\"}";
+        String PROMO_2_JSON = "{\"id\" : 2, \"productId\" : \"101\", \"discount\" : \"20.0\"}";
+        String PROMO_3_JSON = "{\"id\" : 3, \"productId\" : \"200\", \"discount\" : \"30.0\"}";
+        String PROMO_4_JSON = "{\"id\" : 4, \"productId\" : \"201\", \"discount\" : \"40.0\"}";
+        String PROMO_5_JSON = "{\"id\" : 5, \"productId\" : \"300\", \"discount\" : \"50.0\"}";
+        String PROMO_6_JSON = "{\"id\" : 6, \"productId\" : \"301\", \"discount\" : \"10.0\"}";
+        String PROMO_7_JSON = "{\"id\" : 7, \"productId\" : \"400\", \"discount\" : \"20.0\"}";
+        String PROMO_8_JSON = "{\"id\" : 8, \"productId\" : \"401\", \"discount\" : \"30.0\"}";
+        String PROMO_9_JSON = "{\"id\" : 9, \"productId\" : \"500\", \"discount\" : \"40.0\"}";
+        String PROMO_10_JSON = "{\"id\" : 10, \"productId\" : \"501\", \"discount\" : \"50.0\"}";
+        String PROMO_11_JSON = "{\"id\" : 11, \"productId\" : \"600\", \"discount\" : \"10.0\"}";
+        String PROMO_12_JSON = "{\"id\" : 12, \"productId\" : \"601\", \"discount\" : \"20.0\"}";
 
         String PROMOTIONS_JSON = "{ d: { \"results\": [ "
             + PROMO_1_JSON + ','

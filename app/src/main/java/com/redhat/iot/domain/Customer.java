@@ -29,6 +29,7 @@ public class Customer implements IotObject {
     private final String postalCode;
     private final String pswd;
     private final String state;
+    private int storeId = Store.NOT_IDENTIFIED;
 
     /**
      * @param id           the unique ID of the customer
@@ -81,52 +82,19 @@ public class Customer implements IotObject {
         }
 
         final Customer that = ( Customer )o;
-
-        if ( this.creditLimit != that.creditLimit ) {
-            return false;
-        }
-
-        if ( this.id != that.id ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.addressLine1, that.addressLine1 ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.addressLine2, that.addressLine2 ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.city, that.city ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.country, that.country ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.email, that.email ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.name, that.name ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.phone, that.phone ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.postalCode, that.postalCode ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.pswd, that.pswd ) ) {
-            return false;
-        }
-
-        return Objects.equals( this.state, that.state );
+        return ( ( this.creditLimit == that.creditLimit )
+            && ( this.id == that.id )
+            && ( this.storeId == that.storeId )
+            && Objects.equals( this.addressLine1, that.addressLine1 )
+            && Objects.equals( this.addressLine2, that.addressLine2 )
+            && Objects.equals( this.city, that.city )
+            && Objects.equals( this.country, that.country )
+            && Objects.equals( this.email, that.email )
+            && Objects.equals( this.name, that.name )
+            && Objects.equals( this.phone, that.phone )
+            && Objects.equals( this.postalCode, that.postalCode )
+            && Objects.equals( this.pswd, that.pswd )
+            && Objects.equals( this.state, that.state ) );
     }
 
     /**
@@ -213,6 +181,13 @@ public class Customer implements IotObject {
         return this.state;
     }
 
+    /**
+     * @return the ID of the customer's chosen store or {@link Store#NOT_IDENTIFIED}
+     */
+    public int getStoreId() {
+        return this.storeId;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash( this.addressLine1,
@@ -226,7 +201,15 @@ public class Customer implements IotObject {
                              this.phone,
                              this.postalCode,
                              this.pswd,
-                             this.state );
+                             this.state,
+                             this.storeId );
+    }
+
+    /**
+     * @param newStoreId the ID of the new {@link Store} chosen by the customer
+     */
+    public void setStoreId( final int newStoreId ) {
+        this.storeId = newStoreId;
     }
 
     @Override

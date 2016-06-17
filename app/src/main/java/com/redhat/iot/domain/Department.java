@@ -53,16 +53,9 @@ public class Department implements IotObject {
         }
 
         final Department that = ( Department )o;
-
-        if ( this.id != that.id ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.description, that.description ) ) {
-            return false;
-        }
-
-        return Objects.equals( this.name, that.name );
+        return ( ( this.id == that.id )
+            && Objects.equals( this.description, that.description )
+            && Objects.equals( this.name, that.name ) );
     }
 
     /**

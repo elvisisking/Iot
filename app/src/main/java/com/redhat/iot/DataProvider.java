@@ -13,15 +13,18 @@ import com.redhat.iot.concurrent.GetNotifications;
 import com.redhat.iot.concurrent.GetOrders;
 import com.redhat.iot.concurrent.GetProducts;
 import com.redhat.iot.concurrent.GetPromotions;
+import com.redhat.iot.concurrent.GetStores;
 import com.redhat.iot.concurrent.NotificationCallback;
 import com.redhat.iot.concurrent.OrderCallback;
 import com.redhat.iot.concurrent.ProductCallback;
 import com.redhat.iot.concurrent.PromotionCallback;
+import com.redhat.iot.concurrent.StoreCallback;
 import com.redhat.iot.domain.Customer;
 import com.redhat.iot.domain.Department;
 import com.redhat.iot.domain.Order;
 import com.redhat.iot.domain.Product;
 import com.redhat.iot.domain.Promotion;
+import com.redhat.iot.domain.Store;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,9 +53,9 @@ public class DataProvider {
     private final Map< Integer, Customer > customers = new HashMap<>();
     private final Map< Long, Department > departments = new HashMap<>();
     private final Map< Long, Integer > deptColors = new HashMap<>();
-    //    private final Map< Integer, List< IotNotification > > notifications = new HashMap<>();
     private final Map< Integer, Product > products = new HashMap<>();
     private final Map< Integer, Promotion > promotions = new HashMap<>();
+    private final Map< Integer, Store > stores = new HashMap<>();
 
     /**
      * Don't allow construction outside of this class.
@@ -107,6 +110,16 @@ public class DataProvider {
         Log.d( IotConstants.LOG_TAG, "Adding " + promotions.length + " promotions to the cache" );
         for ( final Promotion promotion : promotions ) {
             this.promotions.put( promotion.getId(), promotion );
+        }
+    }
+
+    private void cacheStores( final Store[] stores ) {
+        Log.d( IotConstants.LOG_TAG, "clearing store cache" );
+        this.stores.clear();
+
+        Log.d( IotConstants.LOG_TAG, "Adding " + stores.length + " stores to the cache" );
+        for ( final Store store : stores ) {
+            this.stores.put( store.getId(), store );
         }
     }
 
@@ -524,6 +537,34 @@ public class DataProvider {
             final Promotion[] results = this.promotions.values().toArray( new Promotion[ this.promotions.size() ] );
             Arrays.sort( results, Promotion.DEPT__NAME_SORTER );
             callback.onSuccess( results );
+        }
+    }
+
+    /**
+     * @param callback the handler of the {@link com.redhat.iot.domain.Store} results (cannot be <code>null</code>)
+     */
+    public void getStores( final StoreCallback callback ) {
+        if ( this.stores.isEmpty() ) {
+            new GetStores( new StoreCallback() {
+
+                @Override
+                public void onFailure( final Exception error ) {
+                    callback.onFailure( error );
+                }
+
+                @Override
+                public void onFailure( final String errorMsg ) {
+                    callback.onFailure( errorMsg );
+                }
+
+                @Override
+                public void onSuccess( final Store[] results ) {
+                    cacheStores( results );
+                    callback.onSuccess( results );
+                }
+            } ).execute();
+        } else {
+            callback.onSuccess( this.stores.values().toArray( new Store[ this.stores.size() ] ) );
         }
     }
 

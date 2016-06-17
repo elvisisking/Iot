@@ -18,13 +18,13 @@ public class GetCustomers extends GetData< Customer > {
     /**
      * The OData URL used to obtain {@link Customer}s.
      */
-    private static final String CUSTOMERS_URL = ( String.format( GetData.URL_PATTERN, "Customer" ) + GetData.JSONS_FORMAT );
+    private static final String URL = ( String.format( GetData.URL_PATTERN, "Customer" ) + GetData.JSONS_FORMAT );
 
     /**
      * @param callback the callback (cannot be <code>null</code>)
      */
-    public GetCustomers( final IotCallback< Customer > callback ) {
-        super( CUSTOMERS_URL, callback, Customer.class, string.load_customers );
+    public GetCustomers( final CustomerCallback callback ) {
+        super( URL, callback, Customer.class, string.load_customers );
     }
 
     @Override
