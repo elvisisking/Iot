@@ -16,14 +16,13 @@ public class GetDepartments extends GetData< Department > {
     /**
      * The OData URL used to obtain {@link Department}s.
      */
-    private static final String DEPARTMENTS_URL =
-        ( String.format( GetData.URL_PATTERN, "FUSE.Department" ) + GetData.JSONS_FORMAT );
+    private static final String URL = ( String.format( GetData.URL_PATTERN, "FUSE.Department" ) + GetData.JSONS_FORMAT );
 
     /**
      * @param callback the callback (cannot be <code>null</code>)
      */
-    public GetDepartments( final IotCallback< Department > callback ) {
-        super( DEPARTMENTS_URL, callback, Department.class, string.load_departments );
+    public GetDepartments( final DepartmentCallback callback ) {
+        super( URL, callback, Department.class, string.load_departments );
     }
 
     @Override

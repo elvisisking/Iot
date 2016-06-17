@@ -151,15 +151,19 @@ public class LoginFragment extends Fragment implements OnClickListener, OnShared
                             getActivity().getString( string.login_unknown_user ),
                             Toast.LENGTH_SHORT ).show();
         } else {
-            // save customer ID to prefs
-            final SharedPreferences prefs = IotApp.getPrefs();
-            final Editor editor = prefs.edit();
-            editor.putInt( Prefs.CUSTOMER_ID, customer.getId() );
-            editor.apply();
+            final int custId = customer.getId();
 
-            Toast.makeText( getActivity(),
-                            getActivity().getString( string.login_success ),
-                            Toast.LENGTH_SHORT ).show();
+            if ( IotApp.getPrefs().getInt( Prefs.CUSTOMER_ID, Customer.UNKNOWN_USER ) != custId ) {
+                // save customer ID to prefs
+                final Editor editor = IotApp.getPrefs().edit();
+                IotApp.logDebug( LoginFragment.class, "saveNewLogin", "Changing pref " + Prefs.CUSTOMER_ID + " to " + custId );
+                editor.putInt( Prefs.CUSTOMER_ID, custId );
+                editor.apply();
+
+                Toast.makeText( getActivity(),
+                                getActivity().getString( string.login_success ),
+                                Toast.LENGTH_SHORT ).show();
+            }
         }
     }
 

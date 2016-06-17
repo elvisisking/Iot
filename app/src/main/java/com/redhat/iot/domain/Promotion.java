@@ -72,13 +72,9 @@ public class Promotion implements IotObject {
         }
 
         final Promotion that = ( Promotion )o;
-
-        if ( Double.compare( that.discount, this.discount ) != 0 ) {
-            return false;
-        }
-
-        return ( ( this.productId == that.productId ) && ( this.id == that.id ) );
-
+        return ( ( Double.compare( that.discount, this.discount ) == 0 )
+            && ( this.productId == that.productId )
+            && ( this.id == that.id ) );
     }
 
     /**

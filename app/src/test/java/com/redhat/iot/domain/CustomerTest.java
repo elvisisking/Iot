@@ -301,6 +301,15 @@ public final class CustomerTest {
         assertThat( customer.getCountry(), is( COUNTRY ) );
         assertThat( customer.getPhone(), is( PHONE ) );
         assertThat( customer.getCreditLimit(), is( CREDIT_LIMIT ) );
+        assertThat( customer.getStoreId(), is( Store.NOT_IDENTIFIED ) );
+    }
+
+    @Test
+    public void shouldSetStoreId() {
+        final Customer customer = get();
+        final int newStoreId = ( customer.getStoreId() + 1 );
+        customer.setStoreId( newStoreId );
+        assertThat( customer.getStoreId(), is( newStoreId ) );
     }
 
 }

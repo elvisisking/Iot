@@ -48,7 +48,7 @@ public class ProductMarshaller implements IotMarshaller< Product > {
             final JSONObject product = new JSONObject( json );
 
             // required
-            final int id = product.getInt( "productCode" ); // must have an ID
+            final int id = product.getInt( "id" ); // must have an ID
             final int departmentId = product.getInt( "departmentCode" ); // must have a department ID
 
             // optional
@@ -57,9 +57,7 @@ public class ProductMarshaller implements IotMarshaller< Product > {
             final String name = ( product.has( "productName" ) ? product.getString( "productName" ) : "" );
             final String vendor = ( product.has( "productVendor" ) ? product.getString( "productVendor" ) : "" );
             final double buyPrice = ( product.has( "buyPrice" ) ? product.getDouble( "buyPrice" ) : -1 );
-            final double msrp = ( product.has( "MSRP" ) ? product.getDouble( "MSRP" ) : -1 );
-
-            // TODO need quantityInStock
+            final double msrp = ( product.has( "msrp" ) ? product.getDouble( "msrp" ) : -1 );
 
             return new Product( id, departmentId, description, msrp, buyPrice, size, name, vendor );
         } catch ( final Exception e ) {

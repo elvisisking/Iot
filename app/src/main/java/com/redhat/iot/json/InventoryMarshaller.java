@@ -1,24 +1,24 @@
 package com.redhat.iot.json;
 
 import com.redhat.iot.IotException;
-import com.redhat.iot.domain.Promotion;
+import com.redhat.iot.domain.Inventory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Converts to/from a JSON string and a {@link Promotion} object.
+ * Converts to/from a JSON string and an {@link com.redhat.iot.domain.Inventory} object.
  */
-public class PromotionMarshaller implements IotMarshaller< Promotion > {
+public class InventoryMarshaller implements IotMarshaller< Inventory > {
 
-    private static PromotionMarshaller _shared;
+    private static InventoryMarshaller _shared;
 
     /**
-     * @return the shared {@link com.redhat.iot.domain.Product} marshaller (never <code>null</code>)
+     * @return the shared {@link com.redhat.iot.domain.Inventory} marshaller (never <code>null</code>)
      */
-    public static PromotionMarshaller get() {
+    public static InventoryMarshaller get() {
         if ( _shared == null ) {
-            _shared = new PromotionMarshaller();
+            _shared = new InventoryMarshaller();
         }
 
         return _shared;
@@ -27,7 +27,7 @@ public class PromotionMarshaller implements IotMarshaller< Promotion > {
     /**
      * Don't allow construction outside of this class.
      */
-    private PromotionMarshaller() {
+    private InventoryMarshaller() {
         // nothing to do
     }
 
@@ -43,23 +43,23 @@ public class PromotionMarshaller implements IotMarshaller< Promotion > {
     }
 
     @Override
-    public Promotion toIot( final String json ) throws IotException {
+    public Inventory toIot( final String json ) throws IotException {
         try {
             final JSONObject cust = new JSONObject( json );
 
             // required
-            final int id = cust.getInt( "id" ); // must have an ID
+            final int storeId = cust.getInt( "storeId" ); // must have a store ID
             final int productId = cust.getInt( "productId" ); // must have a product ID
-            final double discount = cust.getDouble( "discount" ); // must have a discount
+            final int quantity = cust.getInt( "quantity" ); // must have a quantity
 
-            return new Promotion( id, productId, discount );
+            return new Inventory( storeId, productId, quantity );
         } catch ( final Exception e ) {
             throw new IotException( e );
         }
     }
 
     @Override
-    public String toJson( final Promotion promotion ) throws IotException {
+    public String toJson( final Inventory promotion ) throws IotException {
         // TODO implement toJson
         return null;
     }

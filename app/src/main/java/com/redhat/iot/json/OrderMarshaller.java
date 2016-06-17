@@ -50,8 +50,8 @@ public class OrderMarshaller implements IotMarshaller< Order > {
             final JSONObject order = new JSONObject( json );
 
             // required
-            final int id = order.getInt( "orderNumber" ); // must have an ID
-            final int customerId = order.getInt( "customerNumber" ); // must have a customer ID
+            final int id = order.getInt( "id" ); // must have an ID
+            final int customerId = order.getInt( "customerId" ); // must have a customer ID
 
             // optional
             final String comments = ( order.has( "comments" ) ? order.getString( "comments" ) : "" );

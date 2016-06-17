@@ -1,20 +1,28 @@
 <resources>
-    <string name="iv_companyImage">Image of Johl\'s</string>
-    <string name="iv_dealImage">Image of the product on sale</string>
-    <string name="iv_drawerItemImage">Image of the menu item</string>
-    <string name="iv_orderImage">Image of Johl\'s</string>
+    <string name="action_sign_out">Sign Out</string>
 
     <string name="app_error_dialog_title">Johl\'s Error</string>
     <string name="app_load_data_progress_title">Load Data</string>
     <string name="app_name">Johl\'s</string>
     <string name="app_tagline">The Home of Smart Shopping</string>
 
-    <string name="load_customers">Fetching Customer records&#8230;</string>
-    <string name="load_departments">Fetching Department records&#8230;</string>
-    <string name="load_orders">Fetching Order records&#8230;</string>
-    <string name="load_order_details">Fetching Order Detail records&#8230;</string>
-    <string name="load_products">Fetching Product records&#8230;</string>
-    <string name="load_promotions">Fetching Promotion records&#8230;</string>
+    <string name="deal_sale_price">Sale Price: %.2f</string>
+    <string name="deal_shop_departments">Shop by Department</string>
+    <string name="deal_original_price">Original Price: %.2f</string>
+
+    <string name="iv_companyImage">Image of Johl\'s</string>
+    <string name="iv_dealImage">Image of the product on sale</string>
+    <string name="iv_drawerItemImage">Image of the menu item</string>
+    <string name="iv_orderImage">Image of Johl\'s</string>
+
+    <string name="load_customers">Fetching customer records&#8230;</string>
+    <string name="load_departments">Fetching department records&#8230;</string>
+    <string name="load_inventory">Fetching inventory records&#8230;</string>
+    <string name="load_orders">Fetching order records&#8230;</string>
+    <string name="load_order_details">Fetching order detail records&#8230;</string>
+    <string name="load_products">Fetching product records&#8230;</string>
+    <string name="load_promotions">Fetching promotion records&#8230;</string>
+    <string name="load_stores">Fetching store records&#8230;</string>
 
     <string name="login_current_user">Current Customer</string>
     <string name="login_not_logged_in">** not logged in **</string>
@@ -29,7 +37,17 @@
     <string name="notification_title">%s Department Promotion</string>
     <string name="notification_message" formatted="false">%s discounted by %s percent</string>
 
-    <string name="action_sign_out">Sign Out</string>
+    <string name="order_id">Order: %d</string>
+    <string name="order_no_orders">No orders found</string>
+    <string name="order_num_additional">+ %d more products</string>
+    <string name="order_price">Total Price: %.2f</string>
+
+    <string name="settings_enable_notifications">Enable notifications:</string>
+    <string name="settings_my_store">My store:</string>
+    <string name="settings_notification_interval">Notification interval:</string>
+    <string name="settings_user_not_logged_in">[no user logged in]</string>
+
+    <string name="store_not_selected">Select a store</string>
 
     <string name="title_about_fragment">About</string>
     <string name="title_billing_fragment">Billing</string>
@@ -39,19 +57,6 @@
     <string name="title_login_fragment">Login</string>
     <string name="title_orders_fragment">Orders</string>
     <string name="title_settings_fragment">Settings</string>
-
-    <string name="deal_sale_price">Sale Price: %.2f</string>
-    <string name="deal_shop_departments">Shop by Department</string>
-    <string name="deal_original_price">Original Price: %.2f</string>
-
-    <string name="order_id">Order: %d</string>
-    <string name="order_no_orders">No orders found</string>
-    <string name="order_num_additional">+ %d more products</string>
-    <string name="order_price">Total Price: %.2f</string>
-
-    <string name="settings_enable_notifications">Enable notifications:</string>
-    <string name="settings_notification_interval">Notification interval:</string>
-    <string name="settings_user_not_logged_in">[no user logged in]</string>
 
     <string-array name="notification_intervals">
         <item>1 minute</item>

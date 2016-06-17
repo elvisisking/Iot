@@ -73,7 +73,18 @@ public class IotApp extends Application {
     }
 
     /**
-     * @param clazz         the name of the class logging the error message (cannot be <code>null</code>)
+     * @param clazz         the class logging the debug message (cannot be <code>null</code>)
+     * @param methodContext the name of the method where the error is being logged (cannot be empty)
+     * @param msg           the debug message (cannot be empty)
+     */
+    public static void logDebug( final Class< ? > clazz,
+                                 final String methodContext,
+                                 final String msg ) {
+        Log.d( IotConstants.LOG_TAG, String.format( LOG_MSG, clazz.getSimpleName(), methodContext, msg ) );
+    }
+
+    /**
+     * @param clazz         the class logging the error message (cannot be <code>null</code>)
      * @param methodContext the name of the method where the error is being logged (cannot be empty)
      * @param msg           the error message (can be empty)
      * @param e             the error (can be <code>null</code>)

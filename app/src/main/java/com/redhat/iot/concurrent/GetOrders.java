@@ -14,7 +14,7 @@ public class GetOrders extends GetData< Order > {
     /**
      * The OData URL used to obtain {@link Order}s.
      */
-    private static final String ORDERS_URL =
+    private static final String URL =
         ( String.format( GetData.URL_PATTERN, "PostgreSQL_Sales_Promotions.Customer(%s)/Order" ) + GetData.JSONS_FORMAT );
 
     private final int customerId;
@@ -24,8 +24,8 @@ public class GetOrders extends GetData< Order > {
      * @param callback   the callback (cannot be <code>null</code>)
      */
     public GetOrders( final int customerId,
-                      final IotCallback< Order > callback ) {
-        super( String.format( ORDERS_URL, customerId ), callback, Order.class, string.load_orders );
+                      final OrderCallback callback ) {
+        super( String.format( URL, customerId ), callback, Order.class, string.load_orders );
         this.customerId = customerId;
     }
 

@@ -59,36 +59,14 @@ public class Product implements IotObject {
         }
 
         final Product that = ( Product )o;
-
-        if ( Double.compare( that.buyPrice, this.buyPrice ) != 0 ) {
-            return false;
-        }
-
-        if ( this.departmentId != that.departmentId ) {
-            return false;
-        }
-
-        if ( this.id != that.id ) {
-            return false;
-        }
-
-        if ( Double.compare( that.msrp, this.msrp ) != 0 ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.description, that.description ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.size, that.size ) ) {
-            return false;
-        }
-
-        if ( !Objects.equals( this.name, that.name ) ) {
-            return false;
-        }
-
-        return Objects.equals( this.vendor, that.vendor );
+        return ( ( Double.compare( that.buyPrice, this.buyPrice ) == 0 )
+            && ( this.departmentId == that.departmentId )
+            && ( this.id == that.id )
+            && ( Double.compare( that.msrp, this.msrp ) == 0 )
+            && Objects.equals( this.description, that.description )
+            && Objects.equals( this.size, that.size )
+            && Objects.equals( this.name, that.name )
+            && Objects.equals( this.vendor, that.vendor ) );
     }
 
     /**

@@ -12,14 +12,14 @@ public class GetPromotions extends GetData< Promotion > {
     /**
      * The OData URL used to obtain {@link Promotion}s.
      */
-    private static final String PROMOTIONS_URL =
+    private static final String URL =
         ( String.format( GetData.URL_PATTERN, "PostgreSQL_Sales_Promotions.Promotion" ) + GetData.JSONS_FORMAT );
 
     /**
      * @param callback the callback (cannot be <code>null</code>)
      */
-    public GetPromotions( final IotCallback< Promotion > callback ) {
-        super( PROMOTIONS_URL, callback, Promotion.class, string.load_promotions );
+    public GetPromotions( final PromotionCallback callback ) {
+        super( URL, callback, Promotion.class, string.load_promotions );
     }
 
     @Override

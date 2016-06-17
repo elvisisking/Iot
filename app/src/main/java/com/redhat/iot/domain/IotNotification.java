@@ -31,12 +31,7 @@ public class IotNotification implements IotObject {
         }
 
         final IotNotification that = ( IotNotification )o;
-
-        if ( this.promoId != that.promoId ) {
-            return false;
-        }
-
-        return ( this.timestamp == that.timestamp );
+        return ( ( this.promoId == that.promoId ) && ( this.timestamp == that.timestamp ) );
 
     }
 
