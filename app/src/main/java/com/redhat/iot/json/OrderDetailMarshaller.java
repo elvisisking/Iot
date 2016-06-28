@@ -6,10 +6,26 @@ import com.redhat.iot.domain.OrderDetail;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Converts to/from a JSON string and a {@link OrderDetail} object.
  */
 public class OrderDetailMarshaller implements IotMarshaller< OrderDetail > {
+
+    /**
+     * The JSON names that may have mappings.
+     */
+    public interface Name {
+
+        String DISCOUNT = "discount";
+        String MSRP = "msrp";
+        String ORDER_ID = "orderId";
+        String PRODUCT_ID = "productId";
+        String QUANTITY = "quantityOrdered";
+
+    }
 
     private static OrderDetailMarshaller _shared;
 
@@ -48,13 +64,13 @@ public class OrderDetailMarshaller implements IotMarshaller< OrderDetail > {
             final JSONObject orderDetail = new JSONObject( json );
 
             // required
-            final int orderId = orderDetail.getInt( "orderId" ); // must have an order ID
-            final int productId = orderDetail.getInt( "productId" ); // must have a product ID
-            final double msrp = orderDetail.getDouble( "msrp" );
-            final int discount = orderDetail.getInt( "discount" );
+            final int orderId = orderDetail.getInt( Name.ORDER_ID );
+            final int productId = orderDetail.getInt( Name.PRODUCT_ID );
+            final double msrp = orderDetail.getDouble( Name.MSRP );
+            final int discount = orderDetail.getInt( Name.DISCOUNT );
 
             // optional
-            final int quantity = ( orderDetail.has( "quantityOrdered" ) ? orderDetail.getInt( "quantityOrdered" ) : 1 );
+            final int quantity = ( orderDetail.has( Name.QUANTITY ) ? orderDetail.getInt( Name.QUANTITY ) : 1 );
 
             return new OrderDetail( orderId, productId, quantity, msrp, discount );
         } catch ( final Exception e ) {
@@ -64,6 +80,15 @@ public class OrderDetailMarshaller implements IotMarshaller< OrderDetail > {
 
     @Override
     public String toJson( final OrderDetail detail ) throws IotException {
-        return null;
+        final Map< String, Object > map = new HashMap<>();
+        map.put( Name.ORDER_ID, detail.getOrderId() );
+        map.put( Name.PRODUCT_ID, detail.getProductId() );
+        map.put( Name.MSRP, detail.getMsrp() );
+        map.put( Name.DISCOUNT, detail.getDiscount() );
+        map.put( Name.QUANTITY, detail.getQuantity() );
+
+        final JSONObject jDetail = new JSONObject( map );
+        return jDetail.toString();
     }
+
 }

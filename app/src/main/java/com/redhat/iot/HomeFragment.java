@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment implements OnClickListener {
         editor.putStringSet( Prefs.PROMO_DEPT_IDS, Collections.singleton( deptId ) );
         editor.apply();
 
-        this.iotMain.showScreen( MainActivity.PROMOTIOHS_SCREEN_INDEX );
+        this.iotMain.showScreen( MainActivity.PROMOTIONS_SCREEN_INDEX, null );
     }
 
     private void createDepartmentButtons( final LayoutInflater inflater,

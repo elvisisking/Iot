@@ -36,17 +36,13 @@ abstract class GetData< T extends IotObject > extends AsyncTask< Void, Void, T[]
     private static final String PSWD = ( I_AM_TED ? "TbJ01221991$" : "4teiid$admin" );
     private static final String USER = "teiidUser";
 
-    protected static final String JSONS_FORMAT = "?$format=json";
-    protected static final String URL_PATTERN = new StringBuilder( "http://" ).append( HOST )
-        .append( ':' )
-        .append( PORT )
-        .append( "/odata/customer_iot/%s" )
-        .toString();
+    static final String JSONS_FORMAT = "?$format=json";
+    static final String URL_PATTERN = ( "http://" + HOST + ':' + PORT + "/odata/customer_iot/%s" );
 
     private final IotCallback< T > callback;
     private final Class< T > clazz;
     private ProgressDialog dialog;
-    protected Exception error;
+    Exception error;
     private String errorMsg;
     private final String pswd;
     private final String urlAsString;
@@ -58,10 +54,10 @@ abstract class GetData< T extends IotObject > extends AsyncTask< Void, Void, T[]
      * @param clazz                   the {@link Class} of the result objects (cannot be <code>null</code>)
      * @param progressDialogMessageId the resource ID of the progress dialog message or -1 if no progress dialog should be shown
      */
-    protected GetData( final String url,
-                       final IotCallback< T > callback,
-                       final Class< T > clazz,
-                       final int progressDialogMessageId ) {
+    GetData( final String url,
+             final IotCallback< T > callback,
+             final Class< T > clazz,
+             final int progressDialogMessageId ) {
         this.urlAsString = url;
         this.user = USER;
         this.pswd = PSWD;
@@ -83,15 +79,20 @@ abstract class GetData< T extends IotObject > extends AsyncTask< Void, Void, T[]
 
     @Override
     protected T[] doInBackground( final Void... params ) {
+        final long start = System.currentTimeMillis();
+
         try {
             return executeHttpGet( this.urlAsString, this.user, this.pswd );
         } catch ( final Exception e ) {
             IotApp.logError( GetData.class, "doInBackground", "url = '" + this.urlAsString + '\'', e );
             this.error = e;
             return null;
+        } finally {
+            IotApp.logDebug( getClass(), "doInBackground", ( ( System.currentTimeMillis() - start ) + " ms" ) );
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     private T[] executeHttpGet( final String urlAsString,
                                 final String user,
                                 final String pswd ) {
@@ -141,6 +142,7 @@ abstract class GetData< T extends IotObject > extends AsyncTask< Void, Void, T[]
                 T[] iotObjs;
 
                 if ( ( json == null ) || json.isEmpty() ) {
+                    //noinspection unchecked
                     iotObjs = ( T[] )Array.newInstance( this.clazz, 0 );
                 } else {
                     final IotMarshaller< T > marshaller = this.callback.getMarshaller();
@@ -156,6 +158,7 @@ abstract class GetData< T extends IotObject > extends AsyncTask< Void, Void, T[]
                         result.add( iot );
                     }
 
+                    //noinspection unchecked
                     iotObjs = ( T[] )Array.newInstance( this.clazz, result.size() );
 
                     for ( int i = 0;
@@ -205,7 +208,7 @@ abstract class GetData< T extends IotObject > extends AsyncTask< Void, Void, T[]
     /**
      * @return <code>true</code> if real data should be used
      */
-    protected boolean isUsingRealData() {
+    boolean isUsingRealData() {
         return USE_REAL_DATA;
     }
 

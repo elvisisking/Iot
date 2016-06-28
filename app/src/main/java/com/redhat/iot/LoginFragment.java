@@ -23,6 +23,8 @@ import com.redhat.iot.R.string;
 import com.redhat.iot.concurrent.CustomerCallback;
 import com.redhat.iot.domain.Customer;
 
+import java.util.Locale;
+
 /**
  * A login screen.
  */
@@ -186,7 +188,7 @@ public class LoginFragment extends Fragment implements OnClickListener, OnShared
             this.txtCurrUser.setText( string.login_not_logged_in );
         } else {
             this.txtCurrUser.setText( customer.getName() ); // must set this before txtUserId so that but enablement is correct
-            this.txtUserId.setText( String.format( "%d", customer.getId() ) );
+            this.txtUserId.setText( String.format( Locale.getDefault(), "%d", customer.getId() ) );
             this.txtUserId.setSelection( this.txtUserId.getText().length() );
         }
     }

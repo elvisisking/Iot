@@ -7,11 +7,28 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Converts to/from a JSON string and a {@link Order} object.
  */
 public class OrderMarshaller implements IotMarshaller< Order > {
+
+    /**
+     * The JSON names that may have mappings.
+     */
+    public interface Name {
+
+        String CUSTOMER_ID = "customerId";
+        String COMMENTS = "comments";
+        String STATUS = "status";
+        String ORDER_DATE = "orderDate";
+        String ID = "id";
+        String REQUIRED_DATE = "requiredDate";
+        String SHIPPED_DATE = "shippedDate";
+
+    }
 
     private static OrderMarshaller _shared;
 
@@ -50,33 +67,26 @@ public class OrderMarshaller implements IotMarshaller< Order > {
             final JSONObject order = new JSONObject( json );
 
             // required
-            final int id = order.getInt( "id" ); // must have an ID
-            final int customerId = order.getInt( "customerId" ); // must have a customer ID
+            final int id = order.getInt( Name.ID );
+            final int customerId = order.getInt( Name.CUSTOMER_ID );
+            final Calendar orderDate = JsonUtils.parseDate( order.getString( Name.ORDER_DATE ) );
 
             // optional
-            final String comments = ( order.has( "comments" ) ? order.getString( "comments" ) : "" );
-            final String status = ( order.has( "status" ) ? order.getString( "status" ) : "" );
-
-            final Calendar orderDate;
-
-            if ( order.has( "orderDate" ) ) {
-                orderDate = JsonUtils.parseDate( order.getString( "orderDate" ) );
-            } else {
-                orderDate = null;
-            }
+            final String comments = ( order.has( Name.COMMENTS ) ? order.getString( Name.COMMENTS ) : "" );
+            final String status = ( order.has( Name.STATUS ) ? order.getString( Name.STATUS ) : "" );
 
             final Calendar requiredDate;
 
-            if ( order.has( "requiredDate" ) ) {
-                requiredDate = JsonUtils.parseDate( order.getString( "requiredDate" ) );
+            if ( order.has( Name.REQUIRED_DATE ) ) {
+                requiredDate = JsonUtils.parseDate( order.getString( Name.REQUIRED_DATE ) );
             } else {
                 requiredDate = null;
             }
 
             final Calendar shippedDate;
 
-            if ( order.has( "shippedDate" ) ) {
-                shippedDate = JsonUtils.parseDate( order.getString( "shippedDate" ) );
+            if ( order.has( Name.SHIPPED_DATE ) ) {
+                shippedDate = JsonUtils.parseDate( order.getString( Name.SHIPPED_DATE ) );
             } else {
                 shippedDate = null;
             }
@@ -89,8 +99,29 @@ public class OrderMarshaller implements IotMarshaller< Order > {
 
     @Override
     public String toJson( final Order order ) throws IotException {
-        // TODO implement toJson
-        return null;
+        final Map< String, Object > map = new HashMap<>();
+        map.put( Name.ID, order.getId() );
+        map.put( Name.CUSTOMER_ID, order.getCustomerId() );
+        map.put( Name.ORDER_DATE, JsonUtils.toJson( order.getOrderDate() ) );
+
+        if ( order.getComments() != null ) {
+            map.put( Name.COMMENTS, order.getComments() );
+        }
+
+        if ( order.getStatus() != null ) {
+            map.put( Name.STATUS, order.getStatus() );
+        }
+
+        if ( order.getRequiredDate() != null ) {
+            map.put( Name.REQUIRED_DATE, JsonUtils.toJson( order.getRequiredDate() ) );
+        }
+
+        if ( order.getShippedDate() != null ) {
+            map.put( Name.SHIPPED_DATE, JsonUtils.toJson( order.getShippedDate() ) );
+        }
+
+        final JSONObject jProduct = new JSONObject( map );
+        return jProduct.toString();
     }
 
 }

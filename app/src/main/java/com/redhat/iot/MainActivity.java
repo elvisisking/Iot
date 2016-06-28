@@ -4,10 +4,13 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +21,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +50,7 @@ import com.redhat.iot.domain.Department;
 import com.redhat.iot.domain.IotNotification;
 import com.redhat.iot.domain.Product;
 import com.redhat.iot.domain.Promotion;
+import com.redhat.iot.inventory.InventoryFragment;
 import com.redhat.iot.order.OrdersFragment;
 import com.redhat.iot.promotion.PromotionsFragment;
 
@@ -59,32 +66,41 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MainActivity extends AppCompatActivity implements OnSharedPreferenceChangeListener {
 
     private static final int ICON_INDEX = 0;
-    private static final int NAME_INDEX = 1;
+    private static final int INVERTED_ICON_INDEX = 1;
+    private static final int NAME_INDEX = 2;
     private static final Integer[][] DRAWER_CONFIG = {
-        new Integer[]{ drawable.ic_user, string.title_login_fragment },
-        new Integer[]{ drawable.ic_home, string.title_home_fragment },
-        new Integer[]{ drawable.ic_price_tags, string.title_deals_fragment },
-        new Integer[]{ drawable.ic_coin_dollar, string.title_orders_fragment },
-        new Integer[]{ drawable.ic_credit_card, string.title_billing_fragment },
-        new Integer[]{ drawable.ic_cog, string.title_settings_fragment },
-        new Integer[]{ drawable.ic_mail, string.title_contact_fragment },
-        new Integer[]{ drawable.ic_info, string.title_about_fragment },
+        new Integer[]{ drawable.ic_user, drawable.ic_user_inverted, string.title_login_fragment },
+        new Integer[]{ drawable.ic_home, drawable.ic_home_inverted, string.title_home_fragment },
+        new Integer[]{ drawable.ic_price_tag, drawable.ic_price_tag_inverted, string.title_deals_fragment },
+        new Integer[]{ drawable.ic_coin_dollar, drawable.ic_coin_dollar_inverted, string.title_orders_fragment },
+        new Integer[]{ drawable.ic_cog, drawable.ic_cog_inverted, string.title_settings_fragment },
+        new Integer[]{ drawable.ic_mail, drawable.ic_mail_inverted, string.title_contact_fragment },
+        new Integer[]{ drawable.ic_info, drawable.ic_info_inverted, string.title_about_fragment },
+        new Integer[]{ drawable.ic_list_numbered, drawable.ic_list_numbered_inverted, string.title_inventory_fragment },
     };
 
     private static final int LOGIN_SCREEN_INDEX = 1;
     private static final int HOME_SCREEN_INDEX = 2;
-    static final int PROMOTIOHS_SCREEN_INDEX = 3;
+    static final int PROMOTIONS_SCREEN_INDEX = 3;
     private static final int ORDERS_SCREEN_INDEX = 4;
-    private static final int BILLING_SCREEN_INDEX = 5;
-    private static final int SETTINGS_SCREEN_INDEX = 6;
-    private static final int CONTACT_SCREEN_INDEX = 7;
-    private static final int ABOUT_SCREEN_INDEX = 8;
+    private static final int SETTINGS_SCREEN_INDEX = 5;
+    private static final int CONTACT_SCREEN_INDEX = 6;
+    private static final int ABOUT_SCREEN_INDEX = 7;
+    private static final int INVENTORY_SCREEN_INDEX = 8;
 
     private Timer notifierTimer;
     private final AtomicInteger notificationId = new AtomicInteger();
 
     // customer should get notified once for each promotion
     private final Map< Integer, List< Integer > > notifications = new HashMap<>(); // key=customer ID, value=list of promo IDs
+
+    private View previousSelectedDrawerItem;
+    private String[] queryKeywords; // search keywords
+    private SearchView searchView;
+
+    private SearchView getSearchView() {
+        return this.searchView;
+    }
 
     private void handleFoundPromotion( final Promotion promotion ) {
         DataProvider.get().findProduct( promotion.getProductId(), new ProductCallback() {
@@ -105,6 +121,21 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
                 publishNotification( promotion, product, results[ 0 ] );
             }
         } );
+    }
+
+    private void handleSearchQuery( final String query ) {
+        this.queryKeywords = ( ( query == null ) ? null : query.split( " " ) );
+        showScreen( INVENTORY_SCREEN_INDEX, null );
+    }
+
+    @Override
+    public void onAttachFragment( final Fragment fragment ) {
+        super.onAttachFragment( fragment );
+
+        if ( fragment instanceof InventoryFragment ) {
+            ( ( InventoryFragment )fragment ).setQuery( this.queryKeywords );
+            this.queryKeywords = null;
+        }
     }
 
     @Override
@@ -145,26 +176,62 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
                                                                               string.navigation_drawer_close );
         drawerLayout.addDrawerListener( drawerToggle );
         drawerToggle.syncState();
-//
-//        final NavigationView navigationView = ( NavigationView )findViewById( R.id.nav_view );
-//        navigationView.setNavigationItemSelectedListener( this );
-
-        // set home as first fragment
-        final FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-            .replace( id.content_frame, new HomeFragment() )
-            .commit();
-
-//        this.drawerLayoutMgr.scrollToPosition( 2 );
-//        this.drawerRecyclerView.setCheckedItem( R.id.nav_home );
 
         // register to receive preference changes
         IotApp.getPrefs().registerOnSharedPreferenceChangeListener( this );
+
+        { // post to UI thread first fragment selection
+            final Handler handler = new Handler( getMainLooper() );
+            final Runnable myRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    showScreen( HOME_SCREEN_INDEX, drawerRecyclerView.getChildAt( HOME_SCREEN_INDEX ) );
+                }
+            };
+
+            handler.post( myRunnable );
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu( final Menu optionsMenu ) {
         getMenuInflater().inflate( menu.main, optionsMenu );
+
+        // Associate searchable configuration with the SearchView
+        final SearchManager searchManager = ( SearchManager )getSystemService( Context.SEARCH_SERVICE );
+        this.searchView = ( SearchView )optionsMenu.findItem( id.search ).getActionView();
+        this.searchView.setSearchableInfo( searchManager.getSearchableInfo( getComponentName() ) );
+        this.searchView.setQueryHint( getString( string.search_hint ) );
+        this.searchView.setIconified( true );
+        this.searchView.setOnQueryTextListener( new OnQueryTextListener() {
+
+            // needed because onQueryTextSubmit gets called twice (key down, key up)
+            private boolean changed = true;
+
+            @Override
+            public boolean onQueryTextSubmit( final String query ) {
+                if ( this.changed ) {
+                    handleSearchQuery( query );
+                    MainActivity.this.searchView.setIconified( true );
+                }
+
+                this.changed = false;
+                return true; // handled here
+            }
+
+            @Override
+            public boolean onQueryTextChange( final String newText ) {
+                this.changed = true;
+                return true; // do nothing and don't propogate
+            }
+        } );
+
+        final EditText txtSearch = ( EditText )this.searchView.findViewById( android.support.v7.appcompat.R.id.search_src_text );
+        txtSearch.setBackgroundColor( Color.WHITE );
+        txtSearch.setTextColor( Color.BLACK );
+        txtSearch.setHintTextColor( Color.LTGRAY );
+
         return true;
     }
 
@@ -308,41 +375,51 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         }
     }
 
-    void showScreen( final int index ) {
+    void showScreen( final int index,
+                     final View view ) {
+        { // color background of selected screen item in drawer
+            if ( this.previousSelectedDrawerItem != null ) {
+                this.previousSelectedDrawerItem.setBackgroundColor( Color.WHITE );
+            }
+
+            if ( view != null ) {
+                view.setBackgroundColor( Color.LTGRAY );
+            }
+
+            this.previousSelectedDrawerItem = view;
+        }
+
+        // close search view (search view will be null first time since options menu has not been created)
+        if ( getSearchView() != null ) {
+            getSearchView().setIconified( true );
+        }
+
         Fragment fragment;
-        int titleId = -1;
 
         switch ( index ) {
             case LOGIN_SCREEN_INDEX:
                 fragment = new LoginFragment();
-                titleId = string.title_login_fragment;
                 break;
             case HOME_SCREEN_INDEX:
                 fragment = new HomeFragment();
                 break;
-            case PROMOTIOHS_SCREEN_INDEX:
+            case PROMOTIONS_SCREEN_INDEX:
                 fragment = new PromotionsFragment();
-                titleId = string.title_deals_fragment;
                 break;
             case ORDERS_SCREEN_INDEX:
                 fragment = new OrdersFragment();
-                titleId = string.title_orders_fragment;
                 break;
-            case BILLING_SCREEN_INDEX:
-                fragment = new BillingFragment();
-                titleId = string.title_billing_fragment;
+            case INVENTORY_SCREEN_INDEX:
+                fragment = new InventoryFragment();
                 break;
             case SETTINGS_SCREEN_INDEX:
                 fragment = new SettingsFragment();
-                titleId = string.title_settings_fragment;
                 break;
             case CONTACT_SCREEN_INDEX:
                 fragment = new ContactFragment();
-                titleId = string.title_contact_fragment;
                 break;
             case ABOUT_SCREEN_INDEX:
                 fragment = new AboutFragment();
-                titleId = string.title_about_fragment;
                 break;
             default:
                 Log.e( IotConstants.LOG_TAG, "index " + index + " does not create a fragment" );
@@ -357,11 +434,8 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
         drawer.closeDrawer( GravityCompat.START );
 
         if ( getSupportActionBar() != null ) {
-            if ( titleId == -1 ) {
-                getSupportActionBar().setSubtitle( "" );
-            } else {
-                getSupportActionBar().setSubtitle( getString( titleId ) );
-            }
+            getSupportActionBar().setSubtitle( getString( DRAWER_CONFIG[ index - 1 ][ NAME_INDEX ] ) );
+            getSupportActionBar().setIcon( DRAWER_CONFIG[ index - 1 ][ INVERTED_ICON_INDEX ] );
         }
     }
 
@@ -382,21 +456,19 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
     }
 
     /**
-     * The entire path to DrawerAdapter.Holder needs to be here in order for the build to work correctly!
+     * !!! The entire path to DrawerAdapter.Holder needs to be here in order for the build to work correctly !!!
      */
     class DrawerAdapter extends Adapter< com.redhat.iot.MainActivity.DrawerAdapter.Holder > {
 
-        private final Context context;
         private final LayoutInflater inflater;
 
-        DrawerAdapter( final Context c ) {
-            this.context = c;
-            this.inflater = LayoutInflater.from( this.context );
+        DrawerAdapter( final Context context ) {
+            this.inflater = LayoutInflater.from( context );
         }
 
         @Override
         public int getItemCount() {
-            return ( DRAWER_CONFIG.length + 1 );
+            return ( DRAWER_CONFIG.length ); // add one for header but subtract one because inventory hidden
         }
 
         @Override
@@ -455,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
             @Override
             public void onClick( final View view ) {
-                showScreen( getAdapterPosition() );
+                showScreen( getAdapterPosition(), view );
             }
 
         }
@@ -480,7 +552,11 @@ public class MainActivity extends AppCompatActivity implements OnSharedPreferenc
 
         @Override
         public void run() {
-            DataProvider.get().getNotifications( new NotificationHandler() );
+            final int custId = IotApp.getCustomerId();
+
+            if ( custId != Customer.UNKNOWN_USER ) {
+                DataProvider.get().getNotifications( custId, new NotificationHandler() );
+            }
         }
 
     }

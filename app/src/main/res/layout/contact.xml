@@ -1,13 +1,36 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.redhat.iot.ContactFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/contact_fragment"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="30dp"
+              android:orientation="vertical"
+              tools:context="com.redhat.iot.ContactFragment">
 
     <TextView
-        style="@style/MedTextView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/title_contact_fragment"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center_horizontal"
+        android:lines="5"
+        android:text="@string/contact_message"
+        android:textSize="20sp"/>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/btn_contact_by_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:gravity="center_horizontal"
+        android:text="@string/contact_by_phone"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/btn_contact_by_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/contact_by_email"
+        android:textSize="20sp"/>
+
+</LinearLayout>
