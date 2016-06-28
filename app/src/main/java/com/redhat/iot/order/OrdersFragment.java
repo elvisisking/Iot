@@ -2,7 +2,6 @@ package com.redhat.iot.order;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.redhat.iot.DataProvider;
-import com.redhat.iot.IotConstants.Prefs;
+import com.redhat.iot.IotApp;
 import com.redhat.iot.R.id;
 import com.redhat.iot.R.layout;
 import com.redhat.iot.concurrent.OrderCallback;
@@ -40,8 +39,7 @@ public class OrdersFragment extends Fragment {
         super.onActivityCreated( savedInstanceState );
 
         // look up currently logged in customer
-        final SharedPreferences settings = this.activity.getSharedPreferences( Prefs.PREFS_NAME, 0 );
-        final int customerId = settings.getInt( Prefs.CUSTOMER_ID, Customer.UNKNOWN_USER );
+        final int customerId = IotApp.getCustomerId();
 
         if ( customerId == Customer.UNKNOWN_USER ) {
             setDataOnCreated( Order.NO_ORDERS );

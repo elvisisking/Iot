@@ -13,7 +13,7 @@ public class GetInventory extends GetData< Inventory > {
      * Use to indicate all {@link com.redhat.iot.domain.Store}s or all {@link com.redhat.iot.domain.Product}s should be part of the
      * result.
      *
-     * @see #GetInventory(int, int, InventoryCallback)
+     * @see #GetInventory(String[], int, int, InventoryCallback)
      */
     public static final int ALL = -1;
 
@@ -23,20 +23,36 @@ public class GetInventory extends GetData< Inventory > {
     private static final String URL =
         ( String.format( GetData.URL_PATTERN, "PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail" ) + GetData.JSONS_FORMAT );
 
-    private final int storeId;
     private final int productId;
+    private final String[] queryKeywords; // not used now but maybe could pass in URL
+    private final int storeId;
 
     /**
-     * @param storeId   the ID of the {@link com.redhat.iot.domain.Store} whose {@link com.redhat.iot.domain.Inventory inventories}
-     *                  are being requested or {@link GetInventory#ALL} if all stores should be looked at
-     * @param productId the ID of the {@link com.redhat.iot.domain.Product} whose {@link com.redhat.iot.domain.Inventory
-     *                  inventories} are being requested or {@link GetInventory#ALL} if all products should be p
-     * @param callback  the callback (cannot be <code>null</code>)
+     * @param queryKeywords the keywords to search for in the inventory product name and description (can be <code>null</code> or
+     *                      empty)
+     * @param callback      the callback (cannot be <code>null</code>)
      */
-    public GetInventory( final int storeId,
+    public GetInventory( final String[] queryKeywords,
+                         final InventoryCallback callback ) {
+        this( queryKeywords, ALL, ALL, callback );
+    }
+
+    /**
+     * @param queryKeywords the keywords to search for in the inventory product name and description (can be
+     *                      <code>null</code> or
+     *                      empty)
+     * @param storeId       the ID of the {@link com.redhat.iot.domain.Store} whose {@link Inventory inventories} are being
+     *                      requested or {@link GetInventory#ALL} if all stores should be looked at
+     * @param productId     the ID of the {@link com.redhat.iot.domain.Product} whose {@link Inventory inventories} are being
+     *                      requested or {@link GetInventory#ALL} if all products should be p
+     * @param callback      the callback (cannot be <code>null</code>)
+     */
+    public GetInventory( final String[] queryKeywords,
+                         final int storeId,
                          final int productId,
                          final InventoryCallback callback ) {
         super( String.format( URL, storeId ), callback, Inventory.class, string.load_inventory );
+        this.queryKeywords = queryKeywords;
         this.storeId = storeId;
         this.productId = productId;
     }

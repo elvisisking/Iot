@@ -6,15 +6,29 @@ import com.redhat.iot.domain.Inventory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Converts to/from a JSON string and an {@link com.redhat.iot.domain.Inventory} object.
+ * Converts to/from a JSON string and an {@link Inventory} object.
  */
 public class InventoryMarshaller implements IotMarshaller< Inventory > {
+
+    /**
+     * The JSON names that may have mappings.
+     */
+    public interface Name {
+
+        String PRODUCT_ID = "productId";
+        String QUANTITY = "quantity";
+        String STORE_ID = "storeId";
+
+    }
 
     private static InventoryMarshaller _shared;
 
     /**
-     * @return the shared {@link com.redhat.iot.domain.Inventory} marshaller (never <code>null</code>)
+     * @return the shared {@link Inventory} marshaller (never <code>null</code>)
      */
     public static InventoryMarshaller get() {
         if ( _shared == null ) {
@@ -48,9 +62,9 @@ public class InventoryMarshaller implements IotMarshaller< Inventory > {
             final JSONObject cust = new JSONObject( json );
 
             // required
-            final int storeId = cust.getInt( "storeId" ); // must have a store ID
-            final int productId = cust.getInt( "productId" ); // must have a product ID
-            final int quantity = cust.getInt( "quantity" ); // must have a quantity
+            final int storeId = cust.getInt( Name.STORE_ID );
+            final int productId = cust.getInt( Name.PRODUCT_ID );
+            final int quantity = cust.getInt( Name.QUANTITY );
 
             return new Inventory( storeId, productId, quantity );
         } catch ( final Exception e ) {
@@ -59,9 +73,14 @@ public class InventoryMarshaller implements IotMarshaller< Inventory > {
     }
 
     @Override
-    public String toJson( final Inventory promotion ) throws IotException {
-        // TODO implement toJson
-        return null;
+    public String toJson( final Inventory inventory ) throws IotException {
+        final Map< String, Object > map = new HashMap<>();
+        map.put( Name.STORE_ID, inventory.getStoreId() );
+        map.put( Name.PRODUCT_ID, inventory.getProductId() );
+        map.put( Name.QUANTITY, inventory.getQuantity() );
+
+        final JSONObject jInventory = new JSONObject( map );
+        return jInventory.toString();
     }
 
 }

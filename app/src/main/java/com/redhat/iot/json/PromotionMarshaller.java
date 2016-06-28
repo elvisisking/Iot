@@ -6,10 +6,24 @@ import com.redhat.iot.domain.Promotion;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Converts to/from a JSON string and a {@link Promotion} object.
  */
 public class PromotionMarshaller implements IotMarshaller< Promotion > {
+
+    /**
+     * The JSON names that may have mappings.
+     */
+    public interface Name {
+
+        String DISCOUNT = "discount";
+        String ID = "id";
+        String PRODUCT_ID = "productId";
+
+    }
 
     private static PromotionMarshaller _shared;
 
@@ -48,9 +62,9 @@ public class PromotionMarshaller implements IotMarshaller< Promotion > {
             final JSONObject cust = new JSONObject( json );
 
             // required
-            final int id = cust.getInt( "id" ); // must have an ID
-            final int productId = cust.getInt( "productId" ); // must have a product ID
-            final double discount = cust.getDouble( "discount" ); // must have a discount
+            final int id = cust.getInt( Name.ID );
+            final int productId = cust.getInt( Name.PRODUCT_ID );
+            final double discount = cust.getDouble( Name.DISCOUNT );
 
             return new Promotion( id, productId, discount );
         } catch ( final Exception e ) {
@@ -60,8 +74,13 @@ public class PromotionMarshaller implements IotMarshaller< Promotion > {
 
     @Override
     public String toJson( final Promotion promotion ) throws IotException {
-        // TODO implement toJson
-        return null;
+        final Map< String, Object > map = new HashMap<>();
+        map.put( Name.ID, promotion.getId() );
+        map.put( Name.PRODUCT_ID, promotion.getProductId() );
+        map.put( Name.DISCOUNT, promotion.getDiscount() );
+
+        final JSONObject jPromo = new JSONObject( map );
+        return jPromo.toString();
     }
 
 }

@@ -9,11 +9,13 @@ import com.redhat.iot.concurrent.CustomerCallback;
 import com.redhat.iot.concurrent.DepartmentCallback;
 import com.redhat.iot.concurrent.GetCustomers;
 import com.redhat.iot.concurrent.GetDepartments;
+import com.redhat.iot.concurrent.GetInventory;
 import com.redhat.iot.concurrent.GetNotifications;
 import com.redhat.iot.concurrent.GetOrders;
 import com.redhat.iot.concurrent.GetProducts;
 import com.redhat.iot.concurrent.GetPromotions;
 import com.redhat.iot.concurrent.GetStores;
+import com.redhat.iot.concurrent.InventoryCallback;
 import com.redhat.iot.concurrent.NotificationCallback;
 import com.redhat.iot.concurrent.OrderCallback;
 import com.redhat.iot.concurrent.ProductCallback;
@@ -21,6 +23,7 @@ import com.redhat.iot.concurrent.PromotionCallback;
 import com.redhat.iot.concurrent.StoreCallback;
 import com.redhat.iot.domain.Customer;
 import com.redhat.iot.domain.Department;
+import com.redhat.iot.domain.Inventory;
 import com.redhat.iot.domain.Order;
 import com.redhat.iot.domain.Product;
 import com.redhat.iot.domain.Promotion;
@@ -28,9 +31,15 @@ import com.redhat.iot.domain.Store;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Provider for domain objects.
@@ -51,11 +60,24 @@ public class DataProvider {
     }
 
     private final Map< Integer, Customer > customers = new HashMap<>();
+    private final Lock customerLock = new ReentrantLock();
+
     private final Map< Long, Department > departments = new HashMap<>();
     private final Map< Long, Integer > deptColors = new HashMap<>();
+    private final Lock departmentLock = new ReentrantLock();
+
+    private final Map< Integer, Set< Inventory > > productInventory = new TreeMap<>();
+    private final Map< Integer, Set< Inventory > > storeInventory = new TreeMap<>();
+    private final Lock inventoryLock = new ReentrantLock();
+
     private final Map< Integer, Product > products = new HashMap<>();
+    private final Lock productLock = new ReentrantLock();
+
     private final Map< Integer, Promotion > promotions = new HashMap<>();
+    private final Lock promotionLock = new ReentrantLock();
+
     private final Map< Integer, Store > stores = new HashMap<>();
+    private final Lock storeLock = new ReentrantLock();
 
     /**
      * Don't allow construction outside of this class.
@@ -65,62 +87,144 @@ public class DataProvider {
     }
 
     private void cacheCustomers( final Customer[] customers ) {
-        Log.d( IotConstants.LOG_TAG, "clearing customer cache" );
-        this.customers.clear();
+        this.customerLock.lock();
 
-        Log.d( IotConstants.LOG_TAG, "Adding " + customers.length + " customers to the cache" );
-        for ( final Customer cust : customers ) {
-            this.customers.put( cust.getId(), cust );
+        try {
+            if ( this.customers.isEmpty() ) {
+                Log.d( IotConstants.LOG_TAG, "Populating customer cache with " + customers.length + " records" );
+
+                for ( final Customer cust : customers ) {
+                    this.customers.put( cust.getId(), cust );
+                }
+            }
+        } finally {
+            this.customerLock.unlock();
         }
     }
 
     private void cacheDepartments( final Department[] departments ) {
-        Log.d( IotConstants.LOG_TAG, "clearing department cache" );
-        this.departments.clear();
-        this.deptColors.clear();
+        this.departmentLock.lock();
 
-        Log.d( IotConstants.LOG_TAG, "Adding " + departments.length + " departments to the cache" );
-        final Resources res = IotApp.getContext().getResources();
-        final TypedArray deptColors = res.obtainTypedArray( array.dept_colors );
-        int i = 0;
+        try {
+            if ( this.departments.isEmpty() ) {
+                Log.d( IotConstants.LOG_TAG, "Populating department cache with " + departments.length + " records" );
 
-        for ( final Department dept : departments ) {
-            this.departments.put( dept.getId(), dept );
-            final int colorId = deptColors.getColor( i++, 0 );
-            this.deptColors.put( dept.getId(), colorId );
+                final Resources res = IotApp.getContext().getResources();
+                final TypedArray deptColors = res.obtainTypedArray( array.dept_colors );
+                int i = 0;
+
+                for ( final Department dept : departments ) {
+                    this.departments.put( dept.getId(), dept );
+                    final int colorId = deptColors.getColor( i++, 0 );
+                    this.deptColors.put( dept.getId(), colorId );
+                }
+
+                deptColors.recycle(); // call after done with TypeArray
+            }
+        } finally {
+            this.departmentLock.unlock();
         }
+    }
 
-        deptColors.recycle(); // call after done with TypeArray
+    private void cacheInventory( final Inventory[] inventories ) {
+        this.inventoryLock.lock();
+
+        try {
+            if ( this.storeInventory.isEmpty() ) {
+                Log.d( IotConstants.LOG_TAG, "Populating inventory cache with " + inventories.length + " records" );
+
+                for ( final Inventory inventory : inventories ) {
+                    final int storeId = inventory.getStoreId();
+                    final int productId = inventory.getProductId();
+
+                    { // store inventory
+                        Set< Inventory > items = this.storeInventory.get( storeId );
+
+                        if ( items == null ) {
+                            items = new TreeSet<>( Inventory.PRODUCT_SORTER );
+                            this.storeInventory.put( storeId, items );
+                        }
+
+                        items.add( inventory );
+                    }
+
+                    { // product inventory
+                        Set< Inventory > items = this.productInventory.get( productId );
+
+                        if ( items == null ) {
+                            items = new TreeSet<>( Inventory.STORE_SORTER );
+                            this.productInventory.put( productId, items );
+                        }
+
+                        items.add( inventory );
+                    }
+                }
+            }
+        } finally {
+            this.inventoryLock.unlock();
+        }
     }
 
     private void cacheProducts( final Product[] products ) {
-        Log.d( IotConstants.LOG_TAG, "clearing product cache" );
-        this.products.clear();
+        this.productLock.lock();
 
-        Log.d( IotConstants.LOG_TAG, "Adding " + products.length + " products to the cache" );
-        for ( final Product product : products ) {
-            this.products.put( product.getId(), product );
+        try {
+            if ( this.products.isEmpty() ) {
+                Log.d( IotConstants.LOG_TAG, "Populating product cache with " + products.length + " records" );
+
+                for ( final Product product : products ) {
+                    this.products.put( product.getId(), product );
+                }
+            }
+        } finally {
+            this.productLock.unlock();
         }
     }
 
     private void cachePromotions( final Promotion[] promotions ) {
-        Log.d( IotConstants.LOG_TAG, "clearing promotion cache" );
-        this.promotions.clear();
+        this.promotionLock.lock();
 
-        Log.d( IotConstants.LOG_TAG, "Adding " + promotions.length + " promotions to the cache" );
-        for ( final Promotion promotion : promotions ) {
-            this.promotions.put( promotion.getId(), promotion );
+        try {
+            if ( this.promotions.isEmpty() ) {
+                Log.d( IotConstants.LOG_TAG, "Populating promotion cache with " + promotions.length + " records" );
+
+                for ( final Promotion promotion : promotions ) {
+                    this.promotions.put( promotion.getId(), promotion );
+                }
+            }
+        } finally {
+            this.promotionLock.unlock();
         }
     }
 
     private void cacheStores( final Store[] stores ) {
-        Log.d( IotConstants.LOG_TAG, "clearing store cache" );
-        this.stores.clear();
+        this.storeLock.lock();
 
-        Log.d( IotConstants.LOG_TAG, "Adding " + stores.length + " stores to the cache" );
-        for ( final Store store : stores ) {
-            this.stores.put( store.getId(), store );
+        try {
+            if ( this.stores.isEmpty() ) {
+                Log.d( IotConstants.LOG_TAG, "Populating store cache with " + stores.length + " records" );
+
+                for ( final Store store : stores ) {
+                    this.stores.put( store.getId(), store );
+                }
+            }
+        } finally {
+            this.storeLock.unlock();
         }
+    }
+
+    private Inventory[] createInventoryResults( final boolean storeOrder ) {
+        final List< Inventory > result = new ArrayList<>();
+        final Collection< Set< Inventory > > records =
+            ( storeOrder ? this.storeInventory.values() : this.productInventory.values() );
+
+        for ( final Set< Inventory > byProduct : records ) {
+            for ( final Inventory item : byProduct ) {
+                result.add( item );
+            }
+        }
+
+        return result.toArray( new Inventory[ result.size() ] );
     }
 
     /**
@@ -438,10 +542,43 @@ public class DataProvider {
     }
 
     /**
-     * @param callback the handler for processing new notifications for the logged in customer (cannot be <code>null</code>)
+     * @param queryKeywords the keywords to search for in the inventory product name and description (can be <code>null</code> or
+     *                      empty)
+     * @param callback      the handler of the {@link Inventory} results (cannot be <code>null</code>)
      */
-    public void getNotifications( final NotificationCallback callback ) {
-        new GetNotifications( callback ).execute();
+    public void getInventories( final String[] queryKeywords,
+                                final InventoryCallback callback ) {
+        if ( this.storeInventory.isEmpty() ) {
+            new GetInventory( queryKeywords, new InventoryCallback() {
+
+                @Override
+                public void onFailure( final Exception error ) {
+                    callback.onFailure( error );
+                }
+
+                @Override
+                public void onFailure( final String errorMsg ) {
+                    callback.onFailure( errorMsg );
+                }
+
+                @Override
+                public void onSuccess( final Inventory[] results ) {
+                    cacheInventory( results );
+                    callback.onSuccess( createInventoryResults( false ) );
+                }
+            } ).execute();
+        } else {
+            callback.onSuccess( createInventoryResults( false ) );
+        }
+    }
+
+    /**
+     * @param customerId the logged in customer ID
+     * @param callback   the handler for processing new notifications for the logged in customer (cannot be <code>null</code>)
+     */
+    public void getNotifications( final int customerId,
+                                  final NotificationCallback callback ) {
+        new GetNotifications( customerId, callback ).execute();
     }
 
     /**
@@ -541,7 +678,7 @@ public class DataProvider {
     }
 
     /**
-     * @param callback the handler of the {@link com.redhat.iot.domain.Store} results (cannot be <code>null</code>)
+     * @param callback the handler of the {@link Store} results (cannot be <code>null</code>)
      */
     public void getStores( final StoreCallback callback ) {
         if ( this.stores.isEmpty() ) {

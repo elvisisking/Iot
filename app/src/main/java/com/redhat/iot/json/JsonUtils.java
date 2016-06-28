@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Utilities used during marshalling of JSON strings to/from {@link com.redhat.iot.domain.IotObject}s.
  */
-class JsonUtils {
+public final class JsonUtils {
 
     /**
      * The name of the JSON array that will be converted into {@link com.redhat.iot.domain.IotObject}s.
@@ -29,6 +29,14 @@ class JsonUtils {
         final Calendar cal = Calendar.getInstance();
         cal.setTime( new Date( orderDate ) );
         return cal;
+    }
+
+    /**
+     * @param calendar the date being converted to JSON (cannot be empty)
+     * @return the JSON representation (never empty)
+     */
+    public static String toJson( final Calendar calendar ) {
+        return ( "/Date(" + calendar.getTimeInMillis() + ")" );
     }
 
     /**

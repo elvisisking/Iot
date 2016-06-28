@@ -3,6 +3,7 @@ package com.redhat.iot;
 import com.redhat.iot.R.string;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * Constants used in the IoT mobile app.
@@ -65,7 +66,7 @@ public interface IotConstants {
     /**
      * The shared date formatter.
      */
-    SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( DATE_FORMAT );
+    SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat( DATE_FORMAT, Locale.getDefault() );
 
     /**
      * The first customer ID in the actual demo data.

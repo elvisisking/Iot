@@ -151,10 +151,10 @@ public class SettingsFragment extends Fragment
     public void onItemSelected( final AdapterView< ? > parent,
                                 final View view,
                                 final int position,
-                                final long id ) {
+                                final long rowId ) {
         final int parentId = parent.getId();
 
-        if ( parentId == R.id.settingsStores ) {
+        if ( parentId == id.settingsStores ) {
             int storeId = Store.NOT_IDENTIFIED;
 
             if ( position != 0 ) {
@@ -168,7 +168,7 @@ public class SettingsFragment extends Fragment
                 editor.putInt( Prefs.STORE_ID, storeId );
                 editor.apply();
             }
-        } else if ( parentId == R.id.settingsNotificationInterval ) {
+        } else if ( parentId == id.settingsNotificationInterval ) {
             int minutes;
 
             switch ( position ) {
@@ -297,7 +297,7 @@ public class SettingsFragment extends Fragment
         public View getView( final int position,
                              final View convertView,
                              final ViewGroup parent ) {
-            TextView tv = null;
+            TextView tv;
 
             if ( convertView == null ) {
                 final LayoutInflater inflater = this.activity.getLayoutInflater();

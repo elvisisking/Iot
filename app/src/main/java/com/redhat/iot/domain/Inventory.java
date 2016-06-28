@@ -1,5 +1,7 @@
 package com.redhat.iot.domain;
 
+import com.redhat.iot.IotApp;
+
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -45,7 +47,20 @@ public class Inventory implements IotObject {
                 return Integer.compare( thisInventory.getProductId(), thatInventory.getProductId() );
             }
 
-            return result;
+            // the chosen store should sort first
+            final int storeId = IotApp.getStoreId();
+
+            if ( storeId != Store.NOT_IDENTIFIED ) {
+                if ( thisInventory.getStoreId() == storeId ) {
+                    return -1;
+                }
+
+                if ( thatInventory.getStoreId() == storeId ) {
+                    return 1;
+                }
+            }
+
+            return Integer.compare( thisInventory.getStoreId(), thatInventory.getStoreId() );
         }
     };
 

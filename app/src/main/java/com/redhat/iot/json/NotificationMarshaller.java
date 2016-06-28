@@ -11,6 +11,15 @@ import org.json.JSONObject;
  */
 public class NotificationMarshaller implements IotMarshaller< IotNotification > {
 
+    /**
+     * The JSON names that may have mappings.
+     */
+    public interface Name {
+
+        String ID = "id";
+
+    }
+
     private static NotificationMarshaller _shared;
 
     /**
@@ -45,7 +54,7 @@ public class NotificationMarshaller implements IotMarshaller< IotNotification > 
     public IotNotification toIot( final String json ) throws IotException {
         try {
             final JSONObject jnotification = new JSONObject( json );
-            final int promoId = jnotification.getInt( "id" );
+            final int promoId = jnotification.getInt( Name.ID );
             return new IotNotification( promoId );
         } catch ( final Exception e ) {
             throw new IotException( e );

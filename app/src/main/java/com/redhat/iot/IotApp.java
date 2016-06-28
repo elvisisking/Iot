@@ -4,11 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
 import android.content.res.Resources;
 import android.util.Log;
 
 import com.redhat.iot.IotConstants.Prefs;
+import com.redhat.iot.R.string;
 import com.redhat.iot.domain.Customer;
+import com.redhat.iot.domain.Store;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +29,20 @@ public class IotApp extends Application {
     private static final int NUM_IMAGES = 50;
 
     private static Context _context;
+
+    /**
+     * @return the app's version and build number (never empty)
+     */
+    public static String getAppVersion() {
+        try {
+            final PackageInfo pkgInfo = _context.getPackageManager().getPackageInfo( _context.getPackageName(), 0 );
+            final String version = pkgInfo.versionName;
+            final int build = pkgInfo.versionCode;
+            return _context.getString( string.app_version, version, build );
+        } catch ( final Exception e ) {
+            return _context.getString( string.app_version, "?.?.?", 0 );
+        }
+    }
 
     /**
      * @return the app context (never <code>null</code>)
@@ -70,6 +87,15 @@ public class IotApp extends Application {
      */
     public static SharedPreferences getPrefs() {
         return _context.getSharedPreferences( Prefs.PREFS_NAME, 0 );
+    }
+
+    /**
+     * @return the ID of the {@link Store store} chosen by the {@link Customer customer} or {@link Store#NOT_IDENTIFIED} if not
+     * chosen
+     */
+    public static int getStoreId() {
+        final SharedPreferences prefs = getPrefs();
+        return prefs.getInt( Prefs.STORE_ID, Store.NOT_IDENTIFIED );
     }
 
     /**
