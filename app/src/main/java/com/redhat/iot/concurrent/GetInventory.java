@@ -1,5 +1,9 @@
 package com.redhat.iot.concurrent;
 
+import android.util.Log;
+
+import com.redhat.iot.IotApp;
+import com.redhat.iot.IotConstants;
 import com.redhat.iot.IotConstants.TestData;
 import com.redhat.iot.R.string;
 import com.redhat.iot.domain.Inventory;
@@ -21,7 +25,7 @@ public class GetInventory extends GetData< Inventory > {
      * The OData URL used to obtain {@link Inventory inventories}.
      */
     private static final String URL =
-        ( String.format( GetData.URL_PATTERN, "PostgreSQL_Sales_Promotions.Order(%s)/OrderDetail" ) + GetData.JSONS_FORMAT );
+        ( String.format( GetData.URL_PATTERN, "FUSE.hanaallstores_Inventory" ) + GetData.JSONS_FORMAT );
 
     private final int productId;
     private final String[] queryKeywords; // not used now but maybe could pass in URL
@@ -38,8 +42,7 @@ public class GetInventory extends GetData< Inventory > {
     }
 
     /**
-     * @param queryKeywords the keywords to search for in the inventory product name and description (can be
-     *                      <code>null</code> or
+     * @param queryKeywords the keywords to search for in the inventory product name and description (can be <code>null</code> or
      *                      empty)
      * @param storeId       the ID of the {@link com.redhat.iot.domain.Store} whose {@link Inventory inventories} are being
      *                      requested or {@link GetInventory#ALL} if all stores should be looked at
@@ -249,6 +252,31 @@ public class GetInventory extends GetData< Inventory > {
         }
 
         return null;
+    }
+
+    private boolean isHanaRunning() {
+        final boolean reachable = IotApp.ping( IotConstants.HANA_IP_ADDRESS );
+
+        if ( reachable ) {
+            Log.d( IotConstants.LOG_TAG, "Ping HANA (" + IotConstants.HANA_IP_ADDRESS + ") was successful" );
+        } else {
+            IotApp.logError( GetInventory.class,
+                             "isHanaRunning",
+                             "Ping of HANA (" + IotConstants.HANA_IP_ADDRESS + ") *** FAILED ***",
+                             null );
+        }
+
+        return reachable;
+    }
+
+    @Override
+    protected boolean isUsingRealData() {
+        if ( super.isUsingRealData() ) {
+            return isHanaRunning(); // only if HANA is running
+        }
+
+        // use test data
+        return false;
     }
 
 }
